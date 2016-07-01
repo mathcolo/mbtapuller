@@ -1,15 +1,19 @@
 import APIFunctions
+import datetime
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-import Classes
+from Classes import Base, Trip, Station, TripRecord
+
+#TODO everything
 
 db = create_engine('sqlite:///mbta.db', echo=False)
-Classes.Base.metadata.create_all(db)
+Base.metadata.create_all(db)
 Session = sessionmaker(bind=db)
 session = Session()
 
 
 
+<<<<<<< HEAD
 # red_stations = APIFunctions.get_stations('Red')
 # for station in red_stations:
 #     session.add(station)
@@ -17,8 +21,17 @@ session = Session()
 # session.commit()
 
 print session.query(Classes.Station).filter(Classes.Station.name_human_readable.is_('Alewife')).first().location_lat
+=======
+red_stations = APIFunctions.get_stations('Red')
+for station in red_stations:
+    session.add(station)
+>>>>>>> b708cce0564256741bca132fbefc5c64397b2c0c
 
-all_red_trips = APIFunctions.get_current_trips(['Red'], session)
+session.add(Trip(id=1, date=datetime.datetime.now(), origin_station_id=3, destination_station_id=4))
 
+<<<<<<< HEAD
 for trip in all_red_trips:
     print trip
+=======
+session.commit()
+>>>>>>> b708cce0564256741bca132fbefc5c64397b2c0c
