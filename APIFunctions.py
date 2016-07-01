@@ -59,4 +59,4 @@ def sync_trips_and_records(routes, session):
     for object in to_save:
         session.merge(object)
 
-    session.commit()
+    return to_save

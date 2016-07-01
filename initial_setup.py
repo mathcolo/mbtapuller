@@ -4,6 +4,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from Classes import Base, Trip, Station, TripRecord
 
+#TODO everything
+
 db = create_engine('sqlite:///mbta.db', echo=False)
 Base.metadata.create_all(db)
 Session = sessionmaker(bind=db)
