@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html ng-app="mbtaApp">
+
+<head>
+
+<title>MBTA-DATA</title>
+<script type="text/JavaScript" src="{{ url_for('static', filename='angular.min.js') }}"></script>
+<script type="text/JavaScript" src="{{ url_for('static', filename='app.js') }}"></script>
+</head>
+
+<body>
+Welcome to our website! <br />
+
+<div ng-controller="navCtrl">
+Select the route you would like to view:
+<select ng-model="route" ng-change="go(route)">
+  <option selected="selected" value ="">Select your line</option>
+  <option value="red">red</option>
+  <option value="green">green</option>
+  <option value="blue">blue</option>
+  <option value="orange">orange</option>
+  <option value="all">all</option>
+</select>
+</div>
+</body>
+</html>
