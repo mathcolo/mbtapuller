@@ -16,9 +16,9 @@ session = Session()
 #
 # session.commit()
 
-#print session.query(Classes.Station).filter(Classes.Station.name_human_readable.is_('Alewife')).first().location_lat
+print session.query(Classes.Station).filter(Classes.Station.name_human_readable.is_('Alewife')).first().location_lat
 
 all_red_trips = APIFunctions.get_current_trips(['Red'], session)
 
 for trip in all_red_trips:
-    print
+    print trip

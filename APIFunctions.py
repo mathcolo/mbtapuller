@@ -1,7 +1,7 @@
 import API
 from Classes import Route, Station, Trip
 from Miscellaneous import isolate_origin_from_trip_name
-
+	
 def get_stations(route):
 
     api_result = API.get("stopsbyroute", {'route': route})['direction'][0]['stop']
