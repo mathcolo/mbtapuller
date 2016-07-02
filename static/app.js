@@ -1,10 +1,27 @@
-var app = angular.module('mbtaApp', []);
+var app = angular.module('mbtaApp', ['ngRoute']);
 
 
-app.controller('navCtrl', function ($scope, $window) {
+app.controller('navCtrl', function ($scope, $location) {
   $scope.currentPage = "";
   $scope.go = function (page) {
-    var url = "http://" + $window.location.host + "/" + page;
-	$window.location.href = url;
+    $location.path("/trains/" + page);
   };
 });
+
+	// configure our routes
+    app.config(function($routeProvider) {
+        $routeProvider
+
+			.when('/trains/all', {
+                templateUrl : 'static/partials/route.html',
+				controller  : 'allRouteController'
+            })
+            .when('/trains/:route', {
+                templateUrl : 'static/partials/route.html',
+				controller  : 'routeController'
+            })
+			.otherwise({
+                 redirectTo: '/'
+             });
+			
+	})	

@@ -1,26 +1,34 @@
 <!DOCTYPE HTML>
 <html ng-app="mbtaApp">
 
-<head>
+	<head>
+		<title>MBTA-DATA</title>
+		
+		<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+		
+		<script type="text/JavaScript" src="{{ url_for('static', filename='angular.min.js') }}"></script>
+		<script type="text/JavaScript" src="{{ url_for('static', filename='angular-route.min.js') }}"></script>
+		<script type="text/JavaScript" src="{{ url_for('static', filename='app.js') }}"></script>
+		
+		<script type="text/JavaScript" src="{{ url_for('static', filename='controllers/routeController.js') }}"></script>
+		<script type="text/JavaScript" src="{{ url_for('static', filename='controllers/allRouteController.js') }}"></script>
+	</head>
 
-<title>MBTA-DATA</title>
-<script type="text/JavaScript" src="{{ url_for('static', filename='angular.min.js') }}"></script>
-<script type="text/JavaScript" src="{{ url_for('static', filename='app.js') }}"></script>
-</head>
+	<body>
+		Welcome to our website! <br />
 
-<body>
-Welcome to our website! <br />
-
-<div ng-controller="navCtrl">
-Select the route you would like to view:
-<select ng-model="route" ng-change="go(route)">
-  <option selected="selected" value ="">Select your line</option>
-  <option value="red">red</option>
-  <option value="green">green</option>
-  <option value="blue">blue</option>
-  <option value="orange">orange</option>
-  <option value="all">all</option>
-</select>
-</div>
-</body>
+		<div ng-controller="navCtrl">
+			Select the route you would like to view: <br />
+			<select ng-model="route" ng-change="go(route)">
+				<option selected="selected" value ="">Select your line</option>
+				<option value="red">Red Line</option>
+				<option value="green">Green Line</option>
+				<option value="blue">Blue Line</option>
+				<option value="orange">Orange Line</option>
+				<option value="all">All Trains</option>
+			</select>
+		</div>
+		<div ng-view>
+		</div>
+	</body>
 </html>

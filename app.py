@@ -1,4 +1,7 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, Response
+import json
+import requests
+
 app = Flask(__name__)
 
 
@@ -6,13 +9,33 @@ app = Flask(__name__)
 def home():
     return render_template('index.html')
 
-@app.route("/all")
+@app.route("/getAllTrains", methods=['GET'])
 def displayAll():
-	return "All trains currently running!"
+	trains = [] # replace with array of dicts for each train from backend
+	for route in ["red", "green", "blue", "orange"]:
+		trains.append({"id": route +"-train1", "longitude": 71.0589, "latitude": 42.3601, "route": route})
+		trains.append({"id": route +"-train2", "longitude": 71.0589, "latitude": 42.3601, "route": route})
+		trains.append({"id": route +"-train3", "longitude": 71.0589, "latitude": 42.3601, "route": route})
 	
-@app.route("/<string:route>")
-def displayRoute(route):
-	return "Current trains on the " + route + " line!" 
+	js = json.dumps(trains) 
+
+	resp = Response(js, status=200, mimetype='application/json')
+
+	return resp
+	
+@app.route("/get<string:route>Trains", methods=['GET'])
+def getTrainsOnRoute(route):
+	trains = [
+	{"id": route +"-train1", "longitude": 71.0589, "latitude": 42.3601, "route": route},
+	{"id": route +"-train2", "longitude": 71.0589, "latitude": 42.3601, "route": route},
+	{"id": route +"-train3", "longitude": 71.0589, "latitude": 42.3601, "route": route}
+	] # replace with array of dicts for given route from backend
+	
+	js = json.dumps(trains)
+
+	resp = Response(js, status=200, mimetype='application/json')
+
+	return resp
 
 if __name__ == "__main__":
     app.run()
