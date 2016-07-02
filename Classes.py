@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, Date
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, Date, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -30,5 +30,6 @@ class TripRecord(Base):
     id = Column(Integer, primary_key=True)
 
     trip_id = Column(String, ForeignKey("trips.id"))
+    stamp = Column(DateTime)
     location_lat = Column(Float)
     location_lng = Column(Float)

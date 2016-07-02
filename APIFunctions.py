@@ -2,7 +2,8 @@ import datetime
 import API
 from Classes import Station, Trip, TripRecord
 from Miscellaneous import isolate_origin_from_trip_name
-	
+
+
 def get_stations(routes):
     stations = []
 
@@ -30,12 +31,13 @@ def sync_trips_and_records(routes, session):
                 # Now we have a trip
                 print "Processing trip_id %s" % trip['trip_id']
 
-                trips_with_same_id = session.query(Trip).filter(Trip.id.is_(trip['trip_id'])).count()
+                trips_with_same_id = session.query(Trip).filter(Trip.id.is_(trip['trip_id'])).filter(
+                    Trip.date.is_(datetime.date.today())).count()
                 if trips_with_same_id == 1:
                     # Create a trip record since it exists already
 
                     new_trip_record = TripRecord(trip_id=trip['trip_id'], location_lat=trip['vehicle']['vehicle_lat'],
-                                                 location_lng=trip['vehicle']['vehicle_lon'])
+                                                 location_lng=trip['vehicle']['vehicle_lon'], stamp=datetime.datetime.now())
 
                     to_save.append(new_trip_record)
                 elif trips_with_same_id == 0:
@@ -49,7 +51,7 @@ def sync_trips_and_records(routes, session):
                                     date=datetime.datetime.now())
 
                     new_trip_record = TripRecord(trip_id=trip['trip_id'], location_lat=trip['vehicle']['vehicle_lat'],
-                                                 location_lng=trip['vehicle']['vehicle_lon'])
+                                                 location_lng=trip['vehicle']['vehicle_lon'], stamp=datetime.datetime.now())
 
                     to_save.append(new_trip)
                     to_save.append(new_trip_record)
