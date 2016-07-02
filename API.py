@@ -1,7 +1,7 @@
 from secrets import API_KEY
 import requests
 
-BASE_URL = 'http://realtime.mbta.com/developer/api/v2/{command}?api_key={api_key}&format={format}'
+BASE_URL = 'https://realtime.mbta.com/developer/api/v2/{command}?api_key={api_key}&format={format}'
 
 
 def get(command, params, api_key=API_KEY):

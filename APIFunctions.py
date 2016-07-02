@@ -3,13 +3,14 @@ import API
 from Classes import Station, Trip, TripRecord
 from Miscellaneous import isolate_origin_from_trip_name
 	
-def get_stations(route):
-
-    api_result = API.get("stopsbyroute", {'route': route})['direction'][0]['stop']
+def get_stations(routes):
     stations = []
-    for item in api_result:
-        new_station = Station(route=route, name_human_readable=item['parent_station_name'], name_api=item['parent_station'], location_lat=item['stop_lat'], location_lng=item['stop_lon'])
-        stations.append(new_station)
+
+    for route in routes:
+        api_result = API.get("stopsbyroute", {'route': route})['direction'][0]['stop']
+        for item in api_result:
+            new_station = Station(route=route, name_human_readable=item['parent_station_name'], name_api=item['parent_station'], location_lat=item['stop_lat'], location_lng=item['stop_lon'])
+            stations.append(new_station)
     return stations
 
 

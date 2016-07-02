@@ -18,8 +18,8 @@ class Trip(Base):
     __tablename__ = 'trips'
 
     id = Column(String, primary_key=True)
+    date = Column(Date, primary_key=True)
 
-    date = Column(Date)
     origin_station_id = Column(Integer, ForeignKey("stations.id"))
     destination_station_id = Column(Integer, ForeignKey("stations.id"))
 
