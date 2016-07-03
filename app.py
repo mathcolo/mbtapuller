@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, Response
 import json
 import requests
+import constants
 
 app = Flask(__name__)
 
@@ -12,7 +13,8 @@ def home():
 @app.route("/getAllTrains", methods=['GET'])
 def displayAll():
 	trains = [] # replace with array of dicts for each train from backend
-	for route in ["red", "green", "blue", "orange"]:
+	for route in [constants.RED_LINE, constants.GREEN_LINE_B, constants.GREEN_LINE_C, constants.GREEN_LINE_D, 
+					constants.GREEN_LINE_E, constants.ORANGE_LINE, constants.BLUE_LINE]:
 		trains.append({"id": route +"-train1", "longitude": 71.0589, "latitude": 42.3601, "route": route})
 		trains.append({"id": route +"-train2", "longitude": 71.0589, "latitude": 42.3601, "route": route})
 		trains.append({"id": route +"-train3", "longitude": 71.0589, "latitude": 42.3601, "route": route})
