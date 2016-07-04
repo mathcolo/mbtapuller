@@ -1,6 +1,6 @@
 <br />
 <div ng-switch="status">
-        <span ng-switch-when=404><h2>400 Error</h2>
+        <span ng-switch-when=404><h2>404 Error</h2>
 		{{route}} is not a valid MBTA route.<br />
 		Please select a route from the dropdown box above.</span>
 		
@@ -20,5 +20,13 @@
 				</tr>
 			</table>
 		</span>
+		<div ng-repeat="station in stations">
+		<h3>{{station.line}}</h3>
+		<div ng-repeat="branch in station.branches">
+			<p>{{branch.name}}</p>
+			<span ng-repeat="station in branch.stations">
+				{{station}} *
+			</span>
+		</div></div>
 		<span ng-switch-default></span>
 </div>
