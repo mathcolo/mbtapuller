@@ -1,24 +1,22 @@
 from geopy.distance import vincenty
-from Classes import Station
+from Classes import Station, Trip, TripRecord
+import numpy
+from geographiclib.geodesic import Geodesic
 
 
-def current_station(trip_record, session):
-    """
-    Find the current station that a TripRecord is at.
+def find_segment(trip_record, session):
 
-    Example return: Harvard station object, Alewife station object
-    Example if the train is not within 400 of a station: None
+    me_loc = (trip_record.location_lat, trip_record.location_lng)
 
-    :param trip_record: The TripRecord object to evaluate.
-    :param session: The database session to use for data queries
-    :return: A Station object
-    """
     all_stations = session.query(Station).all()
+    directions = []
     for station in all_stations:
-        us = (trip_record.location_lat, trip_record.location_lng)
-        it = (station.location_lat, station.location_lng)
+        station_loc = (station.location_lat, station.location_lng)
+        directions.append(Geodesic.WGS84.Inverse(me_loc[0],
+                                                 me_loc[1],
+                                                 station_loc[0],
+                                                 station_loc[1])['azi2'])
 
-        if vincenty(us, it).feet <= 400:
-            return station
+    direction_reverses = numpy.where(numpy.diff(numpy.sign(directions)))[0]
 
-    return None
+    print all_stations[direction_reverses[0]].name_human_readable
