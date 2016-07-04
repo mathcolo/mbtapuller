@@ -2,6 +2,15 @@ from flask import Flask, render_template, request, Response
 import json
 import requests
 import constants
+import Functions
+from Classes import *
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine
+
+db = create_engine('sqlite:///mbta.db', echo=False)
+Base.metadata.create_all(db)
+Session = sessionmaker(bind=db)
+session = Session()
 
 app = Flask(__name__)
 
@@ -43,6 +52,17 @@ def getTrainsOnRoute(route):
 		resp = Response(js, status=200, mimetype='application/json')
 
 	return resp
+	
+@app.route("/stations/<string:route>", methods=['GET'])
+def getStationsOnRoute(route):
+	stations = Functions.get_stations(route, session)
+	
+	js = json.dumps(stations)
+
+	resp = Response(js, status=200, mimetype='application/json')
+
+	return resp
+
 
 if __name__ == "__main__":
     app.run()
