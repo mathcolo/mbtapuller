@@ -36,7 +36,8 @@ def get_stations(route, session):
 		braintree_names = [b.name_human_readable for b in braintree]
 		ashmont_names = [a.name_human_readable for a in ashmont]
 		
-		return [braintree_names, ashmont_names]
+		return {'line': constants.RED_LINE, 'branches': [{'name': 'Ashmont', 'stations': ashmont_names}, 
+														{'name': 'Braintree', 'stations': braintree_names}]}
 		
 	elif route.lower() == constants.GREEN_LINE.lower():
 
@@ -50,13 +51,16 @@ def get_stations(route, session):
 		d_names = [d.name_human_readable for d in d_line]
 		e_names = [e.name_human_readable for e in e_line]
 		
-		stations = [b_names, c_names, d_names, e_names]
+		stations = {'line': constants.GREEN_LINE,  'branches': [{'name': constants.GREEN_LINE_B, 'stations': b_names}, 
+																{'name': constants.GREEN_LINE_C, 'stations': c_names}, 
+																{'name': constants.GREEN_LINE_D, 'stations': d_names}, 
+																{'name': constants.GREEN_LINE_E, 'stations': e_names}]}
 			
 		return stations
 	
 	elif route.lower() in [constants.ORANGE_LINE.lower(), constants.BLUE_LINE.lower()]:
 		stations = session.query(Station).filter(Station.route == route.title()).all()
 
-		return [s.name_human_readable for s in stations]
+		return {'line': route.title(), 'branches': [{'name': '', 'stations': [s.name_human_readable for s in stations]}]}
 		
 	return None

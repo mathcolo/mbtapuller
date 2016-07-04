@@ -53,9 +53,23 @@ def getTrainsOnRoute(route):
 
 	return resp
 	
+@app.route("/stations/all", methods=['GET'])
+def getAllStations():
+	
+	stations = []
+	
+	for route in valid_routes:
+		stations.append(Functions.get_stations(route, session))
+	
+	js = json.dumps(stations)
+
+	resp = Response(js, status=200, mimetype='application/json')
+
+	return resp
+	
 @app.route("/stations/<string:route>", methods=['GET'])
 def getStationsOnRoute(route):
-	stations = Functions.get_stations(route, session)
+	stations = [Functions.get_stations(route, session)]
 	
 	js = json.dumps(stations)
 

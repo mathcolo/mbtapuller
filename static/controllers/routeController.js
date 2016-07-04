@@ -9,4 +9,12 @@ app.controller('routeController', function ($scope, $routeParams, $http) {
 		}, function errorCallback(response) {
 			$scope.status = response.status;
 	});
+	
+	$http.get('/stations/' + $routeParams.route)
+	.then(function successCallback(response) {
+			$scope.stations = response.data;
+			
+		}, function errorCallback(response) {
+			
+	});
 });
