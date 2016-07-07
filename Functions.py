@@ -1,7 +1,5 @@
-from geopy.distance import vincenty
+from geopy.distance import vincenty as dist
 from Classes import Station, Trip, TripRecord
-import numpy
-from geographiclib.geodesic import Geodesic
 
 
 def find_segment(trip_record, session, test_pair=None):
@@ -11,15 +9,40 @@ def find_segment(trip_record, session, test_pair=None):
     else:
         me_loc = (trip_record.location_lat, trip_record.location_lng)
 
+
+    destination_station = session.query(Station).filter(Station.id == 1).first()
+
     all_stations = session.query(Station).all()
-    directions = []
+    closest_station = None
+    closest_distance_so_far = 100
     for station in all_stations:
+
+        # Red Line override
+        if destination_station.name_human_readable == 'Braintree':
+            if station.name_human_readable in ['Savin Hill', 'Fields Corner', 'Shawmut', 'Ashmont']:
+                continue
+
+        if destination_station.name_human_readable == 'Ashmont':
+            if station.name_human_readable in ['North Quincy', 'Wollaston', 'Quincy Center', 'Quincy Adams', 'Braintree']:
+                continue
+
         station_loc = (station.location_lat, station.location_lng)
-        directions.append(Geodesic.WGS84.Inverse(me_loc[0],
-                                                 me_loc[1],
-                                                 station_loc[0],
-                                                 station_loc[1])['azi2'])
+        miles = dist(me_loc, station_loc).miles
+        if miles < closest_distance_so_far:
+            closest_station = station
+            closest_distance_so_far = miles
 
-    direction_reverses = numpy.where(numpy.diff(numpy.sign(directions)))[0]
+    surround_station_1 = session.query(Station).filter(Station.id == closest_station.id+1).first()
+    surround_station_2 = session.query(Station).filter(Station.id == closest_station.id-1).first()
 
-    return (all_stations[direction_reverses[0]].name_human_readable,all_stations[direction_reverses[0]+1].name_human_readable)
+    if dist(surround_station_1.loc(), destination_station.loc()) < dist(surround_station_2.loc(), destination_station.loc()):
+        surround_station_ahead = surround_station_1
+        surround_station_behind = surround_station_2
+    else:
+        surround_station_ahead = surround_station_2
+        surround_station_behind = surround_station_1
+
+    if dist(me_loc, destination_station.loc()) < dist(closest_station.loc(), destination_station.loc()):
+        return closest_station.name_human_readable, surround_station_ahead.name_human_readable
+    else:
+        return surround_station_behind.name_human_readable, closest_station.name_human_readable

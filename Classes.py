@@ -15,6 +15,9 @@ class Station(Base):
     location_lat = Column(Float)
     location_lng = Column(Float)
 
+    def loc(self):
+        return self.location_lat,self.location_lng
+
 
 class Trip(Base):
     __tablename__ = 'trips'
