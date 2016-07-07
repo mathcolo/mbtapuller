@@ -4,9 +4,12 @@ import numpy
 from geographiclib.geodesic import Geodesic
 
 
-def find_segment(trip_record, session):
+def find_segment(trip_record, session, test_pair=None):
 
-    me_loc = (trip_record.location_lat, trip_record.location_lng)
+    if test_pair:
+        me_loc = test_pair
+    else:
+        me_loc = (trip_record.location_lat, trip_record.location_lng)
 
     all_stations = session.query(Station).all()
     directions = []
@@ -19,4 +22,4 @@ def find_segment(trip_record, session):
 
     direction_reverses = numpy.where(numpy.diff(numpy.sign(directions)))[0]
 
-    print all_stations[direction_reverses[0]].name_human_readable
+    return (all_stations[direction_reverses[0]].name_human_readable,all_stations[direction_reverses[0]+1].name_human_readable)
