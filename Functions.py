@@ -10,7 +10,10 @@ def find_segment(trip_record, session, test_pair=None):
         me_loc = (trip_record.location_lat, trip_record.location_lng)
 
 
-    destination_station = session.query(Station).filter(Station.id == 1).first()
+    trip = session.query(TripRecord, Trip).join(Trip).filter(Trip.id==trip_record.trip_id).first()[1]
+
+    origin_station = session.query(Station).filter(Station.id == trip.origin_station_id).first()
+    destination_station = session.query(Station).filter(Station.id == trip.destination_station_id).first()
 
     all_stations = session.query(Station).all()
     closest_station = None
@@ -18,11 +21,11 @@ def find_segment(trip_record, session, test_pair=None):
     for station in all_stations:
 
         # Red Line override
-        if destination_station.name_human_readable == 'Braintree':
+        if destination_station.name_human_readable == 'Braintree' or origin_station.name_human_readable == 'Braintree':
             if station.name_human_readable in ['Savin Hill', 'Fields Corner', 'Shawmut', 'Ashmont']:
                 continue
 
-        if destination_station.name_human_readable == 'Ashmont':
+        if destination_station.name_human_readable == 'Ashmont' or origin_station.name_human_readable == 'Ashmont':
             if station.name_human_readable in ['North Quincy', 'Wollaston', 'Quincy Center', 'Quincy Adams', 'Braintree']:
                 continue
 
@@ -33,7 +36,14 @@ def find_segment(trip_record, session, test_pair=None):
             closest_distance_so_far = miles
 
     surround_station_1 = session.query(Station).filter(Station.id == closest_station.id+1).first()
-    surround_station_2 = session.query(Station).filter(Station.id == closest_station.id-1).first()
+
+    if(closest_station.id == 1):
+        surround_station_2 = closest_station
+    else:
+        surround_station_2 = session.query(Station).filter(Station.id == closest_station.id-1).first()
+
+    print "surround_station_1: %s" % surround_station_1
+    print "surround_station_2: %s" % surround_station_2
 
     if dist(surround_station_1.loc(), destination_station.loc()) < dist(surround_station_2.loc(), destination_station.loc()):
         surround_station_ahead = surround_station_1

@@ -15,6 +15,12 @@ class Station(Base):
     location_lat = Column(Float)
     location_lng = Column(Float)
 
+    def __str__(self):
+        return "<Station %s>" % self.name_human_readable
+
+    def __repr__(self):
+        return "<Station %s>" % self.name_human_readable
+
     def loc(self):
         return self.location_lat,self.location_lng
 
@@ -31,10 +37,10 @@ class Trip(Base):
     destination_station_id = Column(Integer, ForeignKey("stations.id"))
 
     def __str__(self):
-        return "<Trip id=%s from %s to %s>" % (self.origin_station_id, self.destination_station_id)
+        return "<Trip id=%s from %s to %s>" % (self.id, self.origin_station_id, self.destination_station_id)
 
     def __repr__(self):
-        return "<Trip id=%s from %s to %s>" % (self.origin_station_id, self.destination_station_id)
+        return "<Trip id=%s from %s to %s>" % (self.id, self.origin_station_id, self.destination_station_id)
 
     def get_direction(self):
         """
