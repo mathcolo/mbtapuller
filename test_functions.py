@@ -12,7 +12,6 @@ def pytest_funcarg__session(request):
 
 def pytest_funcarg__triprecord(request, session):
     record = session.query(TripRecord).first()
-    record.destination_station_id = 22
     return record
 
 def pair_equal(pair1, pair2):
