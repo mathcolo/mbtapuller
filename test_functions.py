@@ -77,5 +77,6 @@ def test_find_segment_JFK(session, triprecord):
            ('JFK/Umass', 'Savin Hill'))
 
 def test_find_segment_BRAINTREEBRANCH(session, triprecord):
+    triprecord.trip_id = 2
     assert pair_equal(find_segment(triprecord, session, (42.300707, -71.054977)),
            ('JFK/Umass', 'North Quincy'))

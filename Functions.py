@@ -1,18 +1,6 @@
 from geopy.distance import vincenty as dist
 from Classes import Station, Trip, TripRecord
-from sqlalchemy.sql.expression import func
-
-def is_red_braintree(origin, destination):
-    return origin.name_human_readable == 'Braintree' or destination.name_human_readable == 'Braintree'
-
-def is_red_ashmont(origin, destination):
-    return origin.name_human_readable == 'Ashmont' or destination.name_human_readable == 'Ashmont'
-
-def braintree_only_stations():
-    return ['North Quincy', 'Wollaston', 'Quincy Center', 'Quincy Adams', 'Braintree']
-
-def ashmont_only_stations():
-    return ['Savin Hill', 'Fields Corner', 'Shawmut', 'Ashmont']
+from sqlalchemy import desc, asc
 
 def surrounding_station(session, station):
     '''
@@ -22,20 +10,16 @@ def surrounding_station(session, station):
     :return: A 2-element tuple containing the forward and backward station
     '''
 
-    max = session.query(func.max(Station.id)).filter_by(Station.route == station.route)
-    min = session.query(func.min(Station.id)).filter_by(Station.route == station.route)
-    if station.route != 'Red':
-        plus_id = station.id + 1
-        if plus_id > max:
-            plus_id = max
+    max = session.query(Station).filter(Station.route == station.route).order_by(desc(Station.id)).first().id
+    min = session.query(Station).filter(Station.route == station.route).order_by(asc(Station.id)).first().id
 
-        minus_id = station.id - 1
-        if minus_id < min:
-            minus_id = min
-    else:
-        # Red Line
+    plus_id = station.id + 1
+    if plus_id > max:
+        plus_id = max
 
-        pass
+    minus_id = station.id - 1
+    if minus_id < min:
+        minus_id = min
 
     return (session.query(Station).filter(Station.id == plus_id).first(),
            session.query(Station).filter(Station.id == minus_id).first())
@@ -61,31 +45,15 @@ def find_segment(trip_record, session, test_pair=None):
     closest_distance_so_far = 100
     for station in all_stations:
 
-        # Red Line override
-        if is_red_braintree(origin_station, destination_station):
-            if station.name_human_readable in ashmont_only_stations():
-                continue
-
-        if is_red_ashmont(origin_station, destination_station):
-            if station.name_human_readable in braintree_only_stations():
-                continue
-
         station_loc = (station.location_lat, station.location_lng)
         miles = dist(me_loc, station_loc).miles
         if miles < closest_distance_so_far:
             closest_station = station
             closest_distance_so_far = miles
 
-    #print "closest_station: %s" % closest_station
-    surround_station_1 = session.query(Station).filter(Station.id == closest_station.id+1).first()
-
-    if closest_station.id == 1:
-        surround_station_2 = closest_station
-    else:
-        surround_station_2 = session.query(Station).filter(Station.id == closest_station.id-1).first()
-
-    #print "surround_station_1: %s" % surround_station_1
-    #print "surround_station_2: %s" % surround_station_2
+    surrounding_stations = surrounding_station(session, closest_station)
+    surround_station_1 = surrounding_stations[1]
+    surround_station_2 = surrounding_stations[0]
 
     if dist(surround_station_1.loc(), destination_station.loc()) < dist(surround_station_2.loc(), destination_station.loc()):
         surround_station_ahead = surround_station_1
