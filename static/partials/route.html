@@ -1,6 +1,13 @@
 <div flex-xs flex-gt-xs="200" layout="column" layout-align="center">
 
 		<md-content layout="column">
+		<h3>Destination</h3>
+			<div flex>
+				{{last}}
+				<md-switch ng-model="station" aria-label="Destination Switch" ng-change="changeDestination(station)">
+				{{first}}
+			</div>
+	    </md-switch>
 	  <md-card ng-repeat="s in stations">
         <md-card-title>
           <md-card-title-text>

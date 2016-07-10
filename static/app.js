@@ -4,7 +4,6 @@ var app = angular.module('mbtaApp', ['ngRoute', 'ngMaterial', 'ngMdIcons']);
 app.controller('appCtrl', function ($http, $mdSidenav, $location) {
 
   this.go = function (name, id) {
-	console.log(name);
     $location.path("/trains/" + name + "/id/" + id);
   };
   
@@ -60,6 +59,21 @@ app.config(function($routeProvider) {
 		 });
 		
 });	
+
+// configure our routes
+app.config(function($routeProvider) {
+	$routeProvider
+
+		.when('/trains/:route_name/id/:route_id', {
+			templateUrl : 'static/partials/route.html',
+			controller  : 'routeController'
+		})
+		.otherwise({
+			 redirectTo: '/'
+		 });
+		
+});	
+
   
 
 
