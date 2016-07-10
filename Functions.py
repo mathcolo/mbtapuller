@@ -35,6 +35,12 @@ def all_routes(session):
 	
 def get_stations(id, session):
 
-	stations = session.query(Station, Route).filter(Station.route_id == id).all()
+	stations = session.query(Station, Route).join(Route).filter(Station.route_id == id).all()
+	
+	route_name = session.query(Route).filter(Route.id == id).one().name
+	
+	stations_output = []
+	for station in stations:
+		stations_output.append({'id': station[0].id, 'route_id': station[0].route_id, 'name': station[0].name_human_readable, 'route_name': route_name})
 			
-	return stations
+	return stations_output

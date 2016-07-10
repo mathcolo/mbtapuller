@@ -1,14 +1,11 @@
-<div flex-xs flex-gt-xs="200" layout="column" ng-repeat="station in stations" layout-align="center">
-	<!--<h3>{{station.line}}</h3>-->
- 	  
-	  <div ng-repeat="branch in station.branches">
+<div flex-xs flex-gt-xs="200" layout="column" layout-align="center">
+
 		<md-content layout="column">
-		<!--<h4>{{branch.name}}</h4> -->
-	  <md-card ng-repeat="s in branch.stations">
+	  <md-card ng-repeat="s in stations">
         <md-card-title>
           <md-card-title-text>
-            <span class="md-headline">{{s}}</span>
-            <span class="md-subhead">{{branch.name}}</span>
+            <span class="md-headline">{{s.name}}</span>
+            <span class="md-subhead">{{s.route_name}}</span>
           </md-card-title-text>
           <md-card-title-media>
             <div class="md-media-sm card-media"></div>
@@ -19,6 +16,5 @@
           <md-button>Action 2</md-button>
         </md-card-actions>
       </md-card>
-	  
-	  </div>
+
 </div>

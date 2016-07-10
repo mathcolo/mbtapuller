@@ -3,8 +3,9 @@ var app = angular.module('mbtaApp', ['ngRoute', 'ngMaterial', 'ngMdIcons']);
 
 app.controller('appCtrl', function ($http, $mdSidenav, $location) {
 
-  this.go = function (page) {
-    $location.path("/trains/" + page);
+  this.go = function (name, id) {
+	console.log(name);
+    $location.path("/trains/" + name + "/id/" + id);
   };
   
   this.toggleSidenav = function(menuId) {
@@ -21,7 +22,7 @@ app.controller('appCtrl', function ($http, $mdSidenav, $location) {
                 templateUrl : 'static/partials/route.html',
 				controller  : 'allRouteController'
             })
-            .when('/trains/:route', {
+            .when('/trains/:route_name/id/:route_id', {
                 templateUrl : 'static/partials/route.html',
 				controller  : 'routeController'
             })

@@ -16,8 +16,9 @@ app = Flask(__name__)
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
+	lines = sorted(getAllRoutes(), key=lambda k: k['name']) 
 	
-    return render_template('index.html', lines=getAllRoutes())
+	return render_template('index.html', lines=lines)
 
 @app.route("/getAllTrains", methods=['GET'])
 def displayAll():
@@ -65,7 +66,7 @@ def getAllStations():
 	
 @app.route("/stations/<string:route_id>", methods=['GET'])
 def getStationsOnRoute(route_id):
-	stations = [Functions.get_stations(route_id, session)]
+	stations = Functions.get_stations(route_id, session)
 	
 	js = json.dumps(stations)
 
@@ -76,8 +77,6 @@ def getStationsOnRoute(route_id):
 @app.route("/routes", methods=['GET'])
 def getAllRoutes():
 	routes = Functions.all_routes(session)
-	
-	js = json.dumps(routes)
 
 	return routes
 

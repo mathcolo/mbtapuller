@@ -1,17 +1,14 @@
 app.controller('routeController', function ($scope, $routeParams, $http) {
     'use strict';
-    $scope.route = $routeParams.route;
+    $scope.route_id = $routeParams.route_id;
 	
-	$http.get('/get' + $routeParams.route + 'Trains')
+	$http.get('/get' + $routeParams.route_id + 'Trains')
 	.then(function successCallback(response) {
 			$scope.trains = response.data;
-			console.log(response.data);
-			$scope.status = response.status;
 		}, function errorCallback(response) {
-			$scope.status = response.status;
 	});
 	
-	$http.get('/stations/' + $routeParams.route)
+	$http.get('/stations/' + $routeParams.route_id)
 	.then(function successCallback(response) {
 			$scope.stations = response.data;
 			
