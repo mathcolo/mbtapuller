@@ -5,11 +5,17 @@ from constants import *
 
 Base = declarative_base()
 
+class Route(Base):
+    __tablename__ = 'routes'
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+
+
 class Station(Base):
     __tablename__ = 'stations'
     id = Column(Integer, primary_key=True)
 
-    route = Column(String)
+    route_id = Column(Integer, ForeignKey("routes.id"))
     name_human_readable = Column(String)
     name_api = Column(String)
     location_lat = Column(Float)

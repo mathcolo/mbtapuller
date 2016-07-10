@@ -1,45 +1,66 @@
 import datetime
 import API
-from Classes import Station, Trip, TripRecord
+from Classes import Station, Trip, TripRecord, Route
 from Miscellaneous import isolate_origin_from_trip_name
+from constants import *
 
+def get_routes():
+    routes = [
+        Route(name=RED_LINE_ASHMONT),
+        Route(name=RED_LINE_BRAINTREE),
+        Route(name=GREEN_LINE_B),
+        Route(name=GREEN_LINE_C),
+        Route(name=GREEN_LINE_D),
+        Route(name=GREEN_LINE_E),
+        Route(name=BLUE_LINE),
+        Route(name=ORANGE_LINE),
+    ]
 
-def get_stations(routes):
+    return routes
+
+def get_stations(session):
     stations = []
+    routes = session.query(Route).all()
+
+    populate_red = False
 
     for route in routes:
-        if route == 'Red':
+        if route.name == RED_LINE_ASHMONT or route.name == RED_LINE_BRAINTREE:
+            populate_red = True
             continue
 
-        api_result = API.get("stopsbyroute", {'route': route})['direction'][0]['stop']
+        api_result = API.get("stopsbyroute", {'route': route.name})['direction'][0]['stop']
         for item in api_result:
-            new_station = Station(route=route, name_human_readable=item['parent_station_name'], name_api=item['parent_station'], location_lat=item['stop_lat'], location_lng=item['stop_lon'])
+            new_station = Station(route_id=route.id, name_human_readable=item['parent_station_name'], name_api=item['parent_station'], location_lat=item['stop_lat'], location_lng=item['stop_lon'])
             stations.append(new_station)
 
-    if 'Red' in routes:
+    if populate_red:
         ashmont = []
         ashmont_added_jfk = False
         braintree = []
         braintree_added_jfk = False
 
+        route_id_ashmont = session.query(Route).filter(Route.name == RED_LINE_ASHMONT).first().id
+        route_id_braintree = session.query(Route).filter(Route.name == RED_LINE_BRAINTREE).first().id
+
         api_result = API.get("stopsbyroute", {'route': 'Red'})['direction'][0]['stop']
         for item in api_result:
 
             if item['parent_station_name'] in ['North Quincy', 'Wollaston', 'Quincy Center', 'Quincy Adams', 'Braintree']:
-                new_station = Station(route='Red-Braintree', name_human_readable=item['parent_station_name'],
+                new_station = Station(route_id=route_id_braintree, name_human_readable=item['parent_station_name'],
                                       name_api=item['parent_station'], location_lat=item['stop_lat'],
                                       location_lng=item['stop_lon'])
                 braintree.append(new_station)
             elif item['parent_station_name'] in ['Savin Hill', 'Fields Corner', 'Shawmut', 'Ashmont']:
-                new_station = Station(route='Red-Ashmont', name_human_readable=item['parent_station_name'],
+                new_station = Station(route_id=route_id_ashmont, name_human_readable=item['parent_station_name'],
                                       name_api=item['parent_station'], location_lat=item['stop_lat'],
                                       location_lng=item['stop_lon'])
                 ashmont.append(new_station)
             else:
-                new_station_ashmont = Station(route='Red-Ashmont', name_human_readable=item['parent_station_name'],
+                new_station_ashmont = Station(route_id=route_id_ashmont, name_human_readable=item['parent_station_name'],
                                       name_api=item['parent_station'], location_lat=item['stop_lat'],
                                       location_lng=item['stop_lon'])
-                new_station_braintree = Station(route='Red-Braintree', name_human_readable=item['parent_station_name'],
+                new_station_braintree = Station(route_id=route_id_braintree, name_human_readable=item['parent_station_name'],
                                       name_api=item['parent_station'], location_lat=item['stop_lat'],
                                       location_lng=item['stop_lon'])
 
