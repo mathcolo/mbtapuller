@@ -3,12 +3,18 @@ app.controller('allRouteController', function ($scope, $routeParams, $http) {
     $scope.route = $routeParams.route;
 	
 	$http.get('/getAllTrains')
-    .then(function(response) {
-        $scope.trains = response.data;
-    });
+    .then(function successCallback(response) {
+			$scope.trains = response.data;
+			$scope.status = response.status;
+		}, function errorCallback(response) {
+			$scope.status = response.status;
+	});
 	
 	$http.get('/stations/all')
-    .then(function(response) {
-        $scope.stations = response.data;
-    });
+    .then(function successCallback(response) {
+			$scope.stations = response.data;
+			
+		}, function errorCallback(response) {
+			
+	});
 });
