@@ -1,5 +1,5 @@
 body {
-	text-align:center;
+	text-align: center;
 }
 
 table {
@@ -7,3 +7,45 @@ table {
 	margin-left: 15%;
 	margin-right: 15%;
 }
+
+#station {
+    border-radius: 15px;
+    padding: 10px; 
+    height: 55px; 
+	text-align: center;
+	margin: 10px;
+	width: 150px;
+}
+
+.Green {
+	background-color: #008150 !important;
+}
+
+.Blue {
+	background-color: #2F5DA6 !important;
+}
+
+.Orange {
+	background-color: #FD8A03 !important;
+}
+
+.Red {
+	background-color: #FA2D27 !important;
+}
+
+#horizontal-container {
+           height: 150px;
+           width: 100%; 
+         }
+
+
+.repeated-item-horizontal {
+	display: inline-block;
+	height: 120px;
+	padding: 5px;
+	text-align: center;
+ }
+
+md-content {
+	margin: 10px; 
+ }

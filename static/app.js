@@ -1,11 +1,16 @@
-var app = angular.module('mbtaApp', ['ngRoute']);
+var app = angular.module('mbtaApp', ['ngRoute', 'ngMaterial', 'ngMdIcons']);
 
 
-app.controller('navCtrl', function ($scope, $location) {
+app.controller('appCtrl', function ($scope, $mdSidenav, $location) {
   $scope.currentPage = "";
   $scope.go = function (page) {
     $location.path("/trains/" + page);
   };
+  
+  $scope.toggleSidenav = function(menuId) {
+    $mdSidenav(menuId).toggle();
+  };
+  
 });
 
 	// configure our routes
@@ -24,4 +29,10 @@ app.controller('navCtrl', function ($scope, $location) {
                  redirectTo: '/'
              });
 			
-	})	
+	});	
+  
+
+
+
+
+

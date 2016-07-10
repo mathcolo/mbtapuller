@@ -5,30 +5,75 @@
 		<title>MBTA-DATA</title>
 		
 		<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+		<link rel="stylesheet" href="{{ url_for('static', filename='angular-material.min.css') }}">
 		
 		<script type="text/JavaScript" src="{{ url_for('static', filename='angular.min.js') }}"></script>
+		
 		<script type="text/JavaScript" src="{{ url_for('static', filename='angular-route.min.js') }}"></script>
+		<script type="text/JavaScript" src="{{ url_for('static', filename='angular-animate.js') }}"></script>
+		<script type="text/JavaScript" src="{{ url_for('static', filename='angular-aria.js') }}"></script>
+		<script type="text/JavaScript" src="{{ url_for('static', filename='angular-material.js') }}"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/angular-material-icons/0.7.1/angular-material-icons.min.js"></script> 
+		
 		<script type="text/JavaScript" src="{{ url_for('static', filename='app.js') }}"></script>
 		
 		<script type="text/JavaScript" src="{{ url_for('static', filename='controllers/routeController.js') }}"></script>
 		<script type="text/JavaScript" src="{{ url_for('static', filename='controllers/allRouteController.js') }}"></script>
 	</head>
 
-	<body>
-		Welcome to our website! <br />
+	<!-- <md-toolbar>
+      <div class="md-toolbar-tools">
+        <md-button class="md-icon-button" aria-label="Settings" ng-disabled="true">
+          <md-icon md-svg-icon="img/icons/menu.svg"></md-icon>
+        </md-button>
+        <h2>
+          <span>MBTA Train Tracker</span>
+        </h2>
+        <span flex></span>
+      </div>
+    </md-toolbar> -->
+	   <body layout="row" ng-controller="appCtrl">
+    <md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
+      <md-toolbar class="md-tall md-hue-2">
+        <span flex></span>
+        <div layout="column" class="md-toolbar-tools-bottom inset">
+          <user-avatar></user-avatar>
+          <span></span>
+          <div>Select the line you wish to view</div>
+        </div>
+      </md-toolbar>
+      <md-list>
+      <md-divider></md-divider>
+      <md-subheader>Blue Line</md-subheader>
+    </md-list>
+    </md-sidenav>
+    <div layout="column" class="relative" layout-fill role="main">
+      <md-toolbar ng-show="!showSearch">
+        <div class="md-toolbar-tools">
+          <md-button ng-click="toggleSidenav('left')" hide-gt-md aria-label="Menu">
+            <ng-md-icon icon="menu"></ng-md-icon>
+          </md-button>
+          <h3>
+            MBTA Train Tracker
+          </h3>
+          <span flex></span>
+        </div>
+      </md-toolbar>
+		
+	<div class="md-padding">
+	
 
-		<div ng-controller="navCtrl">
-			Select the route you would like to view: <br />
-			<select ng-model="route" ng-change="go(route)">
-				<option selected="selected" value ="">Select your line</option>
-				<option value="red">Red Line</option>
-				<option value="green">Green Line</option>
-				<option value="blue">Blue Line</option>
-				<option value="orange">Orange Line</option>
-				<option value="all">All Trains</option>
-			</select>
+		<div layout="row" layout-align="center">
+			<md-select placeholder="Select your line" ng-model="route" ng-change="go(route)" style="width:50%; max-width:500px;min-width:300px;">
+				<md-option value="red">Red Line</md-option>
+				<md-option value="green">Green Line</md-option>
+				<md-option value="blue">Blue Line</md-option>
+				<md-option value="orange">Orange Line</md-option>
+				<md-option value="all">All Trains</md-option>
+			</md-select>
 		</div>
+		
 		<div ng-view>
-		</div>
+		</div></div>
 	</body>
 </html>
