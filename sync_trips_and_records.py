@@ -15,7 +15,5 @@ Base.metadata.create_all(db)
 Session = sessionmaker(bind=db)
 session = Session()
 
-with vcr.use_cassette('fixtures/vcr_cassettes/sync_trips_and_records.yaml'):
-    APIFunctions.sync_trips_and_records(routes, session)
-
-session.commit()
+#with vcr.use_cassette('fixtures/vcr_cassettes/sync_trips_and_records.yaml'):
+APIFunctions.sync_trips_and_records(routes, session)
