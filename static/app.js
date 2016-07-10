@@ -5,7 +5,7 @@ app.controller('appCtrl', function ($http, $mdSidenav, $location) {
 
   this.go = function (name, id) {
 	console.log(name);
-    $location.path("/trains/" + name + "/id/" + id);
+    $location.path("/trains/" + name);
   };
   
   this.toggleSidenav = function(menuId) {
@@ -22,7 +22,7 @@ app.controller('appCtrl', function ($http, $mdSidenav, $location) {
                 templateUrl : 'static/partials/route.html',
 				controller  : 'allRouteController'
             })
-            .when('/trains/:route_name/id/:route_id', {
+            .when('/trains/:route_name/', {
                 templateUrl : 'static/partials/route.html',
 				controller  : 'routeController'
             })
