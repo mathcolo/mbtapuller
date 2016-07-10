@@ -1,6 +1,6 @@
 from geopy.distance import vincenty as dist
-from Classes import Station, Trip, TripRecord, Route
 from sqlalchemy import desc, asc, or_
+import Classes as c
 import constants
 
 def surrounding_station(session, station):
@@ -12,8 +12,8 @@ def surrounding_station(session, station):
     :return: A 2-element tuple containing the forward and backward station
     '''
 
-    max = session.query(Station).filter(Station.route_id == station.route_id).order_by(desc(Station.id)).first().id
-    min = session.query(Station).filter(Station.route_id == station.route_id).order_by(asc(Station.id)).first().id
+    max = session.query(c.Station).filter(c.Station.route_id == station.route_id).order_by(desc(c.Station.id)).first().id
+    min = session.query(c.Station).filter(c.Station.route_id == station.route_id).order_by(asc(c.Station.id)).first().id
 
     plus_id = station.id + 1
     if plus_id > max:
@@ -23,8 +23,8 @@ def surrounding_station(session, station):
     if minus_id < min:
         minus_id = min
 
-    return (session.query(Station).filter(Station.id == plus_id).first(),
-           session.query(Station).filter(Station.id == minus_id).first())
+    return (session.query(c.Station).filter(c.Station.id == plus_id).first(),
+           session.query(c.Station).filter(c.Station.id == minus_id).first())
 
 
 def find_segment(trip_record, session, test_pair=None):
@@ -34,15 +34,15 @@ def find_segment(trip_record, session, test_pair=None):
     else:
         me_loc = (trip_record.location_lat, trip_record.location_lng)
 
-    trip = session.query(TripRecord, Trip).join(Trip).filter(Trip.id == trip_record.trip_id).first()[1]
+    trip = session.query(c.TripRecord, c.Trip).join(c.Trip).filter(c.Trip.id == trip_record.trip_id).first()[1]
 
-    origin_station = session.query(Station).filter(Station.id == trip.origin_station_id).first()
-    destination_station = session.query(Station).filter(Station.id == trip.destination_station_id).first()
+    origin_station = session.query(c.Station).filter(c.Station.id == trip.origin_station_id).first()
+    destination_station = session.query(c.Station).filter(c.Station.id == trip.destination_station_id).first()
 
-    print "origin_station: %s" % origin_station
-    print "destination_station: %s" % destination_station
+    # print "origin_station: %s" % origin_station
+    # print "destination_station: %s" % destination_station
 
-    all_stations = session.query(Station).filter(Station.route_id == origin_station.route_id).all()
+    all_stations = session.query(c.Station).filter(c.Station.route_id == origin_station.route_id).all()
     closest_station = None
     closest_distance_so_far = 100
     for station in all_stations:
@@ -57,8 +57,8 @@ def find_segment(trip_record, session, test_pair=None):
     surround_station_1 = surrounding_stations[1]
     surround_station_2 = surrounding_stations[0]
 
-    print "surround_station_1: %s" % surround_station_1
-    print "surround_station_2: %s" % surround_station_2
+    # print "surround_station_1: %s" % surround_station_1
+    # print "surround_station_2: %s" % surround_station_2
 
     if dist(surround_station_1.loc(), destination_station.loc()) < dist(surround_station_2.loc(), destination_station.loc()):
         surround_station_ahead = surround_station_1
@@ -68,12 +68,12 @@ def find_segment(trip_record, session, test_pair=None):
         surround_station_behind = surround_station_1
 
     if dist(me_loc, destination_station.loc()) < dist(closest_station.loc(), destination_station.loc()):
-        return closest_station.name_human_readable, surround_station_ahead.name_human_readable
+        return closest_station, surround_station_ahead
     else:
-        return surround_station_behind.name_human_readable, closest_station.name_human_readable
+        return surround_station_behind, closest_station
 
 def all_routes(session):
-    routes = session.query(Route).all()
+    routes = session.query(c.Route).all()
     routes_output = []
     for route in routes:
         routes_output.append({'id': route.id, 'name': route.name})
@@ -84,10 +84,10 @@ def all_routes(session):
 def get_stations(route, session):
     if route.lower() == constants.RED_LINE.lower():
 
-        start_id = session.query(Station).filter(Station.name_api == 'place-alfcl').one().id
+        start_id = session.query(c.Station).filter(c.Station.name_api == 'place-alfcl').one().id
 
-        braintree = session.query(Station).filter(Station.route == route.title()).filter(or_(Station.id > start_id + 16, Station.id < start_id + 13)).order_by(Station.id).all()
-        ashmont = session.query(Station).filter(Station.route == route.title()).filter(Station.id < start_id + 17).all()
+        braintree = session.query(c.Station).filter(c.Station.route == route.title()).filter(or_(Station.id > start_id + 16, Station.id < start_id + 13)).order_by(Station.id).all()
+        ashmont = session.query(c.Station).filter(c.Station.route == route.title()).filter(Station.id < start_id + 17).all()
 
         braintree_names = [b.name_human_readable for b in braintree]
         ashmont_names = [a.name_human_readable for a in ashmont]
@@ -97,10 +97,10 @@ def get_stations(route, session):
 
     elif route.lower() == constants.GREEN_LINE.lower():
 
-        b_line = session.query(Station).filter(Station.route == constants.GREEN_LINE_B).all()
-        c_line = session.query(Station).filter(Station.route == constants.GREEN_LINE_C).all()
-        d_line = session.query(Station).filter(Station.route == constants.GREEN_LINE_D).all()
-        e_line = session.query(Station).filter(Station.route == constants.GREEN_LINE_E).all()
+        b_line = session.query(c.Station).filter(c.Station.route == constants.GREEN_LINE_B).all()
+        c_line = session.query(c.Station).filter(c.Station.route == constants.GREEN_LINE_C).all()
+        d_line = session.query(c.Station).filter(c.Station.route == constants.GREEN_LINE_D).all()
+        e_line = session.query(c.Station).filter(c.Station.route == constants.GREEN_LINE_E).all()
 
         b_names = [b.name_human_readable for b in b_line]
         c_names = [c.name_human_readable for c in c_line]
@@ -115,7 +115,7 @@ def get_stations(route, session):
         return stations
 
     elif route.lower() in [constants.ORANGE_LINE.lower(), constants.BLUE_LINE.lower()]:
-        stations = session.query(Station).filter(Station.route == route.title()).all()
+        stations = session.query(c.Station).filter(c.Station.route == route.title()).all()
 
         return {'line': route.title(), 'branches': [{'name': '', 'stations': [s.name_human_readable for s in stations]}]}
 

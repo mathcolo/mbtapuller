@@ -1,7 +1,7 @@
 import datetime
 import API
 from Classes import Station, Trip, TripRecord, Route
-from Miscellaneous import isolate_origin_from_trip_name, origin_and_destination_stations
+from Miscellaneous import origin_and_destination_stations
 from constants import *
 
 def get_routes():

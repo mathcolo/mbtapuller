@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, Float, ForeignKey, Date, DateTim
 from sqlalchemy.ext.declarative import declarative_base
 from geopy.distance import vincenty
 from constants import *
+import Functions
 
 Base = declarative_base()
 
@@ -22,13 +23,13 @@ class Station(Base):
     location_lng = Column(Float)
 
     def __str__(self):
-        return "<Station %s>" % self.name_human_readable
+        return "<Station name=%s on route=%s>" % (self.name_human_readable, self.route_id)
 
     def __repr__(self):
-        return "<Station %s>" % self.name_human_readable
+        return "<Station name=%s on route=%s>" % (self.name_human_readable, self.route_id)
 
     def loc(self):
-        return self.location_lat,self.location_lng
+        return self.location_lat, self.location_lng
 
 
 class Trip(Base):
@@ -58,39 +59,25 @@ class Trip(Base):
         else:
             return -1
 
-    # def get_last_station(self, session):
-    #
-    #     all_trip_records = session.query(TripRecord).filter(TripRecord.trip_id.is_(self.id)).order_by(desc(TripRecord.stamp)).all()
-    #
-    #     potential_station = None
-    #     print "all_trip_records: %s" % all_trip_records
-    #     for trip_record in all_trip_records:
-    #         print "checking trip record %s" % trip_record.id
-    #         potential_station = trip_record.get_exact_station(session)
-    #         if potential_station:
-    #             return potential_station
-    #
-    #     #assert potential_station is not None
-    #     return potential_station
-
     def get_status(self, session):
-
-        #direction is either positive or negative
 
         most_recent_trip_record = session.query(TripRecord).filter(TripRecord.trip_id.is_(self.id)).order_by(
             desc(TripRecord.stamp)).first()
+
+        if most_recent_trip_record is None:
+            return STATUS_UNKNOWN, 0
+
+        #print "most_recent_trip_record: %s" % most_recent_trip_record
+        #import ipdb; ipdb.set_trace()
 
         exact_station = most_recent_trip_record.get_exact_station(session)
         if exact_station:
             return STATUS_AT_STATION, exact_station
 
         # If we get this far, we're not at a station
-        # Find the next station
+        # Return what we're between
 
-
-
-
-        #return STATUS_IN_TRANSIT, next_station_in_theory
+        return STATUS_IN_TRANSIT, (Functions.find_segment(most_recent_trip_record, session))
 
 class TripRecord(Base):
     __tablename__ = 'triprecords'
@@ -119,25 +106,3 @@ class TripRecord(Base):
                 return station
 
         return None
-
-    def get_status(self, session):
-
-        #direction is either positive or negative
-        associated_trip = session.query(Trip).filter(Trip.id.is_(self.trip_id)).first()
-
-        exact_station = self.get_exact_station(session)
-        if exact_station:
-            return STATUS_AT_STATION, exact_station
-
-        # If we get this far, we're not at a station
-        # Find the next station
-
-        last_station = associated_trip.get_last_station(session)
-
-        next_station_in_theory_id = last_station.id + self.get_direction()
-        my_route = session.query(Station).filter(Station.id.is_(self.origin_station_id)).first()
-        next_station_in_theory = session.query(Station).filter(Station.id.is_(next_station_in_theory_id)).first()
-        if my_route.name_api != next_station_in_theory.name_api:
-            return None
-
-        return STATUS_IN_TRANSIT, next_station_in_theory
