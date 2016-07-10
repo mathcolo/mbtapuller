@@ -14,23 +14,52 @@ app.controller('appCtrl', function ($http, $mdSidenav, $location) {
   
 });
 
-	// configure our routes
-    app.config(function($routeProvider) {
-        $routeProvider
+app.factory('httpErrorResponseInterceptor', ['$q', '$location',
+  function($q, $location) {
+    return {
+      response: function(responseData) {
+        return responseData;
+      },
+      responseError: function error(response) {
+        switch (response.status) {
+          case 404:
+            $location.path('/404');
+            break;
+          default:
+            $location.path('/error');
+        }
 
-			.when('/trains/all', {
-                templateUrl : 'static/partials/route.html',
-				controller  : 'allRouteController'
-            })
-            .when('/trains/:route_name/id/:route_id', {
-                templateUrl : 'static/partials/route.html',
-				controller  : 'routeController'
-            })
-			.otherwise({
-                 redirectTo: '/'
-             });
-			
-	});	
+        return $q.reject(response);
+      }
+    };
+  }
+]);
+
+app.config(['$httpProvider',
+  function($httpProvider) {
+    $httpProvider.interceptors.push('httpErrorResponseInterceptor');
+  }
+]);
+
+// configure our routes
+app.config(function($routeProvider) {
+	$routeProvider
+
+		.when('/trains/:route_name/id/:route_id', {
+			templateUrl : 'static/partials/route.html',
+			controller  : 'routeController'
+		})
+		.when('/404', {
+			templateUrl : 'static/partials/404.html'
+		})
+		.when('/error', {
+			templateUrl : 'static/partials/error.html'
+		})
+		.otherwise({
+			 redirectTo: '/'
+		 });
+		
+});	
   
 
 
