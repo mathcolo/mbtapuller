@@ -1,5 +1,6 @@
 # trains:
-RED_LINE = 'Red'
+RED_LINE_ASHMONT = 'Red-Ashmont'
+RED_LINE_BRAINTREE = 'Red-Braintree'
 GREEN_LINE = 'Green'
 GREEN_LINE_B = 'Green-B'
 GREEN_LINE_C = 'Green-C'

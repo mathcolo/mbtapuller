@@ -6,4 +6,9 @@ app.controller('allRouteController', function ($scope, $routeParams, $http) {
     .then(function(response) {
         $scope.trains = response.data;
     });
+	
+	$http.get('/stations/all')
+    .then(function(response) {
+        $scope.stations = response.data;
+    });
 });

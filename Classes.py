@@ -5,11 +5,17 @@ from constants import *
 
 Base = declarative_base()
 
+class Route(Base):
+    __tablename__ = 'routes'
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+
+
 class Station(Base):
     __tablename__ = 'stations'
     id = Column(Integer, primary_key=True)
 
-    route = Column(String)
+    route_id = Column(Integer, ForeignKey("routes.id"))
     name_human_readable = Column(String)
     name_api = Column(String)
     location_lat = Column(Float)
@@ -86,7 +92,6 @@ class Trip(Base):
 
         #return STATUS_IN_TRANSIT, next_station_in_theory
 
-
 class TripRecord(Base):
     __tablename__ = 'triprecords'
 
@@ -114,3 +119,25 @@ class TripRecord(Base):
                 return station
 
         return None
+
+    def get_status(self, session):
+
+        #direction is either positive or negative
+        associated_trip = session.query(Trip).filter(Trip.id.is_(self.trip_id)).first()
+
+        exact_station = self.get_exact_station(session)
+        if exact_station:
+            return STATUS_AT_STATION, exact_station
+
+        # If we get this far, we're not at a station
+        # Find the next station
+
+        last_station = associated_trip.get_last_station(session)
+
+        next_station_in_theory_id = last_station.id + self.get_direction()
+        my_route = session.query(Station).filter(Station.id.is_(self.origin_station_id)).first()
+        next_station_in_theory = session.query(Station).filter(Station.id.is_(next_station_in_theory_id)).first()
+        if my_route.name_api != next_station_in_theory.name_api:
+            return None
+
+        return STATUS_IN_TRANSIT, next_station_in_theory
