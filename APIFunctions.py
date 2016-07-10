@@ -1,7 +1,7 @@
 import datetime
 import API
 from Classes import Station, Trip, TripRecord, Route
-from Miscellaneous import isolate_origin_from_trip_name
+from Miscellaneous import origin_and_destination_stations
 from constants import *
 
 def get_routes():
@@ -95,34 +95,44 @@ def sync_trips_and_records(routes, session):
     mode = data['mode']
     for route in mode:
         route_sub = route['route']
+        route_name = route_sub[0]['route_id']
         for direction in route_sub[0]['direction']:
             for trip in direction['trip']:
-                # Now we have a trip
-                print "Processing trip_id %s" % trip['trip_id']
 
-                trips_with_same_id = session.query(Trip).filter(Trip.id.is_(trip['trip_id'])).filter(
-                    Trip.date.is_(datetime.date.today())).count()
-                if trips_with_same_id == 1:
+                # The MBTA sometimes just throws us random bs
+                # Love you guys, but...really?
+                if trip['trip_name'] == u'':
+                    continue
+
+                # Now we have a trip
+                #print "Processing trip_id %s" % trip['trip_id']
+
+                trips_with_same_id = session.query(Trip).filter(Trip.api_id.is_(trip['trip_id'])).filter(
+                    Trip.date.is_(datetime.date.today()))
+                #print "trips_with_same_id is %s" % trips_with_same_id.count()
+                if trips_with_same_id.count() == 1:
                     # Create a trip record since it exists already
 
-                    new_trip_record = TripRecord(trip_id=trip['trip_id'], location_lat=trip['vehicle']['vehicle_lat'],
+                    new_trip_record = TripRecord(trip_id=trips_with_same_id.first().id, location_lat=trip['vehicle']['vehicle_lat'],
                                                  location_lng=trip['vehicle']['vehicle_lon'], stamp=datetime.datetime.now())
 
                     to_save.append(new_trip_record)
-                elif trips_with_same_id == 0:
+                elif trips_with_same_id.count() == 0:
 
-                    origin_station_id = session.query(Station).filter(
-                        Station.name_human_readable.is_(isolate_origin_from_trip_name(trip['trip_name']))).first().id
-                    destination_station_id = session.query(Station).filter(
-                        Station.name_human_readable.is_(trip['trip_headsign'])).first().id
+                    station_pair = origin_and_destination_stations(session, trip, route_name)
 
-                    new_trip = Trip(id=trip['trip_id'], origin_station_id=origin_station_id, destination_station_id=destination_station_id,
+                    origin_station_id = station_pair[0]
+                    destination_station_id = station_pair[1]
+
+                    new_trip = Trip(api_id=trip['trip_id'], origin_station_id=origin_station_id, destination_station_id=destination_station_id,
                                     date=datetime.datetime.now())
 
-                    new_trip_record = TripRecord(trip_id=trip['trip_id'], location_lat=trip['vehicle']['vehicle_lat'],
+                    session.add(new_trip)
+                    session.commit()
+
+                    new_trip_record = TripRecord(trip_id=new_trip.id, location_lat=trip['vehicle']['vehicle_lat'],
                                                  location_lng=trip['vehicle']['vehicle_lon'], stamp=datetime.datetime.now())
 
-                    to_save.append(new_trip)
                     to_save.append(new_trip_record)
 
                 else:
@@ -130,5 +140,7 @@ def sync_trips_and_records(routes, session):
 
     for object in to_save:
         session.merge(object)
+
+    session.commit()
 
     return to_save
