@@ -1,5 +1,6 @@
 from geopy.distance import vincenty
 from Classes import Station, Route
+import json
 import constants
 from sqlalchemy import or_
 
@@ -32,8 +33,8 @@ def all_routes(session):
 
     return routes_output
 	
-def get_stations(route_id, session):
+def get_stations(id, session):
 
-	stations = session.query(Station, Route).filter(station.route_id = route_id)
+	stations = session.query(Station, Route).filter(Station.route_id == id).all()
 			
 	return stations

@@ -1,13 +1,13 @@
 var app = angular.module('mbtaApp', ['ngRoute', 'ngMaterial', 'ngMdIcons']);
 
 
-app.controller('appCtrl', function ($scope, $mdSidenav, $location) {
-  $scope.currentPage = "";
-  $scope.go = function (page) {
+app.controller('appCtrl', function ($http, $mdSidenav, $location) {
+
+  this.go = function (page) {
     $location.path("/trains/" + page);
   };
   
-  $scope.toggleSidenav = function(menuId) {
+  this.toggleSidenav = function(menuId) {
     $mdSidenav(menuId).toggle();
   };
   
