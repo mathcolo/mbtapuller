@@ -1,7 +1,7 @@
 import datetime
 import API
 from Classes import Station, Trip, TripRecord, Route
-from Miscellaneous import isolate_origin_from_trip_name
+from Miscellaneous import isolate_origin_from_trip_name, origin_and_destination_stations
 from constants import *
 
 def get_routes():
@@ -95,6 +95,7 @@ def sync_trips_and_records(routes, session):
     mode = data['mode']
     for route in mode:
         route_sub = route['route']
+        route_name = route_sub[0]['route_id']
         for direction in route_sub[0]['direction']:
             for trip in direction['trip']:
 
@@ -118,10 +119,10 @@ def sync_trips_and_records(routes, session):
                     to_save.append(new_trip_record)
                 elif trips_with_same_id.count() == 0:
 
-                    origin_station_id = session.query(Station).filter(
-                        Station.name_human_readable.is_(isolate_origin_from_trip_name(trip['trip_name']))).first().id
-                    destination_station_id = session.query(Station).filter(
-                        Station.name_human_readable.is_(trip['trip_headsign'])).first().id
+                    station_pair = origin_and_destination_stations(session, trip, route_name)
+
+                    origin_station_id = station_pair[0]
+                    destination_station_id = station_pair[1]
 
                     new_trip = Trip(api_id=trip['trip_id'], origin_station_id=origin_station_id, destination_station_id=destination_station_id,
                                     date=datetime.datetime.now())

@@ -12,8 +12,8 @@ def surrounding_station(session, station):
     :return: A 2-element tuple containing the forward and backward station
     '''
 
-    max = session.query(Station).filter(Station.route == station.route).order_by(desc(Station.id)).first().id
-    min = session.query(Station).filter(Station.route == station.route).order_by(asc(Station.id)).first().id
+    max = session.query(Station).filter(Station.route_id == station.route_id).order_by(desc(Station.id)).first().id
+    min = session.query(Station).filter(Station.route_id == station.route_id).order_by(asc(Station.id)).first().id
 
     plus_id = station.id + 1
     if plus_id > max:
@@ -42,7 +42,7 @@ def find_segment(trip_record, session, test_pair=None):
     print "origin_station: %s" % origin_station
     print "destination_station: %s" % destination_station
 
-    all_stations = session.query(Station).filter(Station.route == origin_station.route).all()
+    all_stations = session.query(Station).filter(Station.route_id == origin_station.route_id).all()
     closest_station = None
     closest_distance_so_far = 100
     for station in all_stations:
@@ -56,6 +56,9 @@ def find_segment(trip_record, session, test_pair=None):
     surrounding_stations = surrounding_station(session, closest_station)
     surround_station_1 = surrounding_stations[1]
     surround_station_2 = surrounding_stations[0]
+
+    print "surround_station_1: %s" % surround_station_1
+    print "surround_station_2: %s" % surround_station_2
 
     if dist(surround_station_1.loc(), destination_station.loc()) < dist(surround_station_2.loc(), destination_station.loc()):
         surround_station_ahead = surround_station_1
