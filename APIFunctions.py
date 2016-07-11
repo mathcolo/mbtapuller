@@ -87,6 +87,14 @@ def get_stations(session):
 def sync_trips_and_records(routes, session):
 
     print "Syncing trips..."
+    print "Input routes: %s" % routes
+
+    if 'Red-Ashmont' in routes or 'Red-Braintree' in routes:
+        routes.remove('Red-Ashmont')
+        routes.remove('Red-Braintree')
+        routes.append('Red')
+
+    print "Using routes: %s" % routes
 
     to_save = []
 
@@ -95,50 +103,52 @@ def sync_trips_and_records(routes, session):
     mode = data['mode']
     for route in mode:
         route_sub = route['route']
-        route_name = route_sub[0]['route_id']
-        for direction in route_sub[0]['direction']:
-            for trip in direction['trip']:
+        for route_sub_sub in route_sub:
+            route_name = route_sub_sub['route_id']
+            print "Processing route %s" % route_name
+            for direction in route_sub_sub['direction']:
+                for trip in direction['trip']:
 
-                # The MBTA sometimes just throws us random bs
-                # Love you guys, but...really?
-                if trip['trip_name'] == u'':
-                    continue
+                    # The MBTA sometimes just throws us random bs
+                    # Love you guys, but...really?
+                    if trip['trip_name'] == u'':
+                        continue
 
-                trip['trip_name'] = trip['trip_name'].replace('Forest Hills Orange Line', 'Forest Hills')
+                    trip['trip_name'] = trip['trip_name'].replace('Forest Hills Orange Line', 'Forest Hills')
 
-                # Now we have a trip
-                #print "Processing trip_id %s" % trip['trip_id']
+                    # Now we have a trip
+                    #print "Processing trip_id %s" % trip['trip_id']
 
-                trips_with_same_id = session.query(c.Trip).filter(c.Trip.api_id.is_(trip['trip_id'])).filter(
-                    c.Trip.date.is_(datetime.date.today()))
-                #print "trips_with_same_id is %s" % trips_with_same_id.count()
-                if trips_with_same_id.count() == 1:
-                    # Create a trip record since it exists already
+                    trips_with_same_id = session.query(c.Trip).filter(c.Trip.api_id.is_(trip['trip_id'])).filter(
+                        c.Trip.date.is_(datetime.date.today()))
+                    #print "trips_with_same_id is %s" % trips_with_same_id.count()
+                    if trips_with_same_id.count() == 1:
+                        # Create a trip record since it exists already
 
-                    new_trip_record = c.TripRecord(trip_id=trips_with_same_id.first().id, location_lat=trip['vehicle']['vehicle_lat'],
-                                                 location_lng=trip['vehicle']['vehicle_lon'], stamp=datetime.datetime.now())
+                        new_trip_record = c.TripRecord(trip_id=trips_with_same_id.first().id, location_lat=trip['vehicle']['vehicle_lat'],
+                                                     location_lng=trip['vehicle']['vehicle_lon'], stamp=datetime.datetime.now())
 
-                    to_save.append(new_trip_record)
-                elif trips_with_same_id.count() == 0:
+                        to_save.append(new_trip_record)
+                    elif trips_with_same_id.count() == 0:
 
-                    station_pair = origin_and_destination_stations(session, trip, route_name)
+                        station_pair = origin_and_destination_stations(session, trip, route_name)
 
-                    origin_station_id = station_pair[0]
-                    destination_station_id = station_pair[1]
+                        origin_station_id = station_pair[0]
+                        destination_station_id = station_pair[1]
 
-                    new_trip = c.Trip(api_id=trip['trip_id'], origin_station_id=origin_station_id, destination_station_id=destination_station_id,
-                                    date=datetime.datetime.now())
+                        new_trip = c.Trip(api_id=trip['trip_id'], origin_station_id=origin_station_id, destination_station_id=destination_station_id,
+                                        date=datetime.datetime.now())
 
-                    session.add(new_trip)
-                    session.commit()
+                        session.add(new_trip)
+                        session.commit()
 
-                    new_trip_record = c.TripRecord(trip_id=new_trip.id, location_lat=trip['vehicle']['vehicle_lat'],
-                                                 location_lng=trip['vehicle']['vehicle_lon'], stamp=datetime.datetime.now())
+                        new_trip_record = c.TripRecord(trip_id=new_trip.id, location_lat=trip['vehicle']['vehicle_lat'],
+                                                     location_lng=trip['vehicle']['vehicle_lon'], stamp=datetime.datetime.now())
 
-                    to_save.append(new_trip_record)
+                        to_save.append(new_trip_record)
 
-                else:
-                    raise RuntimeError("There were multiple trip objects with the same id: %s" % trips_with_same_id)
+                    else:
+                        raise RuntimeError("There were multiple trip objects with the same id: %s" % trips_with_same_id)
 
     for object in to_save:
         session.merge(object)
