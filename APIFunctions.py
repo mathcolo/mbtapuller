@@ -1,26 +1,26 @@
 import datetime
 import API
-from Classes import Station, Trip, TripRecord, Route
+import Classes as c
 from Miscellaneous import origin_and_destination_stations
 from constants import *
 
 def get_routes():
     routes = [
-        Route(name=RED_LINE_ASHMONT),
-        Route(name=RED_LINE_BRAINTREE),
-        Route(name=GREEN_LINE_B),
-        Route(name=GREEN_LINE_C),
-        Route(name=GREEN_LINE_D),
-        Route(name=GREEN_LINE_E),
-        Route(name=BLUE_LINE),
-        Route(name=ORANGE_LINE),
+        c.Route(name=RED_LINE_ASHMONT),
+        c.Route(name=RED_LINE_BRAINTREE),
+        c.Route(name=GREEN_LINE_B),
+        c.Route(name=GREEN_LINE_C),
+        c.Route(name=GREEN_LINE_D),
+        c.Route(name=GREEN_LINE_E),
+        c.Route(name=BLUE_LINE),
+        c.Route(name=ORANGE_LINE),
     ]
 
     return routes
 
 def get_stations(session):
     stations = []
-    routes = session.query(Route).all()
+    routes = session.query(c.Route).all()
 
     populate_red = False
 
@@ -31,7 +31,7 @@ def get_stations(session):
 
         api_result = API.get("stopsbyroute", {'route': route.name})['direction'][0]['stop']
         for item in api_result:
-            new_station = Station(route_id=route.id, name_human_readable=item['parent_station_name'], name_api=item['parent_station'], location_lat=item['stop_lat'], location_lng=item['stop_lon'])
+            new_station = c.Station(route_id=route.id, name_human_readable=item['parent_station_name'], name_api=item['parent_station'], location_lat=item['stop_lat'], location_lng=item['stop_lon'])
             stations.append(new_station)
 
     if populate_red:
@@ -40,27 +40,27 @@ def get_stations(session):
         braintree = []
         braintree_added_jfk = False
 
-        route_id_ashmont = session.query(Route).filter(Route.name == RED_LINE_ASHMONT).first().id
-        route_id_braintree = session.query(Route).filter(Route.name == RED_LINE_BRAINTREE).first().id
+        route_id_ashmont = session.query(c.Route).filter(c.Route.name == RED_LINE_ASHMONT).first().id
+        route_id_braintree = session.query(c.Route).filter(c.Route.name == RED_LINE_BRAINTREE).first().id
 
         api_result = API.get("stopsbyroute", {'route': 'Red'})['direction'][0]['stop']
         for item in api_result:
 
             if item['parent_station_name'] in ['North Quincy', 'Wollaston', 'Quincy Center', 'Quincy Adams', 'Braintree']:
-                new_station = Station(route_id=route_id_braintree, name_human_readable=item['parent_station_name'],
+                new_station = c.Station(route_id=route_id_braintree, name_human_readable=item['parent_station_name'],
                                       name_api=item['parent_station'], location_lat=item['stop_lat'],
                                       location_lng=item['stop_lon'])
                 braintree.append(new_station)
             elif item['parent_station_name'] in ['Savin Hill', 'Fields Corner', 'Shawmut', 'Ashmont']:
-                new_station = Station(route_id=route_id_ashmont, name_human_readable=item['parent_station_name'],
+                new_station = c.Station(route_id=route_id_ashmont, name_human_readable=item['parent_station_name'],
                                       name_api=item['parent_station'], location_lat=item['stop_lat'],
                                       location_lng=item['stop_lon'])
                 ashmont.append(new_station)
             else:
-                new_station_ashmont = Station(route_id=route_id_ashmont, name_human_readable=item['parent_station_name'],
+                new_station_ashmont = c.Station(route_id=route_id_ashmont, name_human_readable=item['parent_station_name'],
                                       name_api=item['parent_station'], location_lat=item['stop_lat'],
                                       location_lng=item['stop_lon'])
-                new_station_braintree = Station(route_id=route_id_braintree, name_human_readable=item['parent_station_name'],
+                new_station_braintree = c.Station(route_id=route_id_braintree, name_human_readable=item['parent_station_name'],
                                       name_api=item['parent_station'], location_lat=item['stop_lat'],
                                       location_lng=item['stop_lon'])
 
@@ -107,13 +107,13 @@ def sync_trips_and_records(routes, session):
                 # Now we have a trip
                 #print "Processing trip_id %s" % trip['trip_id']
 
-                trips_with_same_id = session.query(Trip).filter(Trip.api_id.is_(trip['trip_id'])).filter(
-                    Trip.date.is_(datetime.date.today()))
+                trips_with_same_id = session.query(c.Trip).filter(c.Trip.api_id.is_(trip['trip_id'])).filter(
+                    c.Trip.date.is_(datetime.date.today()))
                 #print "trips_with_same_id is %s" % trips_with_same_id.count()
                 if trips_with_same_id.count() == 1:
                     # Create a trip record since it exists already
 
-                    new_trip_record = TripRecord(trip_id=trips_with_same_id.first().id, location_lat=trip['vehicle']['vehicle_lat'],
+                    new_trip_record = c.TripRecord(trip_id=trips_with_same_id.first().id, location_lat=trip['vehicle']['vehicle_lat'],
                                                  location_lng=trip['vehicle']['vehicle_lon'], stamp=datetime.datetime.now())
 
                     to_save.append(new_trip_record)
@@ -124,13 +124,13 @@ def sync_trips_and_records(routes, session):
                     origin_station_id = station_pair[0]
                     destination_station_id = station_pair[1]
 
-                    new_trip = Trip(api_id=trip['trip_id'], origin_station_id=origin_station_id, destination_station_id=destination_station_id,
+                    new_trip = c.Trip(api_id=trip['trip_id'], origin_station_id=origin_station_id, destination_station_id=destination_station_id,
                                     date=datetime.datetime.now())
 
                     session.add(new_trip)
                     session.commit()
 
-                    new_trip_record = TripRecord(trip_id=new_trip.id, location_lat=trip['vehicle']['vehicle_lat'],
+                    new_trip_record = c.TripRecord(trip_id=new_trip.id, location_lat=trip['vehicle']['vehicle_lat'],
                                                  location_lng=trip['vehicle']['vehicle_lon'], stamp=datetime.datetime.now())
 
                     to_save.append(new_trip_record)
