@@ -1,5 +1,4 @@
 from geopy.distance import vincenty
-from Classes import Station, Route
 from geopy.distance import vincenty as dist
 from sqlalchemy import desc, asc, or_
 import Classes as c
@@ -84,9 +83,9 @@ def all_routes(session):
 	
 def get_stations(id, session):
 
-	stations = session.query(Station, Route).join(Route).filter(Station.route_id == id).all()
+	stations = session.query(c.Station, c.Route).join(c.Route).filter(c.Station.route_id == id).all()
 	
-	route_name = session.query(Route).filter(Route.id == id).one().name
+	route_name = session.query(c.Route).filter(c.Route.id == id).one().name
 	
 	stations_output = []
 	for station in stations:
