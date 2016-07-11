@@ -1,13 +1,8 @@
 import APIFunctions
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from Classes import Base
+import Database
 
 # Make a database connection
-db = create_engine('sqlite:///mbta.db', echo=False)
-Base.metadata.create_all(db)
-Session = sessionmaker(bind=db)
-session = Session()
+session = Database.connect(create_all=True)
 
 routes = APIFunctions.get_routes()
 for route in routes:
