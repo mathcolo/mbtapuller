@@ -27,10 +27,8 @@ def displayAll():
 		trains.append({"id": route +"-train2", "longitude": 71.0589, "latitude": 42.3601, "route": route})
 		trains.append({"id": route +"-train3", "longitude": 71.0589, "latitude": 42.3601, "route": route})
 	
-	js = json.dumps(trains) 
-
+	js = json.dumps(trains)
 	resp = Response(js, status=200, mimetype='application/json')
-
 	return resp
 	
 @app.route("/get<string:route>Trains", methods=['GET'])
@@ -43,38 +41,32 @@ def getTrainsOnRoute(route):
 	] # replace with array of dicts for given route from backend
 
 	js = json.dumps(trains)
-
 	resp = Response(js, status=200, mimetype='application/json')
-
 	return resp
 	
 @app.route("/stations/all", methods=['GET'])
 def getAllStations():
-	
 	stations = []
-	
 	for route in valid_routes:
 		stations.append(Functions.get_stations(route, session))
 	
 	js = json.dumps(stations)
-
 	resp = Response(js, status=200, mimetype='application/json')
-
 	return resp
 	
 @app.route("/stations/<string:route_id>", methods=['GET'])
 def getStationsOnRoute(route_id):
 	stations = Functions.get_stations(route_id, session)
-	
 	js = json.dumps(stations)
-
 	resp = Response(js, status=200, mimetype='application/json')
-
 	return resp
 
 @app.route("/routes", methods=['GET'])
 def getAllRoutes():
-	return json.dumps(Functions.all_routes(session))
+
+	js = json.dumps(Functions.all_routes(session))
+	resp = Response(js, status=200, mimetype='application/json')
+	return resp
 
 
 if __name__ == "__main__":
