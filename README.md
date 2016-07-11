@@ -6,6 +6,7 @@ mbtapuller is our current best effort to pull, analyze, and display MBTA data fo
 - requests
 - flask
 - sqlalchemy
+- geopy
 - vcrpy
 
 ## Gotchas
