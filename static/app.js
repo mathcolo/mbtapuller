@@ -1,7 +1,4 @@
-var app = angular.module('mbtaApp', ['ngRoute', 'ngMaterial', 'ngMdIcons'], function($interpolateProvider) {
-    $interpolateProvider.startSymbol('[[');
-    $interpolateProvider.endSymbol(']]');
-});
+var app = angular.module('mbtaApp', ['ngRoute', 'ngMaterial', 'ngMdIcons']);
 
 
 app.controller('appCtrl', function ($http, $mdSidenav, $location, $rootScope) {

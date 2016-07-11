@@ -1,13 +1,8 @@
 app.controller('routeController', function ($scope, $routeParams, $http, $rootScope) {
     'use strict';
 
-	for(var index in $rootScope.trainRoutes) {
-		var routeObject = $rootScope.trainRoutes[index];
-			if (routeObject["name"] == $routeParams.route_name) {
-				$scope.route_id = routeObject["id"];
-			}
-	}
-	
+	$scope.route_id = $rootScope.trainRoutes.filter(function(routeObject) {return routeObject["name"] == $routeParams.route_name})[0]["id"]
+
 	$http.get('/get' + $scope.route_id + 'Trains')
 	.then(function successCallback(response) {
 			$scope.trains = response.data;
