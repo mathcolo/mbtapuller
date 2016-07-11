@@ -1,14 +1,20 @@
-app.controller('routeController', function ($scope, $routeParams, $http) {
+app.controller('routeController', function ($scope, $routeParams, $http, $rootScope) {
     'use strict';
-    $scope.route_id = $routeParams.route_id;
+
+	for(var index in $rootScope.trainRoutes) {
+		var routeObject = $rootScope.trainRoutes[index];
+			if (routeObject["name"] == $routeParams.route_name) {
+				$scope.route_id = routeObject["id"];
+			}
+	}
 	
-	$http.get('/get' + $routeParams.route_id + 'Trains')
+	$http.get('/get' + $scope.route_id + 'Trains')
 	.then(function successCallback(response) {
 			$scope.trains = response.data;
 		}, function errorCallback(response) {
 	});
 	
-	$http.get('/stations/' + $routeParams.route_id)
+	$http.get('/stations/' + $scope.route_id)
 	.then(function successCallback(response) {
 			$scope.stations = response.data;
 			
