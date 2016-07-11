@@ -59,21 +59,6 @@ app.config(function($routeProvider) {
 		 });
 		
 });	
-
-// configure our routes
-app.config(function($routeProvider) {
-	$routeProvider
-
-		.when('/trains/:route_name/id/:route_id', {
-			templateUrl : 'static/partials/route.html',
-			controller  : 'routeController'
-		})
-		.otherwise({
-			 redirectTo: '/'
-		 });
-		
-});	
-
   
 
 
