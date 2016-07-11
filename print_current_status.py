@@ -1,11 +1,9 @@
-from Classes import Base, Trip
+import Classes as c
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
+import Database
 
-db = create_engine('sqlite:///mbta.db', echo=False)
-Base.metadata.create_all(db)
-Session = sessionmaker(bind=db)
-session = Session()
+session = Database.connect()
 
-for trip in session.query(Trip).all():
-  print "%s: %s" % (trip, trip.get_status(session))
+for trip in session.query(c.Trip).all():
+    print "%s: %s" % (trip, trip.get_status(session))
