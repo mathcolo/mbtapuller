@@ -13,7 +13,7 @@ def isolate_origin_from_trip_name(name):
     """
 
     if 'from' in name:
-        return name[name.index('from') + 4:name.index('to')].strip().split('-')[0].strip()
+        return name[name.index('from') + 4:name.index(' to')].strip().split('-')[0].strip()
     else:
         return name.split(' to ')[0]
 

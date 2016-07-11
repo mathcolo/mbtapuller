@@ -104,6 +104,8 @@ def sync_trips_and_records(routes, session):
                 if trip['trip_name'] == u'':
                     continue
 
+                trip['trip_name'] = trip['trip_name'].replace('Forest Hills Orange Line', 'Forest Hills')
+
                 # Now we have a trip
                 #print "Processing trip_id %s" % trip['trip_id']
 
