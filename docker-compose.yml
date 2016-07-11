@@ -1,0 +1,20 @@
+version: '2'
+services:
+  db:
+    image: mysql:5.7
+    expose:
+      - "3306"
+    environment:
+      MYSQL_USER: mbtapuller
+      MYSQL_PASSWORD: mbtapuller
+      MYSQL_ROOT_PASSWORD: mbtapuller
+    volumes:
+      - mysql:/var/lib/mysql
+  mbtapuller:
+    build: .
+    ports:
+      - "5309:80"
+    links:
+      - db
+volumes:
+  mysql:
