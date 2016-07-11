@@ -1,11 +1,18 @@
 var app = angular.module('mbtaApp', ['ngRoute', 'ngMaterial', 'ngMdIcons']);
 
 
-app.controller('appCtrl', function ($http, $mdSidenav, $location) {
+app.controller('appCtrl', function ($http, $mdSidenav, $location, $rootScope) {
 
-  this.go = function (name, id) {
+    $http.get('/routes')
+	.then(function successCallback(response) {
+        $rootScope.trainRoutes = response.data;
+        $rootScope.trainRoutes.sort(function(a,b) {return (a["name"] > b["name"]) ? 1 : ((b["name"] > a["name"]) ? -1 : 0);} );
+		}, function errorCallback(response) {
+	});
+
+  this.go = function (name) {
 	console.log(name);
-    $location.path("/trains/" + name + "/id/" + id);
+    $location.path("/trains/" + name);
   };
   
   this.toggleSidenav = function(menuId) {
@@ -22,7 +29,7 @@ app.controller('appCtrl', function ($http, $mdSidenav, $location) {
                 templateUrl : 'static/partials/route.html',
 				controller  : 'allRouteController'
             })
-            .when('/trains/:route_name/id/:route_id', {
+            .when('/trains/:route_name', {
                 templateUrl : 'static/partials/route.html',
 				controller  : 'routeController'
             })

@@ -16,9 +16,7 @@ app = Flask(__name__)
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
-	lines = sorted(getAllRoutes(), key=lambda k: k['name']) 
-	
-	return render_template('index.html', lines=lines)
+	return render_template('index.html')
 
 @app.route("/getAllTrains", methods=['GET'])
 def displayAll():
@@ -29,11 +27,8 @@ def displayAll():
 		trains.append({"id": route +"-train2", "longitude": 71.0589, "latitude": 42.3601, "route": route})
 		trains.append({"id": route +"-train3", "longitude": 71.0589, "latitude": 42.3601, "route": route})
 	
-	js = json.dumps(trains) 
+	return json.dumps(trains)
 
-	resp = Response(js, status=200, mimetype='application/json')
-
-	return resp
 	
 @app.route("/get<string:route>Trains", methods=['GET'])
 def getTrainsOnRoute(route):
@@ -44,41 +39,25 @@ def getTrainsOnRoute(route):
 		{"id": route +"-train3", "longitude": 71.0589, "latitude": 42.3601, "route": route}
 	] # replace with array of dicts for given route from backend
 
-	js = json.dumps(trains)
-
-	resp = Response(js, status=200, mimetype='application/json')
-
-	return resp
+	return json.dumps(trains)
 	
 @app.route("/stations/all", methods=['GET'])
 def getAllStations():
-	
 	stations = []
-	
 	for route in valid_routes:
 		stations.append(Functions.get_stations(route, session))
 	
-	js = json.dumps(stations)
-
-	resp = Response(js, status=200, mimetype='application/json')
-
-	return resp
+	return json.dumps(stations)
 	
 @app.route("/stations/<string:route_id>", methods=['GET'])
 def getStationsOnRoute(route_id):
 	stations = Functions.get_stations(route_id, session)
-	
-	js = json.dumps(stations)
-
-	resp = Response(js, status=200, mimetype='application/json')
-
-	return resp
+	return json.dumps(stations)
 
 @app.route("/routes", methods=['GET'])
 def getAllRoutes():
-	routes = Functions.all_routes(session)
+	return json.dumps(Functions.all_routes(session))
 
-	return routes
 
 if __name__ == "__main__":
     app.run()
