@@ -30,13 +30,11 @@
         </div>
       </md-toolbar>
 	  <md-list>
-		{% for line in lines %}
-		<md-list-item class="md-2-line" role="link" md-ink-ripple ng-click="controller.go('{{line.name}}',{{line.id}})">
+		<md-list-item class="md-2-line" role="link" ng-repeat="route in trainRoutes" md-ink-ripple ng-click="controller.go(route.name)">
           <div class="md-list-item-text">
-           {{line.name}}</a>
+              {{ '{{route.name}}' }}
           </div>
         </md-list-item>
-		{% endfor %}
 	  </md-list>
     </md-sidenav>
     <div layout="column" class="relative" layout-fill role="main">

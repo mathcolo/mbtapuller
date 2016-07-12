@@ -1,18 +1,5 @@
 var app = angular.module('mbtaApp', ['ngRoute', 'ngMaterial', 'ngMdIcons']);
 
-
-app.controller('appCtrl', function ($http, $mdSidenav, $location) {
-
-  this.go = function (name, id) {
-    $location.path("/trains/" + name + "/id/" + id);
-  };
-  
-  this.toggleSidenav = function(menuId) {
-    $mdSidenav(menuId).toggle();
-  };
-  
-});
-
 app.factory('httpErrorResponseInterceptor', ['$q', '$location',
   function($q, $location) {
     return {
@@ -44,7 +31,7 @@ app.config(['$httpProvider',
 app.config(function($routeProvider) {
 	$routeProvider
 
-		.when('/trains/:route_name/id/:route_id', {
+		.when('/trains/:route_name', {
 			templateUrl : 'static/partials/route.html',
 			controller  : 'routeController'
 		})
@@ -59,6 +46,27 @@ app.config(function($routeProvider) {
 		 });
 		
 });	
+
+app.controller('appCtrl', function ($http, $mdSidenav, $location, $rootScope) {
+
+    $http.get('/routes')
+	.then(function successCallback(response) {
+        $rootScope.trainRoutes = response.data;
+        $rootScope.trainRoutes.sort(function(a,b) {return (a["name"] > b["name"]) ? 1 : ((b["name"] > a["name"]) ? -1 : 0);} );
+		}, function errorCallback(response) {
+	});
+
+  this.go = function (name) {
+	console.log(name);
+    $location.path("/trains/" + name);
+  };
+  
+  this.toggleSidenav = function(menuId) {
+    $mdSidenav(menuId).toggle();
+  };
+  
+});
+
   
 
 

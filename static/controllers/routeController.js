@@ -1,14 +1,15 @@
-app.controller('routeController', function ($scope, $routeParams, $http) {
+app.controller('routeController', function ($scope, $routeParams, $http, $rootScope) {
+    'use strict';
 
-    $scope.route_id = $routeParams.route_id;
-	
-	$http.get('/get' + $routeParams.route_id + 'Trains')
+	$scope.route_id = $rootScope.trainRoutes.filter(function(routeObject) {return routeObject["name"] == $routeParams.route_name})[0]["id"]
+
+	$http.get('/get' + $scope.route_id + 'Trains')
 	.then(function successCallback(response) {
 			$scope.trains = response.data;
 		}, function errorCallback(response) {
 	});
 	
-	$http.get('/stations/' + $routeParams.route_id)
+	$http.get('/stations/' + $scope.route_id)
 	.then(function successCallback(response) {
 			$scope.stations = response.data;
 			
@@ -17,10 +18,7 @@ app.controller('routeController', function ($scope, $routeParams, $http) {
 			$scope.first = $scope.stations[0].name;
 			$scope.last = $scope.stations[stations_length - 1].name;
 			
-			console.log($scope.first);
-			console.log($scope.last);
-			
-			$scope.destination = $scope.last;
+			$scope.destination = true;
 		
 			
 			
@@ -29,15 +27,12 @@ app.controller('routeController', function ($scope, $routeParams, $http) {
 	});
 	
 	$scope.changeDestination = function(destination) {
-		console.log($scope.destination);
-		if ($scope.destination == $scope.first) {
-			$scope.destination = $scope.last;
-		}
-		else {
-			$scope.destination = $scope.first;
+		if (destination != $scope.destination) {
+			$scope.destination = destination;
+			$scope.stations = $scope.stations.reverse();
 		}
 		
-		$scope.stations = $scope.stations.reverse();
+		
 	
 	};
 });
