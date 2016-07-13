@@ -8,6 +8,7 @@ services:
       MYSQL_USER: mbtapuller
       MYSQL_PASSWORD: mbtapuller
       MYSQL_ROOT_PASSWORD: mbtapuller
+      MYSQL_DATABASE: mbtapuller
     volumes:
       - mysql:/var/lib/mysql
   mbtapuller:
