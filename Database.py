@@ -5,6 +5,12 @@ import os
 import time
 import socket
 
+DB_HOST = 'db'
+DB_USER = 'mbtapuller'
+DB_PASSWORD = 'mbtapuller'
+DB_NAME = 'mbtapuller'
+
+
 def wait_for_available(host='db', port=3306, interval=3):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     port_check = sock.connect_ex((host, port))
@@ -20,7 +26,7 @@ def wait_for_available(host='db', port=3306, interval=3):
 def connect(create_all=False, use_mysql=False):
 
     if 'USE_MYSQL' in os.environ or use_mysql:
-        db = create_engine('mysql://mbtapuller:mbtapuller@db/mbtapuller', echo=False)
+        db = create_engine('mysql://%s:%s@%s/%s' % (DB_USER, DB_PASSWORD, DB_HOST, DB_NAME), echo=False)
     else:
         db = create_engine('sqlite:///mbta.db', echo=False)
 
@@ -30,3 +36,12 @@ def connect(create_all=False, use_mysql=False):
     session = Session()
 
     return session
+
+
+def is_setup(session):
+    num_routes = session.query(c.Route).count()
+
+    if num_routes > 0:
+        return True
+    else:
+        return False

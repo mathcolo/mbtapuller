@@ -1,18 +1,23 @@
 import APIFunctions
 import Database
 
-Database.wait_for_available()
 
-# Make a database connection
-session = Database.connect(create_all=True)
+def initial_setup():
+    Database.wait_for_available()
 
-routes = APIFunctions.get_routes()
-for route in routes:
-    session.add(route)
+    # Make a database connection
+    session = Database.connect(create_all=True)
 
-# Get the station objects and add them to the database
-stations = APIFunctions.get_stations(session)
-for station in stations:
-    session.add(station)
+    routes = APIFunctions.get_routes()
+    for route in routes:
+        session.add(route)
 
-session.commit()
+    # Get the station objects and add them to the database
+    stations = APIFunctions.get_stations(session)
+    for station in stations:
+        session.add(station)
+
+    session.commit()
+
+if __name__ == '__main__':
+    initial_setup()
