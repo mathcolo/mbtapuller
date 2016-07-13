@@ -39,9 +39,12 @@ def connect(create_all=False, use_mysql=False):
 
 
 def is_setup(session):
-    num_routes = session.query(c.Route).count()
+    try:
+        num_routes = session.query(c.Route).count()
 
-    if num_routes > 0:
-        return True
-    else:
+        if num_routes > 0:
+            return True
+        else:
+            return False
+    except:
         return False
