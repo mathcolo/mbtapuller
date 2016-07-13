@@ -5,13 +5,13 @@ import os
 import time
 import socket
 
-DB_HOST = 'db'
+DB_HOST = 'db_1'
 DB_USER = 'mbtapuller'
 DB_PASSWORD = 'mbtapuller'
 DB_NAME = 'mbtapuller'
 
 
-def wait_for_available(host='db', port=3306, interval=3):
+def wait_for_available(host=DB_HOST, port=3306, interval=3):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     port_check = sock.connect_ex((host, port))
 
