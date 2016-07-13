@@ -84,7 +84,7 @@ class TripRecord(Base):
 
     id = Column(Integer, primary_key=True)
 
-    trip_id = Column(String(25), ForeignKey("trips.id"))
+    trip_id = Column(Integer, ForeignKey("trips.id"))
     stamp = Column(DateTime)
     location_lat = Column(Float)
     location_lng = Column(Float)
