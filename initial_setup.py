@@ -1,6 +1,8 @@
 import APIFunctions
 import Database
 
+Database.wait_for_available()
+
 # Make a database connection
 session = Database.connect(create_all=True)
 
