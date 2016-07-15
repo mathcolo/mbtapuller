@@ -46,8 +46,8 @@ def origin_and_destination_stations(session, api_trip, route_name):
     route_id = session.query(c.Route).filter(c.Route.name == route_name).first().id
 
     origin_station_id = session.query(c.Station).filter(c.Station.route_id == route_id).filter(
-        c.Station.name_human_readable.is_(isolate_origin_from_trip_name(api_trip['trip_name']))).first().id
+        c.Station.name_human_readable == isolate_origin_from_trip_name(api_trip['trip_name'])).first().id
     destination_station_id = session.query(c.Station).filter(c.Station.route_id == route_id).filter(
-        c.Station.name_human_readable.is_(api_trip['trip_headsign'])).first().id
+        c.Station.name_human_readable == api_trip['trip_headsign']).first().id
 
     return origin_station_id, destination_station_id

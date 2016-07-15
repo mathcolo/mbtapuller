@@ -1,21 +1,22 @@
 import APIFunctions
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from Classes import Base
+import Database
 
-# Make a database connection
-db = create_engine('sqlite:///mbta.db', echo=False)
-Base.metadata.create_all(db)
-Session = sessionmaker(bind=db)
-session = Session()
+def initial_setup():
+    Database.wait_for_available()
 
-routes = APIFunctions.get_routes()
-for route in routes:
-    session.add(route)
+    # Make a database connection
+    session = Database.connect(create_all=True)
 
-# Get the station objects and add them to the database
-stations = APIFunctions.get_stations(session)
-for station in stations:
-    session.add(station)
+    routes = APIFunctions.get_routes()
+    for route in routes:
+        session.add(route)
 
-session.commit()
+    # Get the station objects and add them to the database
+    stations = APIFunctions.get_stations(session)
+    for station in stations:
+        session.add(station)
+
+    session.commit()
+
+if __name__ == '__main__':
+    initial_setup()

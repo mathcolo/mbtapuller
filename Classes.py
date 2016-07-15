@@ -9,7 +9,7 @@ Base = declarative_base()
 class Route(Base):
     __tablename__ = 'routes'
     id = Column(Integer, primary_key=True)
-    name = Column(String)
+    name = Column(String(30))
 
 
 class Station(Base):
@@ -17,8 +17,8 @@ class Station(Base):
     id = Column(Integer, primary_key=True)
 
     route_id = Column(Integer, ForeignKey("routes.id"))
-    name_human_readable = Column(String)
-    name_api = Column(String)
+    name_human_readable = Column(String(50))
+    name_api = Column(String(50))
     location_lat = Column(Float)
     location_lng = Column(Float)
 
@@ -37,7 +37,7 @@ class Trip(Base):
 
     id = Column(Integer, primary_key=True)
 
-    api_id = Column(String)
+    api_id = Column(String(25))
     date = Column(Date)
 
     origin_station_id = Column(Integer, ForeignKey("stations.id"))
@@ -61,7 +61,7 @@ class Trip(Base):
 
     def get_status(self, session):
 
-        most_recent_trip_record = session.query(TripRecord).filter(TripRecord.trip_id.is_(self.id)).order_by(
+        most_recent_trip_record = session.query(TripRecord).filter(TripRecord.trip_id == self.id).order_by(
             desc(TripRecord.stamp)).first()
 
         if most_recent_trip_record is None:
@@ -84,7 +84,7 @@ class TripRecord(Base):
 
     id = Column(Integer, primary_key=True)
 
-    trip_id = Column(String, ForeignKey("trips.id"))
+    trip_id = Column(Integer, ForeignKey("trips.id"))
     stamp = Column(DateTime)
     location_lat = Column(Float)
     location_lng = Column(Float)

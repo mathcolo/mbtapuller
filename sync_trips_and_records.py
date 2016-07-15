@@ -1,15 +1,20 @@
+import time
+import Logger
 import APIFunctions
-import vcr
+import Database
 import Classes as c
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+import vcr
 
-db = create_engine('sqlite:///mbta.db', echo=False)
-c.Base.metadata.create_all(db)
-Session = sessionmaker(bind=db)
-session = Session()
+def sync(session, interval=60):
+    while True:
+        time.sleep(interval)
 
-routes = [x.name for x in session.query(c.Route).all()]
+        Logger.log.info('Syncing routes to database')
+        routes = [x.name for x in session.query(c.Route).all()]
 
-#with vcr.use_cassette('fixtures/vcr_cassettes/sync_trips_and_records.yaml'):
-APIFunctions.sync_trips_and_records(routes, session)
+        #with vcr.use_cassette('fixtures/vcr_cassettes/sync_trips_and_records.yaml'):
+        APIFunctions.sync_trips_and_records(routes, session)
+
+if __name__ == '__main__':
+    session = Database.connect()
+    sync(session)

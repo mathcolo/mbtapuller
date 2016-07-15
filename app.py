@@ -1,16 +1,22 @@
+from initial_setup import initial_setup
 from flask import Flask, render_template, request, Response
 import json
 import requests
 import constants
+import Database
 import Functions
 from Classes import *
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 
-db = create_engine('sqlite:///mbta.db', echo=False)
-Base.metadata.create_all(db)
-Session = sessionmaker(bind=db)
-session = Session()
+# db = create_engine('sqlite:///mbta.db', echo=False)
+# Base.metadata.create_all(db)
+# Session = sessionmaker(bind=db)
+# session = Session()
+Database.wait_for_available()
+session = Database.connect()
+if not Database.is_setup(session):
+	initial_setup()
 
 app = Flask(__name__)
 
