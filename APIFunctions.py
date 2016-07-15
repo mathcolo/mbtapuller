@@ -120,7 +120,7 @@ def sync_trips_and_records(routes, session):
                     # Now we have a trip
                     #print "Processing trip_id %s" % trip['trip_id']
 
-                    trips_with_same_id = session.query(c.Trip).filter(c.Trip.api_id.is_(trip['trip_id'])).filter(
+                    trips_with_same_id = session.query(c.Trip).filter(c.Trip.api_id.is_(str(trip['trip_id']))).filter(
                         c.Trip.date.is_(datetime.date.today()))
                     #print "trips_with_same_id is %s" % trips_with_same_id.count()
                     if trips_with_same_id.count() == 1:
