@@ -1,7 +1,6 @@
 import APIFunctions
 import Database
 
-
 def initial_setup():
     Database.wait_for_available()
 

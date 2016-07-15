@@ -1,3 +1,4 @@
+import Logger
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import Classes as c
@@ -27,9 +28,13 @@ def wait_for_available(host=DB_HOST, port=DB_PORT, interval=5):
 
 def connect(create_all=False, use_mysql=False):
 
+    Logger.log.info('Connecting to database')
+
     if 'USE_MYSQL' in os.environ or use_mysql:
+        Logger.log.info('Using MySQL server %s' % DB_HOST)
         db = create_engine('mysql://%s:%s@%s:%s/%s' % (DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME), echo=False)
     else:
+        Logger.log.info('Using SQLite')
         db = create_engine('sqlite:///mbta.db', echo=False)
 
     if create_all:

@@ -1,3 +1,4 @@
+import Logger
 import datetime
 import API
 import Classes as c
@@ -86,15 +87,15 @@ def get_stations(session):
 
 def sync_trips_and_records(routes, session):
 
-    print "Syncing trips..."
-    print "Input routes: %s" % routes
+    Logger.log.info("Syncing trips...")
+    Logger.log.info("Input routes: %s" % routes)
 
     if 'Red-Ashmont' in routes or 'Red-Braintree' in routes:
         routes.remove('Red-Ashmont')
         routes.remove('Red-Braintree')
         routes.append('Red')
 
-    print "Using routes: %s" % routes
+    Logger.log.info("Using routes: %s" % routes)
 
     to_save = []
 
@@ -105,7 +106,7 @@ def sync_trips_and_records(routes, session):
         route_sub = route['route']
         for route_sub_sub in route_sub:
             route_name = route_sub_sub['route_id']
-            print "Processing route %s" % route_name
+            Logger.log.info("Processing route %s" % route_name)
             for direction in route_sub_sub['direction']:
                 for trip in direction['trip']:
 
