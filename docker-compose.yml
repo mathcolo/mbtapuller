@@ -11,10 +11,18 @@ services:
       MYSQL_DATABASE: mbtapuller
     volumes:
       - mysql:/var/lib/mysql
-  mbtapuller:
+  mbtapuller-display:
     build: .
+      dockerfile: Dockerfile-display
     ports:
       - "5309:80"
+    environment:
+      - USE_MYSQL=1
+    links:
+      - db
+  mbtapuller-pull:
+    build: .
+      dockerfile: Dockerfile-pull
     environment:
       - USE_MYSQL=1
     links:

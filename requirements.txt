@@ -1,0 +1,6 @@
+requests
+flask
+sqlalchemy
+geopy
+vcrpy
+mysql-python
