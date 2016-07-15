@@ -61,7 +61,7 @@ class Trip(Base):
 
     def get_status(self, session):
 
-        most_recent_trip_record = session.query(TripRecord).filter(TripRecord.trip_id.is_(self.id)).order_by(
+        most_recent_trip_record = session.query(TripRecord).filter(TripRecord.trip_id == self.id).order_by(
             desc(TripRecord.stamp)).first()
 
         if most_recent_trip_record is None:
