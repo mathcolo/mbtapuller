@@ -1,9 +1,8 @@
 import Classes as c
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine
 import Database
+import datetime
 
 session = Database.connect()
 
-for trip in session.query(c.Trip).all():
+for trip in session.query(c.Trip).filter(c.Trip.date == datetime.date.today()):
     print "%s: %s" % (trip, trip.get_status(session))
