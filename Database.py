@@ -13,17 +13,18 @@ DB_PASSWORD = 'mbtapuller'
 DB_NAME = 'mbtapuller'
 
 
-def wait_for_available(host=DB_HOST, port=DB_PORT, interval=5):
-    time.sleep(interval)
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    port_check = sock.connect_ex((host, port))
+def wait_for_available(host=DB_HOST, port=DB_PORT, use_mysql=False, interval=5):
+    if 'USE_MYSQL' in os.environ or use_mysql:
+        time.sleep(interval)
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        port_check = sock.connect_ex((host, port))
 
-    while True:
-        if port_check == 0:
-            return
-        else:
-            print "Database isn't available, sleeping for %s seconds" % interval
-            time.sleep(interval)
+        while True:
+            if port_check == 0:
+                return
+            else:
+                print "Database isn't available, sleeping for %s seconds" % interval
+                time.sleep(interval)
 
 
 def connect(create_all=False, use_mysql=False):
