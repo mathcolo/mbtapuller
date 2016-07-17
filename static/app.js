@@ -1,15 +1,7 @@
 var app = angular.module('mbtaApp', ['ngRoute', 'ngMaterial', 'ngMdIcons']);
 
 
-
-app.controller('appCtrl', function ($http, $mdSidenav, $location, $rootScope) {
-
-    $http.get('/routes')
-	.then(function successCallback(response) {
-        $rootScope.trainRoutes = response.data;
-        $rootScope.trainRoutes.sort(function(a,b) {return (a["name"] > b["name"]) ? 1 : ((b["name"] > a["name"]) ? -1 : 0);} );
-		}, function errorCallback(response) {
-	});
+app.controller('appCtrl', function ($http, $mdSidenav, $location) {
 
   this.go = function (name) {
 	console.log(name);
