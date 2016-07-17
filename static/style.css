@@ -2,21 +2,6 @@ body {
 	text-align: center;
 }
 
-table {
-	width: 70%;
-	margin-left: 15%;
-	margin-right: 15%;
-}
-
-#station {
-    border-radius: 15px;
-    padding: 10px; 
-    height: 55px; 
-	text-align: center;
-	margin: 10px;
-	width: 150px;
-}
-
 .Green {
 	background-color: #008150 !important;
 }
@@ -32,19 +17,6 @@ table {
 .Red {
 	background-color: #FA2D27 !important;
 }
-
-#horizontal-container {
-           height: 150px;
-           width: 100%; 
-         }
-
-
-.repeated-item-horizontal {
-	display: inline-block;
-	height: 120px;
-	padding: 5px;
-	text-align: center;
- }
 
 md-content {
 	margin: 10px; 

@@ -22,9 +22,11 @@ app = Flask(__name__)
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
-	return render_template('index.html')
+	lines = sorted(getAllRoutes(), key=lambda k: k['name']) 
+	
+	return render_template('index.html', lines=lines)
 
-@app.route("/getAllTrains", methods=['GET'])
+@app.route("/trains", methods=['GET'])
 def displayAll():
 	trains = [] # replace with array of dicts for each train from backend
 	for route in [constants.RED_LINE_ASHMONT, constants.RED_LINE_BRAINTREE, constants.GREEN_LINE_B, constants.GREEN_LINE_C, constants.GREEN_LINE_D, 
@@ -34,9 +36,8 @@ def displayAll():
 		trains.append({"id": route +"-train3", "longitude": 71.0589, "latitude": 42.3601, "route": route})
 	
 	return json.dumps(trains)
-
 	
-@app.route("/get<string:route>Trains", methods=['GET'])
+@app.route("/trains/<string:route>", methods=['GET'])
 def getTrainsOnRoute(route):
 
 	trains = [
@@ -54,6 +55,7 @@ def getAllStations():
 		stations.append(Functions.get_stations(route, session))
 	
 	return json.dumps(stations)
+
 	
 @app.route("/stations/<string:route_id>", methods=['GET'])
 def getStationsOnRoute(route_id):
@@ -62,8 +64,12 @@ def getStationsOnRoute(route_id):
 
 @app.route("/routes", methods=['GET'])
 def getAllRoutes():
-	return json.dumps(Functions.all_routes(session))
+	return Functions.all_routes(session)
 
+@app.route("/id", methods=['GET'])
+def getIdForRoute():
+	id = Functions.getIdForRoute(request.args['name'], session)
+	return json.dumps(id)
 
 if __name__ == "__main__":
     app.run()

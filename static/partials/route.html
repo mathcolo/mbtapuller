@@ -1,6 +1,20 @@
 <div flex-xs flex-gt-xs="200" layout="column" layout-align="center">
 
 		<md-content layout="column">
+			<h3>Destination: 
+			<md-button 
+				ng-click="btn.isSelected = false; changeDestination(true)" 
+				ng-class="{false: 'md-raised', true: 'md-raised md-primary'}[!btn.isSelected]">
+				{{ last }}
+			</md-button>
+			
+			<md-button 
+				ng-click="btn.isSelected = true; changeDestination(false)" 
+				ng-class="{true: 'md-raised', false: 'md-raised md-primary'}[!btn.isSelected]">
+				{{ first }}
+			</md-button>
+			</h3> 
+	    </md-switch>
 	  <md-card ng-repeat="s in stations">
         <md-card-title>
           <md-card-title-text>
