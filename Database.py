@@ -17,9 +17,9 @@ def wait_for_available(host=DB_HOST, port=DB_PORT, use_mysql=False, interval=5):
     if 'USE_MYSQL' in os.environ or use_mysql:
         time.sleep(interval)
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        port_check = sock.connect_ex((host, port))
 
         while True:
+            port_check = sock.connect_ex((host, port))
             if port_check == 0:
                 return
             else:
