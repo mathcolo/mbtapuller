@@ -40,13 +40,27 @@ def displayAll():
 @app.route("/trains/<string:route>", methods=['GET'])
 def getTrainsOnRoute(route):
 
-	trains = [
-		{"id": route +"-train1", "longitude": 71.0589, "latitude": 42.3601, "route": route},
-		{"id": route +"-train2", "longitude": 71.0589, "latitude": 42.3601, "route": route},
-		{"id": route +"-train3", "longitude": 71.0589, "latitude": 42.3601, "route": route}
-	] # replace with array of dicts for given route from backend
+	trips = session.query(Trip,Station,Route).join(Station, Trip.origin_station_id == Station.id).join(Route, Station.route_id == Route.id).filter(Route.id == int(route)).all()
 
-	return json.dumps(trains)
+	response_objects = []
+
+	for trip in trips:
+		status = trip[0].get_status(session)
+		output = {
+			'id': trip[0].id,
+			'status': status[0],
+			'station_1': None,
+			'station_2': None,
+		}
+		if output['status'] == 'IN_TRANSIT':
+			output['station_1'] = status[1][0].name_human_readable
+			output['station_2'] = status[1][1].name_human_readable
+		elif output['status'] == 'AT_STATION':
+			print status
+			output['station_1'] = status[1].name_human_readable
+		response_objects.append(output)
+
+	return json.dumps(response_objects)
 	
 @app.route("/stations/all", methods=['GET'])
 def getAllStations():
