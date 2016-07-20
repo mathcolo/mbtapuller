@@ -79,8 +79,12 @@ class Trip(Base):
 
         # If we get this far, we're not at a station
         # Return what we're between
+        segment = (Functions.find_segment(most_recent_trip_record, session))
 
-        return STATUS_IN_TRANSIT, (Functions.find_segment(most_recent_trip_record, session))
+        if segment[0] != segment[1]:
+            return STATUS_IN_TRANSIT, (Functions.find_segment(most_recent_trip_record, session))
+        else:
+            return STATUS_AT_STATION, segment[0]
 
 class TripRecord(Base):
     __tablename__ = 'triprecords'
