@@ -45,7 +45,7 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 	};
 	
 	$scope.addToFavorites = function(station_id) {
-		if (localStorage.getItem("ngStorage-favorite_stations") !== null) {
+		if ($scope.favoritesExist()) {
 			console.log("not there");
 			
 			var index = $localStorage.favorite_stations.indexOf(station_id);
@@ -61,9 +61,17 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 	};
 	
 	$scope.isFavorited = function(station_id) {
-		var index = $localStorage.favorite_stations.indexOf(station_id);
+		if ($scope.favoritesExist()) {
+			var index = $localStorage.favorite_stations.indexOf(station_id);
 		
-		return index > -1;
+			return index > -1;
+		}
+		
+		return false;
+	}
+	
+	$scope.favoritesExist = function() {
+		return localStorage.getItem("ngStorage-favorite_stations") !== null;	
 	}
 	
 	

@@ -1,6 +1,8 @@
 <div flex-xs flex-gt-xs="200" layout="column" layout-align="center">
 
 <md-content layout="column">
+		<h3>Favorites</h3>
+		<div ng-if="!favoritesExist()">You have no favorites. Click a star next to any station to add one!</div>
 	  <md-card ng-repeat="s in stations">
         <md-card-title>
           <md-card-title-text>
@@ -12,8 +14,18 @@
           </md-card-title-media>
         </md-card-title>
         <md-card-actions layout="row" layout-align="end center">
-          <md-button>Action 1</md-button>
-          <md-button>Action 2</md-button>
+          <md-button ng-click="addToFavorites(s.id)" class="md-icon-button" aria-label="Favorite" >
+			<ng-md-icon ng-if="!isFavorited(s.id)" icon="star_border">
+						  <md-tooltip md-direction="bottom">
+						  Add to Favorites
+						</md-tooltip>
+			</ng-md-icon>
+			<ng-md-icon ng-if="isFavorited(s.id)" icon="star">
+						  <md-tooltip md-direction="bottom">
+						  Remove from Favorites
+						</md-tooltip>
+			</ng-md-icon>
+		</md-button>
         </md-card-actions>
       </md-card>
 </md-content>
