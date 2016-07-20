@@ -26,7 +26,12 @@ app.controller('favoritesController', function ($scope, $localStorage, $http) {
 			if (index < 0)
 				$localStorage.favorite_stations.push(station_id);
 			else {
-				$localStorage.favorite_stations.splice(index, 1);
+				if ($localStorage.favorite_stations.length === 1)
+					delete $localStorage.favorite_stations;
+				
+				else {
+					$localStorage.favorite_stations.splice(index, 1);
+				}
 				
 				for (var i = 0; i < $scope.stations.length; i++) {
 					if ($scope.stations[i].id === station_id)
