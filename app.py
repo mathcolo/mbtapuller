@@ -55,7 +55,6 @@ def getTrainsOnRoute(route):
 			output['station_1'] = status[1][0].name_human_readable
 			output['station_2'] = status[1][1].name_human_readable
 		elif output['status'] == 'AT_STATION':
-			print status
 			output['station_1'] = status[1].name_human_readable
 		response_objects.append(output)
 

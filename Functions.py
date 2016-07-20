@@ -12,6 +12,7 @@ def current_trips(session, route_id):
         x[1] for x in session.query(c.TripRecord, c.Trip, c.Station)
         .join(c.Trip, c.TripRecord.trip_id == c.Trip.id)
         .join(c.Station, c.Trip.origin_station_id == c.Station.id)
+        .group_by(c.Trip.id)
         .filter(c.TripRecord.stamp > five_minutes_ago)
         .filter(c.Station.route_id == int(route_id))
         .all()
