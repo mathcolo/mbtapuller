@@ -48,6 +48,7 @@ def getTrainsOnRoute(route):
 		output = {
 			'id': trip.id,
 			'status': status[0],
+			'destination': trip.destination_station_id,
 			'station_1': None,
 			'station_2': None,
 		}
