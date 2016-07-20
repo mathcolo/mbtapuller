@@ -1,3 +1,4 @@
+import datetime
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, Date, DateTime, desc
 from sqlalchemy.ext.declarative import declarative_base
 from geopy.distance import vincenty
@@ -67,8 +68,10 @@ class Trip(Base):
         if most_recent_trip_record is None:
             return STATUS_UNKNOWN, 0
 
-        #print "most_recent_trip_record: %s" % most_recent_trip_record
-        #import ipdb; ipdb.set_trace()
+        most_recent_trip_record_age = (datetime.datetime.now() - most_recent_trip_record.stamp).total_seconds()
+
+        if most_recent_trip_record_age > 180:
+            return STATUS_TERMINATED, 0
 
         exact_station = most_recent_trip_record.get_exact_station(session)
         if exact_station:

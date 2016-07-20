@@ -40,14 +40,13 @@ def displayAll():
 @app.route("/trains/<string:route>", methods=['GET'])
 def getTrainsOnRoute(route):
 
-	trips = session.query(Trip,Station,Route).join(Station, Trip.origin_station_id == Station.id).join(Route, Station.route_id == Route.id).filter(Route.id == int(route)).all()
-
+	trips = Functions.current_trips(session, route)
 	response_objects = []
 
 	for trip in trips:
-		status = trip[0].get_status(session)
+		status = trip.get_status(session)
 		output = {
-			'id': trip[0].id,
+			'id': trip.id,
 			'status': status[0],
 			'station_1': None,
 			'station_2': None,
