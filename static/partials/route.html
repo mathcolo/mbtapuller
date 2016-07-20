@@ -27,9 +27,14 @@
         <md-card-actions layout="row" layout-align="end center">
           <md-button>Action 1</md-button>
           <md-button ng-click="addToFavorites(s.id)" class="md-icon-button" aria-label="Favorite" >
-			<ng-md-icon icon="star_border">
+			<ng-md-icon ng-if="!isFavorited(s.id)" icon="star_border">
 						  <md-tooltip md-direction="bottom">
-						  Favorite
+						  Add to Favorites
+						</md-tooltip>
+			</ng-md-icon>
+			<ng-md-icon ng-if="isFavorited(s.id)" icon="star">
+						  <md-tooltip md-direction="bottom">
+						  Remove from Favorites
 						</md-tooltip>
 			</ng-md-icon>
 		</md-button><!--change icon on button click and fire function that handles favorites-->

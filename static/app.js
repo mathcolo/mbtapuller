@@ -3,9 +3,8 @@ var app = angular.module('mbtaApp', ['ngRoute', 'ngMaterial', 'ngMdIcons', 'ngSt
 
 app.controller('appCtrl', function ($http, $mdSidenav, $location) {
 
-  this.go = function (name) {
-	console.log(name);
-    $location.path("/trains/" + name);
+  this.go = function (path) {
+    $location.path(path);
   };
   
   this.toggleSidenav = function(menuId) {

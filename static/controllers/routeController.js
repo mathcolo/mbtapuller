@@ -60,6 +60,12 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 		}
 	};
 	
+	$scope.isFavorited = function(station_id) {
+		var index = $localStorage.favorite_stations.indexOf(station_id);
+		
+		return index > -1;
+	}
+	
 	
 	$scope.init();
 	
