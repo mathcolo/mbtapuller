@@ -14,7 +14,6 @@
 				{{ first }}
 			</md-button>
 			</h3> 
-	    </md-switch>
 	  <md-card ng-repeat="s in stations">
         <md-card-title>
           <md-card-title-text>
@@ -27,8 +26,14 @@
         </md-card-title>
         <md-card-actions layout="row" layout-align="end center">
           <md-button>Action 1</md-button>
-          <md-button>Action 2</md-button>
+          <md-button ng-click="addToFavorites(s.id)" class="md-icon-button" aria-label="Favorite" >
+			<ng-md-icon icon="star_border">
+						  <md-tooltip md-direction="bottom">
+						  Favorite
+						</md-tooltip>
+			</ng-md-icon>
+		</md-button><!--change icon on button click and fire function that handles favorites-->
         </md-card-actions>
       </md-card>
-
+	</md-content>
 </div>

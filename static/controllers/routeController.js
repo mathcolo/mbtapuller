@@ -1,4 +1,4 @@
-app.controller('routeController', function ($scope, $routeParams, $http) {
+app.controller('routeController', function ($scope, $routeParams, $localStorage, $http) {
     'use strict';
 	
 	$scope.route = $routeParams.route_name;
@@ -43,6 +43,23 @@ app.controller('routeController', function ($scope, $routeParams, $http) {
 			$scope.stations = $scope.stations.reverse();
 		}
 	};
+	
+	$scope.addToFavorites = function(station_id) {
+		if (localStorage.getItem("ngStorage-favorite_stations") !== null) {
+			console.log("not there");
+			
+			var index = $localStorage.favorite_stations.indexOf(station_id);
+			
+			if (index < 0)
+				$localStorage.favorite_stations.push(station_id);
+			else
+				$localStorage.favorite_stations.splice(index, 1);
+		}
+		else {
+			$localStorage.favorite_stations = [station_id];			
+		}
+	};
+	
 	
 	$scope.init();
 	

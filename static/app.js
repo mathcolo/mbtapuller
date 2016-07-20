@@ -1,4 +1,4 @@
-var app = angular.module('mbtaApp', ['ngRoute', 'ngMaterial', 'ngMdIcons']);
+var app = angular.module('mbtaApp', ['ngRoute', 'ngMaterial', 'ngMdIcons', 'ngStorage']);
 
 
 app.controller('appCtrl', function ($http, $mdSidenav, $location) {
@@ -22,6 +22,10 @@ app.config(function($routeProvider) {
 		.when('/trains/:route_name', {
 			templateUrl : 'static/partials/route.html',
 			controller  : 'routeController'
+		})
+		.when('/favorites', {
+			templateUrl : 'static/partials/favorites.html',
+			controller  : 'favoritesController'
 		})
 		.when('/404', {
 			templateUrl : 'static/partials/404.html'
