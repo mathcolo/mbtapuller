@@ -31,6 +31,15 @@
         <div layout="column" class="md-toolbar-tools-bottom inset">
         </div>
       </md-toolbar>
+        <md-list>
+	  <md-item>
+	  <md-list-item class="md-2-line" role="link" md-ink-ripple ng-click="controller.go('/favorites')">
+            <div class="md-list-item-text">
+				Favorite Stations
+            </div>
+          </md-list-itemt>
+      </md-item>
+	  </md-list>
 	  <md-divider></md-divider>
       <md-subheader>Train Lines:</md-subheader>
 	  <md-list>
@@ -41,17 +50,6 @@
           </div>
         </md-list-item>
 		{% endfor %}
-	  </md-list>
-	  <md-divider></md-divider>
-      <md-subheader></md-subheader>
-	  <md-list>
-	  <md-item>
-	  <md-list-item class="md-2-line" role="link" md-ink-ripple ng-click="controller.go('/favorites')">
-            <div class="md-list-item-text">
-				Favorites
-            </div>
-          </md-list-itemt>
-      </md-item>
 	  </md-list>
     </md-sidenav>
     <div layout="column" class="relative" layout-fill role="main">
