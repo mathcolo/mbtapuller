@@ -1,11 +1,10 @@
-var app = angular.module('mbtaApp', ['ngRoute', 'ngMaterial', 'ngMdIcons']);
+var app = angular.module('mbtaApp', ['ngRoute', 'ngMaterial', 'ngMdIcons', 'ngStorage']);
 
 
 app.controller('appCtrl', function ($http, $mdSidenav, $location) {
 
-  this.go = function (name) {
-	console.log(name);
-    $location.path("/trains/" + name);
+  this.go = function (path) {
+    $location.path(path);
   };
   
   this.toggleSidenav = function(menuId) {
@@ -22,6 +21,10 @@ app.config(function($routeProvider) {
 		.when('/trains/:route_name', {
 			templateUrl : 'static/partials/route.html',
 			controller  : 'routeController'
+		})
+		.when('/favorites', {
+			templateUrl : 'static/partials/favorites.html',
+			controller  : 'favoritesController'
 		})
 		.when('/404', {
 			templateUrl : 'static/partials/404.html'
