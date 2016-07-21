@@ -1,13 +1,9 @@
-app.controller('favoritesController', function ($scope, $localStorage, $http) {
+app.controller('favoritesController', function ($scope, $localStorage, $http, FavoritesService) {
     'use strict';
-	
-	$scope.favoritesExist = function() {
-		return localStorage.getItem("ngStorage-favorite_stations") !== null;	
-	}
 	
 	$scope.stations = [];
 	
-	if ($scope.favoritesExist()) {
+	if (FavoritesService.favoritesExist()) {
 		for (var i = 0; i < $localStorage.favorite_stations.length; i++) {
 			$http.get('/station/' + $localStorage.favorite_stations[i])
 				.then(function successCallback(response) {
@@ -19,7 +15,7 @@ app.controller('favoritesController', function ($scope, $localStorage, $http) {
 	}
 	
 	$scope.addToFavorites = function(station_id) {
-		if ($scope.favoritesExist()) {
+		if (FavoritesService.favoritesExist()) {
 
 			var index = $localStorage.favorite_stations.indexOf(station_id);
 			
@@ -45,15 +41,8 @@ app.controller('favoritesController', function ($scope, $localStorage, $http) {
 		}
 	};
 	
-	$scope.isFavorited = function(station_id) {
-		if ($scope.favoritesExist()) {
-			var index = $localStorage.favorite_stations.indexOf(station_id);
-			
-			return index > -1;
-		}
-		
-		return false;
-	}
+	$scope.favoritesExist = FavoritesService.favoritesExist;
+	$scope.isFavorited = FavoritesService.isFavorited;
 	
 	
 });

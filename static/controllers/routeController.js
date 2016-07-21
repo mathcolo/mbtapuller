@@ -1,7 +1,10 @@
-app.controller('routeController', function ($scope, $routeParams, $localStorage, $http) {
+app.controller('routeController', function ($scope, $routeParams, $localStorage, $http, FavoritesService) {
     'use strict';
 	
 	$scope.route = $routeParams.route_name;
+	
+	$scope.favoritesExist = FavoritesService.favoritesExist;
+	$scope.isFavorited = FavoritesService.isFavorited;
 	
 	$scope.getData = function(route_id) {
 		$http.get('/trains/' + route_id)
@@ -52,9 +55,9 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 			if (index < 0)
 				$localStorage.favorite_stations.push(station_id);
 			else {
-				if ($localStorage.favorite_stations.length === 1)
+				if ($localStorage.favorite_stations.length === 1) {
 					delete $localStorage.favorite_stations;
-				
+				}
 				else {
 					$localStorage.favorite_stations.splice(index, 1);
 				}
@@ -64,20 +67,6 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 			$localStorage.favorite_stations = [station_id];			
 		}
 	};
-	
-	$scope.isFavorited = function(station_id) {
-		if ($scope.favoritesExist()) {
-			var index = $localStorage.favorite_stations.indexOf(station_id);
-		
-			return index > -1;
-		}
-		
-		return false;
-	}
-	
-	$scope.favoritesExist = function() {
-		return localStorage.getItem("ngStorage-favorite_stations") !== null;	
-	}
 	
 	
 	$scope.init();
