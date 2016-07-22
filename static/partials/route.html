@@ -16,7 +16,7 @@
 			</h3> 
 	  <md-card ng-repeat="s in stations">
           <md-card-header>
-              <ng-md-icon ng-show="trainAt(s)" icon="train" />
+              <ng-md-icon style="{{styleForIconAtStation(s)}}" icon="train" />
           </md-card-header>
         <md-card-title>
           <md-card-title-text>

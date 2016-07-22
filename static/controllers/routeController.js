@@ -47,6 +47,43 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 		}
 	};
 
+
+	$scope.stationStatus = function(station) {
+		var status = "NOTHING";
+
+		for(var i = 0; i < $scope.trains.length; i++) {
+			if ($scope.trains[i]['destination'] != $scope.stations[$scope.stations.length-1]['id'])
+				continue;
+
+			if($scope.trains[i]['status'] == "AT_STATION" && $scope.trains[i]['station_1'] == station['name']) {
+				return "AT_STATION";
+			}
+
+			if($scope.trains[i]['station_2'] == station['name']) {
+				return "IN_TRANSIT_TO";
+			}
+		}
+
+		return status;
+
+	}
+
+	$scope.styleForIconAtStation = function(station) {
+		//return "visibility: hidden;";
+		var status = $scope.stationStatus(station);
+		switch(status) {
+			case "NOTHING":
+				return "visibility: hidden;";
+				break;
+			case "AT_STATION":
+				return "";
+				break;
+			case "IN_TRANSIT_TO":
+				return "background-color: red;"
+				break;
+		}
+	}
+
 	$scope.trainBetween = function(station1, station2) {
 		for(var i = 0; i < $scope.trains.length; i++) {
 			if ($scope.trains[i]['destination'] != $scope.stations[$scope.stations.length-1]['id'])
