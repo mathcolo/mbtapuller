@@ -46,6 +46,15 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 			$scope.stations = $scope.stations.reverse();
 		}
 	};
+
+	$scope.trainAt = function(station) {
+		for(var i = 0; i < $scope.trains.length; i++) {
+			if($scope.trains[i]['status'] == "AT_STATION" && $scope.trains[i]['station_1'] == station['name'] && $scope.trains[i]['destination'] == $scope.stations[$scope.stations.length-1]['id']) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	$scope.addToFavorites = function(station_id) {
 		if ($scope.favoritesExist()) {
