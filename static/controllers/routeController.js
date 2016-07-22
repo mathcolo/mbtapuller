@@ -1,7 +1,10 @@
-app.controller('routeController', function ($scope, $routeParams, $http) {
+app.controller('routeController', function ($scope, $routeParams, $localStorage, $http, FavoritesService) {
     'use strict';
 	
 	$scope.route = $routeParams.route_name;
+	
+	$scope.favoritesExist = FavoritesService.favoritesExist;
+	$scope.isFavorited = FavoritesService.isFavorited;
 	
 	$scope.getData = function(route_id) {
 		$http.get('/trains/' + route_id)
@@ -43,6 +46,28 @@ app.controller('routeController', function ($scope, $routeParams, $http) {
 			$scope.stations = $scope.stations.reverse();
 		}
 	};
+	
+	$scope.addToFavorites = function(station_id) {
+		if ($scope.favoritesExist()) {
+
+			var index = $localStorage.favorite_stations.indexOf(station_id);
+			
+			if (index < 0)
+				$localStorage.favorite_stations.push(station_id);
+			else {
+				if ($localStorage.favorite_stations.length === 1) {
+					delete $localStorage.favorite_stations;
+				}
+				else {
+					$localStorage.favorite_stations.splice(index, 1);
+				}
+			}
+		}
+		else {
+			$localStorage.favorite_stations = [station_id];			
+		}
+	};
+	
 	
 	$scope.init();
 	

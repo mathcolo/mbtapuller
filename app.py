@@ -83,6 +83,10 @@ def getAllRoutes():
 def getIdForRoute():
 	id = Functions.getIdForRoute(request.args['name'], session)
 	return json.dumps(id)
+	
+@app.route("/station/<string:station_id>", methods=['GET'])
+def getStationDetails(station_id):
+	return json.dumps(Functions.getStationDetails(station_id, session))
 
 if __name__ == "__main__":
     app.run()

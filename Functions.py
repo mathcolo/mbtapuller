@@ -110,9 +110,16 @@ def get_stations(id, session):
 
 	
 def getIdForRoute(name, session):
-	print name
 	id = session.query(c.Route).filter(c.Route.name == name).one().id
 		
 	return id
+	
+def getStationDetails(station_id, session):
+	station = session.query(c.Station).filter(c.Station.id == station_id).one()
+	
+	route_name = session.query(c.Route).filter(c.Route.id == station.route_id).one().name
+	
+	return {'name': station.name_human_readable, 'route_name': route_name, 'id': station.id}
+	
 
 

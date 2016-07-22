@@ -1,19 +1,8 @@
 <div flex-xs flex-gt-xs="200" layout="column" layout-align="center">
 
-		<md-content layout="column">
-			<h3>Destination: 
-			<md-button 
-				ng-click="btn.isSelected = false; changeDestination(true)" 
-				ng-class="{false: 'md-raised', true: 'md-raised md-primary'}[!btn.isSelected]">
-				{{ last }}
-			</md-button>
-			
-			<md-button 
-				ng-click="btn.isSelected = true; changeDestination(false)" 
-				ng-class="{true: 'md-raised', false: 'md-raised md-primary'}[!btn.isSelected]">
-				{{ first }}
-			</md-button>
-			</h3> 
+<md-content layout="column">
+		<h3>Favorite Stations</h3>
+		<div ng-if="!favoritesExist()">You have no favorites. Click a star next to any station to add one!</div>
 	  <md-card ng-repeat="s in stations">
         <md-card-title>
           <md-card-title-text>
@@ -39,5 +28,5 @@
 		</md-button>
         </md-card-actions>
       </md-card>
-	</md-content>
+</md-content>
 </div>
