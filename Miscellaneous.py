@@ -49,11 +49,11 @@ def origin_and_destination_stations(session, api_trip, route_name):
 
     if route_name == 'Red':
         if string_contains_ashmont_anything(api_trip['trip_name']):
-            route_name = 'Red-Ashmont'
+            route_name = constants.RED_LINE_ASHMONT
         elif string_contains_braintree_anything(api_trip['trip_name']):
-            route_name = 'Red-Braintree'
+            route_name = constants.RED_LINE_BRAINTREE
         else:
-            route_name = 'Red-Ashmont'
+            route_name = constants.RED_LINE_ASHMONT
 
     route_id = session.query(c.Route).filter(c.Route.name == route_name).first().id
 
