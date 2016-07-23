@@ -13,3 +13,8 @@ ORANGE_LINE = 'Orange'
 STATUS_AT_STATION = 'AT_STATION'
 STATUS_IN_TRANSIT = 'IN_TRANSIT'
 STATUS_UNKNOWN = 'UNKNOWN'
+
+
+# other:
+RED_LINE_ASHMONT_STATIONS = ['Savin Hill', 'Fields Corner', 'Shawmut', 'Ashmont']
+RED_LINE_BRAINTREE_STATIONS = ['North Quincy', 'Wollaston', 'Quincy Center', 'Quincy Adams', 'Braintree']
