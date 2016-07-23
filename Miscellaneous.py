@@ -1,5 +1,17 @@
+import constants
 import Classes as c
 
+def string_contains_ashmont_anything(string):
+    for station_str in constants.RED_LINE_ASHMONT_STATIONS:
+        if station_str in string:
+            return True
+    return False
+
+def string_contains_braintree_anything(string):
+    for station_str in constants.RED_LINE_BRAINTREE_STATIONS:
+        if station_str in string:
+            return True
+    return False
 
 def isolate_origin_from_trip_name(name):
     """
@@ -36,12 +48,12 @@ def isolate_destination_from_trip_name(name):
 def origin_and_destination_stations(session, api_trip, route_name):
 
     if route_name == 'Red':
-        if 'Ashmont' in api_trip['trip_name']:
-            route_name = 'Red-Ashmont'
-        elif 'Braintree' in api_trip['trip_name']:
-            route_name = 'Red-Braintree'
+        if string_contains_ashmont_anything(api_trip['trip_name']):
+            route_name = constants.RED_LINE_ASHMONT
+        elif string_contains_braintree_anything(api_trip['trip_name']):
+            route_name = constants.RED_LINE_BRAINTREE
         else:
-            route_name = 'Red-Ashmont'
+            route_name = constants.RED_LINE_ASHMONT
 
     route_id = session.query(c.Route).filter(c.Route.name == route_name).first().id
 
