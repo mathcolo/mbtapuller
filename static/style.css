@@ -19,5 +19,32 @@ body {
 }
 
 md-content {
-	margin: 10px; 
- }
+	margin-left: auto;
+	margin-right: auto;
+}
+
+md-card {
+	width: 600px;
+	padding-left: 40px;
+}
+
+.line_display {
+	float: left;
+	width: 10px;
+	height: 243px;
+	background-color: green;
+	margin-left: 20px;
+	margin-right: 20px;
+}
+
+.train_circle {
+    -webkit-border-radius:16px;
+    -moz-border-radius:16px;
+	background-color: #ff0000;
+    border-radius:16px;
+    border:1px solid #ff0000;
+    width:16px;
+    height:16px;
+	position: absolute;
+	left: 0px;
+}
