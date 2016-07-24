@@ -1,5 +1,5 @@
 import constants
-import Classes as c
+import db_objects as db
 
 def string_contains_ashmont_anything(string):
     for station_str in constants.RED_LINE_ASHMONT_STATIONS:
@@ -55,11 +55,11 @@ def origin_and_destination_stations(session, api_trip, route_name):
         else:
             route_name = constants.RED_LINE_ASHMONT
 
-    route_id = session.query(c.Route).filter(c.Route.name == route_name).first().id
+    route_id = session.query(db.Route).filter(db.Route.name == route_name).first().id
 
-    origin_station_id = session.query(c.Station).filter(c.Station.route_id == route_id).filter(
-        c.Station.name_human_readable == isolate_origin_from_trip_name(api_trip['trip_name'])).first().id
-    destination_station_id = session.query(c.Station).filter(c.Station.route_id == route_id).filter(
-        c.Station.name_human_readable == api_trip['trip_headsign']).first().id
+    origin_station_id = session.query(db.Station).filter(db.Station.route_id == route_id).filter(
+        db.Station.name_human_readable == isolate_origin_from_trip_name(api_trip['trip_name'])).first().id
+    destination_station_id = session.query(db.Station).filter(db.Station.route_id == route_id).filter(
+        db.Station.name_human_readable == api_trip['trip_headsign']).first().id
 
     return origin_station_id, destination_station_id

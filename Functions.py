@@ -1,7 +1,7 @@
 from geopy.distance import vincenty
 from geopy.distance import vincenty as dist
 from sqlalchemy import desc, asc, or_
-import Classes as c
+import db_objects as db
 import constants
 
 def surrounding_station(session, station):
@@ -13,8 +13,8 @@ def surrounding_station(session, station):
     :return: A 2-element tuple containing the forward and backward station
     '''
 
-    max = session.query(c.Station).filter(c.Station.route_id == station.route_id).order_by(desc(c.Station.id)).first().id
-    min = session.query(c.Station).filter(c.Station.route_id == station.route_id).order_by(asc(c.Station.id)).first().id
+    max = session.query(db.Station).filter(db.Station.route_id == station.route_id).order_by(desc(db.Station.id)).first().id
+    min = session.query(db.Station).filter(db.Station.route_id == station.route_id).order_by(asc(db.Station.id)).first().id
 
     plus_id = station.id + 1
     if plus_id > max:
@@ -24,8 +24,8 @@ def surrounding_station(session, station):
     if minus_id < min:
         minus_id = min
 
-    return (session.query(c.Station).filter(c.Station.id == plus_id).first(),
-           session.query(c.Station).filter(c.Station.id == minus_id).first())
+    return (session.query(db.Station).filter(db.Station.id == plus_id).first(),
+           session.query(db.Station).filter(db.Station.id == minus_id).first())
 
 
 def find_segment(trip_record, session, test_pair=None):
@@ -35,15 +35,15 @@ def find_segment(trip_record, session, test_pair=None):
     else:
         me_loc = (trip_record.location_lat, trip_record.location_lng)
 
-    trip = session.query(c.TripRecord, c.Trip).join(c.Trip).filter(c.Trip.id == trip_record.trip_id).first()[1]
+    trip = session.query(db.TripRecord, db.Trip).join(db.Trip).filter(db.Trip.id == trip_record.trip_id).first()[1]
 
-    origin_station = session.query(c.Station).filter(c.Station.id == trip.origin_station_id).first()
-    destination_station = session.query(c.Station).filter(c.Station.id == trip.destination_station_id).first()
+    origin_station = session.query(db.Station).filter(db.Station.id == trip.origin_station_id).first()
+    destination_station = session.query(db.Station).filter(db.Station.id == trip.destination_station_id).first()
 
     # print "origin_station: %s" % origin_station
     # print "destination_station: %s" % destination_station
 
-    all_stations = session.query(c.Station).filter(c.Station.route_id == origin_station.route_id).all()
+    all_stations = session.query(db.Station).filter(db.Station.route_id == origin_station.route_id).all()
     closest_station = None
     closest_distance_so_far = 100
     for station in all_stations:
@@ -74,7 +74,7 @@ def find_segment(trip_record, session, test_pair=None):
         return surround_station_behind, closest_station
 
 def all_routes(session):
-    routes = session.query(c.Route).all()
+    routes = session.query(db.Route).all()
     routes_output = []
     for route in routes:
         routes_output.append({'id': route.id, 'name': route.name})
@@ -83,28 +83,12 @@ def all_routes(session):
 	
 def get_stations(id, session):
 
-	stations = session.query(c.Station, c.Route).join(c.Route).filter(c.Station.route_id == id).all()
+	stations = session.query(db.Station, db.Route).join(db.Route).filter(db.Station.route_id == id).all()
 	
-	route_name = session.query(c.Route).filter(c.Route.id == id).one().name
+	route_name = session.query(db.Route).filter(db.Route.id == id).one().name
 	
 	stations_output = []
 	for station in stations:
 		stations_output.append({'id': station[0].id, 'route_id': station[0].route_id, 'name': station[0].name_human_readable, 'route_name': route_name})
 			
 	return stations_output
-
-	
-def getIdForRoute(name, session):
-	id = session.query(c.Route).filter(c.Route.name == name).one().id
-		
-	return id
-	
-def getStationDetails(station_id, session):
-	station = session.query(c.Station).filter(c.Station.id == station_id).one()
-	
-	route_name = session.query(c.Route).filter(c.Route.id == station.route_id).one().name
-	
-	return {'name': station.name_human_readable, 'route_name': route_name, 'id': station.id}
-	
-
-

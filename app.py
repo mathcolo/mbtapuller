@@ -5,14 +5,10 @@ import requests
 import constants
 import Database
 import Functions
-from Classes import *
+import db_objects as db
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 
-# db = create_engine('sqlite:///mbta.db', echo=False)
-# Base.metadata.create_all(db)
-# Session = sessionmaker(bind=db)
-# session = Session()
 Database.wait_for_available()
 session = Database.connect()
 if not Database.is_setup(session):
@@ -27,7 +23,7 @@ def home():
 	return render_template('index.html', lines=lines)
 
 @app.route("/trains", methods=['GET'])
-def displayAll():
+def display_all():
 	trains = [] # replace with array of dicts for each train from backend
 	for route in [constants.RED_LINE_ASHMONT, constants.RED_LINE_BRAINTREE, constants.GREEN_LINE_B, constants.GREEN_LINE_C, constants.GREEN_LINE_D, 
 					constants.GREEN_LINE_E, constants.ORANGE_LINE, constants.BLUE_LINE]:
@@ -38,7 +34,7 @@ def displayAll():
 	return json.dumps(trains)
 	
 @app.route("/trains/<string:route>", methods=['GET'])
-def getTrainsOnRoute(route):
+def get_trains_on_route(route):
 
 	trains = [
 		{"id": route +"-train1", "longitude": 71.0589, "latitude": 42.3601, "route": route},
@@ -49,7 +45,7 @@ def getTrainsOnRoute(route):
 	return json.dumps(trains)
 	
 @app.route("/stations/all", methods=['GET'])
-def getAllStations():
+def get_all_stations():
 	stations = []
 	for route in valid_routes:
 		stations.append(Functions.get_stations(route, session))
@@ -58,22 +54,27 @@ def getAllStations():
 
 	
 @app.route("/stations/<string:route_id>", methods=['GET'])
-def getStationsOnRoute(route_id):
+def get_stations_on_route(route_id):
 	stations = Functions.get_stations(route_id, session)
 	return json.dumps(stations)
 
 @app.route("/routes", methods=['GET'])
-def getAllRoutes():
+def get_all_routes():
 	return Functions.all_routes(session)
 
 @app.route("/id", methods=['GET'])
-def getIdForRoute():
-	id = Functions.getIdForRoute(request.args['name'], session)
+def get_id_for_route():
+	id = session.query(db.Route).filter(db.Route.name == name).one().id
 	return json.dumps(id)
 	
 @app.route("/station/<string:station_id>", methods=['GET'])
-def getStationDetails(station_id):
-	return json.dumps(Functions.getStationDetails(station_id, session))
+def get_station_details(station_id):
+    station = session.query(db.Station).filter(db.Station.id == station_id).one()
+	
+	route_name = session.query(db.Route).filter(db.Route.id == station.route_id).one().name
+	
+	stations_details = {'name': station.name_human_readable, 'route_name': route_name, 'id': station.id}
+	return json.dumps(stations_details)
 
 if __name__ == "__main__":
     app.run()
