@@ -79,7 +79,7 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 				return "";
 				break;
 			case "IN_TRANSIT_TO":
-				return "background-color: red;"
+				return "bottom: 20px;"
 				break;
 		}
 	}

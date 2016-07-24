@@ -25,26 +25,33 @@ md-content {
 
 md-card {
 	width: 600px;
+	height: 75px;
+	padding-top: -10px;
 	padding-left: 40px;
 }
+
 
 .line_display {
 	float: left;
 	width: 10px;
-	height: 243px;
+	height: 143px;
 	background-color: green;
-	margin-left: 20px;
+	margin-left: 30px;
 	margin-right: 20px;
 }
 
 .train_circle {
     -webkit-border-radius:16px;
     -moz-border-radius:16px;
-	background-color: #ff0000;
+	background-color: red;
     border-radius:16px;
-    border:1px solid #ff0000;
+    border:1px solid red;
     width:16px;
     height:16px;
-	position: absolute;
-	left: 0px;
+	/*position: absolute;
+	left: 16px;*/
+	position: relative;
+	top: 40px;
+	right: 4px;
+
 }

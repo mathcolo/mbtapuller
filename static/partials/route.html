@@ -16,11 +16,11 @@
         </h3>
 
         <div class="station_container" ng-repeat="s in stations">
-            <div class="line_display"><div class="train_circle"></div></div>
+            <div class="line_display"><div class="train_circle" style="{{ styleForIconAtStation(s) }}"></div></div>
             <md-card>
-                <md-card-header>
+                <!--<md-card-header>
                     <ng-md-icon style="{{ styleForIconAtStation(s) }}" icon="train"/>
-                </md-card-header>
+                </md-card-header>-->
                 <md-card-title>
                     <md-card-title-text>
                         <span class="md-headline">{{ s.name }}</span>
