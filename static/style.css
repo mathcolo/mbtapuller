@@ -30,6 +30,12 @@ md-card {
 	padding-left: 40px;
 }
 
+ng-md-icon {
+	position: relative;
+	top: 1px;
+	fill: white;
+}
+
 .line_display {
 	float: left;
 	width: 10px;
@@ -40,12 +46,26 @@ md-card {
 }
 
 .train_circle {
-    -webkit-border-radius: 16px;
-    -moz-border-radius: 25px;
+    -webkit-border-radius: 26px;
+    -moz-border-radius: 26px;
 	background-color: red;
-    border-radius: 25px;
-    width: 25px;
-    height: 25px;
+    border-radius: 26px;
+    width: 26px;
+    height: 26px;
 	position: relative;
 	right: 8px;
+}
+
+.train_circle_hide {
+	visibility: hidden;
+}
+
+.train_circle_in_transit {
+	#background-color: orange;
+	bottom: 30px;
+}
+
+.train_circle_at_station {
+	#background-color: purple;
+	top: 40px;
 }

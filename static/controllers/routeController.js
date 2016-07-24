@@ -81,13 +81,13 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 		var status = $scope.stationStatus(station);
 		switch(status) {
 			case "NOTHING":
-				return "visibility: hidden;";
+				return "train_circle_hide";
 				break;
 			case "AT_STATION":
-				return "background-color: purple; top: 40px;";
+				return "train_circle_at_station";
 				break;
 			case "IN_TRANSIT_TO":
-				return "background-color: orange; bottom: 30px;"
+				return "train_circle_in_transit"
 				break;
 		}
 	}
