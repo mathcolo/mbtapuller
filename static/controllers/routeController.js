@@ -2,6 +2,7 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
     'use strict';
 	
 	$scope.route = $routeParams.route_name;
+	$scope.trains = [];
 	
 	$scope.favoritesExist = FavoritesService.favoritesExist;
 	$scope.isFavorited = FavoritesService.isFavorited;
@@ -9,7 +10,7 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 	$scope.getData = function(route_id) {
 		$http.get('/trains/' + route_id)
 		.then(function successCallback(response) {
-				$scope.trains = response.data;
+				$scope.allTrains = response.data;
 			}, function errorCallback(response) {
 		});
 		
@@ -23,6 +24,7 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 				$scope.last = $scope.stations[stations_length - 1].name;
 				
 				$scope.destination = true;
+				$scope.changeDestination($scope.destination);
 				
 			}, function errorCallback(response) {
 				
@@ -39,11 +41,18 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 		
 		
 	};
-	
-	$scope.changeDestination = function(destination) {
+
+	$scope.changeDestination = function (destination) {
 		if (destination != $scope.destination) {
-			$scope.destination = destination;
+			$scope.trains = [];
+			for (var i = 0; i < $scope.allTrains.length; i++) {
+				var train_direction = $scope.allTrains[i]['direction'];
+				if (train_direction == destination) {
+					$scope.trains.push($scope.allTrains[i]);
+				}
+			}
 			$scope.stations = $scope.stations.reverse();
+			$scope.destination = destination;
 		}
 	};
 
@@ -52,9 +61,6 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 		var status = "NOTHING";
 
 		for(var i = 0; i < $scope.trains.length; i++) {
-			if ($scope.trains[i]['destination'] != $scope.stations[$scope.stations.length-1]['id'])
-				continue;
-
 			if($scope.trains[i]['status'] == "AT_STATION" && $scope.trains[i]['station_1'] == station['name']) {
 				return "AT_STATION";
 			}
@@ -69,17 +75,16 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 	}
 
 	$scope.styleForIconAtStation = function(station) {
-		//return "visibility: hidden;";
 		var status = $scope.stationStatus(station);
 		switch(status) {
 			case "NOTHING":
 				return "visibility: hidden;";
 				break;
 			case "AT_STATION":
-				return "";
+				return "background-color: purple; top: 40px;";
 				break;
 			case "IN_TRANSIT_TO":
-				return "bottom: 20px;"
+				return "background-color: orange; bottom: 30px;"
 				break;
 		}
 	}

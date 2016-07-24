@@ -16,7 +16,7 @@
         </h3>
 
         <div class="station_container" ng-repeat="s in stations">
-            <div class="line_display"><div class="train_circle" style="{{ styleForIconAtStation(s) }}"></div></div>
+            <div class="line_display {{ s['route_name'].split('-')[0] }}"><div class="train_circle" style="{{ styleForIconAtStation(s) }}"></div></div>
             <md-card>
                 <!--<md-card-header>
                     <ng-md-icon style="{{ styleForIconAtStation(s) }}" icon="train"/>

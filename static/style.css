@@ -30,7 +30,6 @@ md-card {
 	padding-left: 40px;
 }
 
-
 .line_display {
 	float: left;
 	width: 10px;
@@ -41,17 +40,12 @@ md-card {
 }
 
 .train_circle {
-    -webkit-border-radius:16px;
-    -moz-border-radius:16px;
+    -webkit-border-radius: 16px;
+    -moz-border-radius: 25px;
 	background-color: red;
-    border-radius:16px;
-    border:1px solid red;
-    width:16px;
-    height:16px;
-	/*position: absolute;
-	left: 16px;*/
+    border-radius: 25px;
+    width: 25px;
+    height: 25px;
 	position: relative;
-	top: 40px;
-	right: 4px;
-
+	right: 8px;
 }
