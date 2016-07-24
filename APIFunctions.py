@@ -47,12 +47,12 @@ def get_stations(session):
         api_result = API.get("stopsbyroute", {'route': 'Red'})['direction'][0]['stop']
         for item in api_result:
 
-            if item['parent_station_name'] in ['North Quincy', 'Wollaston', 'Quincy Center', 'Quincy Adams', 'Braintree']:
+            if item['parent_station_name'] in RED_LINE_BRAINTREE_STATIONS:
                 new_station = c.Station(route_id=route_id_braintree, name_human_readable=item['parent_station_name'],
                                       name_api=item['parent_station'], location_lat=item['stop_lat'],
                                       location_lng=item['stop_lon'], api_id=item['stop_id'])
                 braintree.append(new_station)
-            elif item['parent_station_name'] in ['Savin Hill', 'Fields Corner', 'Shawmut', 'Ashmont']:
+            elif item['parent_station_name'] in RED_LINE_ASHMONT_STATIONS:
                 new_station = c.Station(route_id=route_id_ashmont, name_human_readable=item['parent_station_name'],
                                       name_api=item['parent_station'], location_lat=item['stop_lat'],
                                       location_lng=item['stop_lon'], api_id=item['stop_id'])
