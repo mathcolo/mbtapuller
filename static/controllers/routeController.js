@@ -3,6 +3,7 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 	
 	$scope.route = $routeParams.route_name;
 	$scope.trains = [];
+	$scope.destination = true;
 	
 	$scope.favoritesExist = FavoritesService.favoritesExist;
 	$scope.isFavorited = FavoritesService.isFavorited;
@@ -11,6 +12,7 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 		$http.get('/trains/' + route_id)
 		.then(function successCallback(response) {
 				$scope.allTrains = response.data;
+				$scope.filterTrains($scope.destination);
 			}, function errorCallback(response) {
 		});
 		
@@ -22,9 +24,6 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 				
 				$scope.first = $scope.stations[0].name;
 				$scope.last = $scope.stations[stations_length - 1].name;
-				
-				$scope.destination = true;
-				$scope.changeDestination($scope.destination);
 				
 			}, function errorCallback(response) {
 				
@@ -42,15 +41,19 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 		
 	};
 
-	$scope.changeDestination = function (destination) {
-		if (destination != $scope.destination) {
-			$scope.trains = [];
+	$scope.filterTrains = function(direction) {
+		$scope.trains = [];
 			for (var i = 0; i < $scope.allTrains.length; i++) {
 				var train_direction = $scope.allTrains[i]['direction'];
-				if (train_direction == destination) {
+				if (train_direction == direction) {
 					$scope.trains.push($scope.allTrains[i]);
 				}
 			}
+	}
+
+	$scope.changeDestination = function (destination) {
+		if (destination != $scope.destination) {
+			$scope.filterTrains(destination);
 			$scope.stations = $scope.stations.reverse();
 			$scope.destination = destination;
 		}
