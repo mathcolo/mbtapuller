@@ -32,7 +32,7 @@ def get_stations(session):
 
         api_result = API.get("stopsbyroute", {'route': route.name})['direction'][0]['stop']
         for item in api_result:
-            new_station = c.Station(route_id=route.id, name_human_readable=item['parent_station_name'], name_api=item['parent_station'], location_lat=item['stop_lat'], location_lng=item['stop_lon'])
+            new_station = c.Station(route_id=route.id, name_human_readable=item['parent_station_name'], name_api=item['parent_station'], location_lat=item['stop_lat'], location_lng=item['stop_lon'], api_id=item['stop_id'])
             stations.append(new_station)
 
     if populate_red:
@@ -50,20 +50,20 @@ def get_stations(session):
             if item['parent_station_name'] in ['North Quincy', 'Wollaston', 'Quincy Center', 'Quincy Adams', 'Braintree']:
                 new_station = c.Station(route_id=route_id_braintree, name_human_readable=item['parent_station_name'],
                                       name_api=item['parent_station'], location_lat=item['stop_lat'],
-                                      location_lng=item['stop_lon'])
+                                      location_lng=item['stop_lon'], api_id=item['stop_id'])
                 braintree.append(new_station)
             elif item['parent_station_name'] in ['Savin Hill', 'Fields Corner', 'Shawmut', 'Ashmont']:
                 new_station = c.Station(route_id=route_id_ashmont, name_human_readable=item['parent_station_name'],
                                       name_api=item['parent_station'], location_lat=item['stop_lat'],
-                                      location_lng=item['stop_lon'])
+                                      location_lng=item['stop_lon'], api_id=item['stop_id'])
                 ashmont.append(new_station)
             else:
                 new_station_ashmont = c.Station(route_id=route_id_ashmont, name_human_readable=item['parent_station_name'],
                                       name_api=item['parent_station'], location_lat=item['stop_lat'],
-                                      location_lng=item['stop_lon'])
+                                      location_lng=item['stop_lon'], api_id=item['stop_id'])
                 new_station_braintree = c.Station(route_id=route_id_braintree, name_human_readable=item['parent_station_name'],
                                       name_api=item['parent_station'], location_lat=item['stop_lat'],
-                                      location_lng=item['stop_lon'])
+                                      location_lng=item['stop_lon'], api_id=item['stop_id'])
 
                 if new_station_ashmont.name_api == 'place-jfk':
                     if not ashmont_added_jfk:
@@ -94,6 +94,7 @@ def sync_trips_and_records(routes, session):
         routes.remove('Red-Ashmont')
         routes.remove('Red-Braintree')
         routes.append('Red')
+
 
     Logger.log.info("Using routes: %s" % routes)
 
@@ -150,6 +151,51 @@ def sync_trips_and_records(routes, session):
 
                     else:
                         raise RuntimeError("There were multiple trip objects with the same id: %s" % trips_with_same_id)
+
+    for object in to_save:
+        session.merge(object)
+
+    session.commit()
+
+    return to_save
+
+def sync_predictions(routes, session):
+    
+    Logger.log.info("Syncing predictions...")
+    Logger.log.info("Input routes: %s" % routes)
+
+    if 'Red-Ashmont' in routes or 'Red-Braintree' in routes:
+        routes.remove('Red-Ashmont')
+        routes.remove('Red-Braintree')
+        routes.append('Red')
+
+    Logger.log.info("Using routes: %s" % routes)
+    
+    to_save = []
+
+    route_string = ",".join(routes)
+    data = API.get("predictionsbyroutes", {'routes': route_string})
+    mode = data['mode']
+    for route in mode:
+        route_sub = route['route']
+        for route_sub_sub in route_sub:
+            route_name = route_sub_sub['route_id']
+            Logger.log.info("Processing route %s" % route_name)
+            for direction in route_sub_sub['direction']:
+                for trip in direction['trip']:
+
+                    trip_id = trip['trip_id']
+                    
+                    for stop in trip['stop']:
+                        try:
+                            new_prediction_record = c.PredictionRecord(trip_id=trip_id, stamp=datetime.datetime.now(),
+                                                                  station_id=stop['stop_id'], seconds_away_from_stop=stop['pre_away'])
+
+                            to_save.append(new_prediction_record)
+                        except KeyError as e:
+                            Logger.log.info('trip %s has terminated' % trip_id)
+
+
 
     for object in to_save:
         session.merge(object)
