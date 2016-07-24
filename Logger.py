@@ -10,5 +10,10 @@ handler.setLevel(logging.INFO)
 log.addHandler(handler)
 log.setLevel(logging.INFO)
 
+
 def info(message):
     log.info(message)
+
+
+def error(message):
+    log.error(message)
