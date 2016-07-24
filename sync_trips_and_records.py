@@ -10,9 +10,6 @@ def sync(session, interval=60, once=False):
     while True:
         Logger.log.info('Syncing routes to database')
         routes = list(set([x.name for x in session.query(c.Route).all()]))
-        print "---------------"
-        print routes
-        print "---------------"
         APIFunctions.sync_trips_and_records(routes, session)
         APIFunctions.sync_predictions(routes, session)
         if once:
