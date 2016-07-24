@@ -104,7 +104,8 @@ class TripRecord(Base):
 
     def get_exact_station(self, session):
 
-        all_stations = session.query(Station).all()
+        our_route = session.query(Trip, Station).join(Station, Trip.destination_station_id == Station.id).filter(Trip.id == self.trip_id).first()[1].route_id
+        all_stations = session.query(Station).filter(Station.route_id == our_route).all()
         for station in all_stations:
             us = (self.location_lat, self.location_lng)
             it = (station.location_lat, station.location_lng)
