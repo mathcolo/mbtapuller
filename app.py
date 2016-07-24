@@ -45,10 +45,12 @@ def getTrainsOnRoute(route):
 
 	for trip in trips:
 		status = trip.get_status(session)
+		direction = int(trip.destination_station_id > trip.origin_station_id)
 		output = {
 			'id': trip.id,
 			'status': status[0],
 			'destination': trip.destination_station_id,
+			'direction': direction,
 			'station_1': None,
 			'station_2': None,
 		}
