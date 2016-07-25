@@ -110,7 +110,7 @@ class TripRecord(Base):
             us = (self.location_lat, self.location_lng)
             it = (station.location_lat, station.location_lng)
 
-            if vincenty(us, it).feet <= 400:
+            if vincenty(us, it).feet <= 300:
                 return station
 
         return None

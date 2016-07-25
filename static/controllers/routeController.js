@@ -62,19 +62,15 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 
 	$scope.stationStatus = function(station) {
 		var status = "NOTHING";
-
 		for(var i = 0; i < $scope.trains.length; i++) {
 			if($scope.trains[i]['status'] == "AT_STATION" && $scope.trains[i]['station_1'] == station['name']) {
 				return "AT_STATION";
 			}
-
 			if($scope.trains[i]['station_2'] == station['name']) {
 				return "IN_TRANSIT_TO";
 			}
 		}
-
 		return status;
-
 	}
 
 	$scope.styleForIconAtStation = function(station) {
@@ -92,34 +88,6 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 		}
 	}
 
-	$scope.trainBetween = function(station1, station2) {
-		for(var i = 0; i < $scope.trains.length; i++) {
-			if ($scope.trains[i]['destination'] != $scope.stations[$scope.stations.length-1]['id'])
-				return false;
-
-			if($scope.trains[i]['status'] != "IN_TRANSIT")
-				return false;
-
-			if($scope.trains[i]['station_1'] == station1['name'] && $scope.trains[i]['station_1'] == station2['name']) {
-				return true;
-			}
-
-			if($scope.trains[i]['station_1'] == station2['name'] && $scope.trains[i]['station_1'] == station1['name']) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	$scope.trainAt = function(station) {
-		for(var i = 0; i < $scope.trains.length; i++) {
-			if($scope.trains[i]['status'] == "AT_STATION" && $scope.trains[i]['station_1'] == station['name'] && $scope.trains[i]['destination'] == $scope.stations[$scope.stations.length-1]['id']) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
 	$scope.addToFavorites = function(station_id) {
 		if ($scope.favoritesExist()) {
 
