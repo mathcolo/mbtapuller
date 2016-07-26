@@ -132,7 +132,7 @@ def sync_trips_and_records(routes, session):
 
                         to_save.append(new_trip_record)
                     elif trips_with_same_id.count() == 0:
-                        if route_name == 'Red':
+                        if 'Red' in route_name:
                             if string_contains_ashmont_anything(trip['trip_name']):
                                 route_name = constants.RED_LINE_ASHMONT
                             elif string_contains_braintree_anything(trip['trip_name']):
@@ -198,7 +198,7 @@ def sync_predictions(routes, session):
                     trip_ref = session.query(db.Trip).filter(db.Trip.api_id == api_trip_id).first()
                     
                     if trip_ref is None:
-                        Logger.log.info('No trip record for this prediction. trip_api: %s' % api_trip_id)
+                        Logger.log.info('No trip record for this prediction. trip_api_id: %s' % api_trip_id)
                         continue
                         
                     for stop in trip['stop']:
