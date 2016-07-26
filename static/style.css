@@ -61,11 +61,9 @@ md-card {
 }
 
 .train_circle_in_transit {
-	#background-color: orange;
 	bottom: 30px;
 }
 
 .train_circle_at_station {
-	#background-color: purple;
 	top: 40px;
 }
