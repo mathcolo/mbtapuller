@@ -22,7 +22,7 @@ class Station(Base):
     name_api = Column(String(50))
     location_lat = Column(Float)
     location_lng = Column(Float)
-
+    
     def __str__(self):
         return "<Station name=%s on route=%s>" % (self.name_human_readable, self.route_id)
 
@@ -40,6 +40,7 @@ class Trip(Base):
 
     api_id = Column(String(25))
     date = Column(Date)
+    route_id = Column(Integer)
 
     origin_station_id = Column(Integer, ForeignKey("stations.id"))
     destination_station_id = Column(Integer, ForeignKey("stations.id"))
@@ -114,3 +115,19 @@ class TripRecord(Base):
                 return station
 
         return None
+
+class PredictionRecord(Base):
+    __tablename__ = 'predictionrecords'
+    
+    id = Column(Integer, primary_key=True)
+    
+    trip_id = Column(Integer, ForeignKey("trips.id"))
+    stamp = Column(DateTime)
+    station_id = Column(Integer, ForeignKey("stations.id"))
+    seconds_away_from_stop = Column(Integer)
+    
+    def __str__(self):
+        return "<PredictionRecord id=%s on trip=%s to station=%s>" % (self.id, self.trip_id, self.station_id)
+
+    def __repr__(self):
+        return "<PredictionRecord id=%s on trip=%s to station=%s>" % (self.id, self.trip_id, self.station_id)

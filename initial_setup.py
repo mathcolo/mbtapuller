@@ -2,7 +2,7 @@ import sys
 import APIFunctions
 import Database
 import Logger
-import Classes as c
+import db_objects as db
 
 def initial_setup():
     Database.wait_for_available()
@@ -10,7 +10,7 @@ def initial_setup():
     # Make a database connection
     session = Database.connect(create_all=True)
 
-    if session.query(c.Route).count() > 0 or session.query(c.Station).count() > 0:
+    if session.query(db.Route).count() > 0 or session.query(db.Station).count() > 0:
         Logger.log.error("ERROR: Initial setup cannot continue, this database already has route and station data.")
         sys.exit(1)
 

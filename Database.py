@@ -1,7 +1,7 @@
 import Logger
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-import Classes as c
+import db_objects as d
 import os
 import time
 import socket
@@ -39,7 +39,7 @@ def connect(create_all=False, use_mysql=False):
         db = create_engine('sqlite:///mbta.db', echo=False)
 
     if create_all:
-        c.Base.metadata.create_all(db)
+        d.Base.metadata.create_all(db)
     Session = sessionmaker(bind=db)
     session = Session()
 
@@ -48,7 +48,7 @@ def connect(create_all=False, use_mysql=False):
 
 def is_setup(session):
     try:
-        num_routes = session.query(c.Route).count()
+        num_routes = session.query(d.Route).count()
 
         if num_routes > 0:
             return True

@@ -1,5 +1,6 @@
 import constants
-import Classes as c
+import db_objects as db
+from difflib import SequenceMatcher
 
 def string_contains_ashmont_anything(string):
     for station_str in constants.RED_LINE_ASHMONT_STATIONS:
@@ -45,21 +46,28 @@ def isolate_destination_from_trip_name(name):
     else:
         return name.split(' to ')[1]
 
-def origin_and_destination_stations(session, api_trip, route_name):
-
-    if route_name == 'Red':
-        if string_contains_ashmont_anything(api_trip['trip_name']):
-            route_name = constants.RED_LINE_ASHMONT
-        elif string_contains_braintree_anything(api_trip['trip_name']):
-            route_name = constants.RED_LINE_BRAINTREE
-        else:
-            route_name = constants.RED_LINE_ASHMONT
-
-    route_id = session.query(c.Route).filter(c.Route.name == route_name).first().id
-
-    origin_station_id = session.query(c.Station).filter(c.Station.route_id == route_id).filter(
-        c.Station.name_human_readable == isolate_origin_from_trip_name(api_trip['trip_name'])).first().id
-    destination_station_id = session.query(c.Station).filter(c.Station.route_id == route_id).filter(
-        c.Station.name_human_readable == api_trip['trip_headsign']).first().id
+def origin_and_destination_stations(session, api_trip, route_id):
+    origin_station_id = session.query(db.Station).filter(db.Station.route_id == route_id).filter(
+        db.Station.name_human_readable == isolate_origin_from_trip_name(api_trip['trip_name'])).first().id
+    destination_station_id = session.query(db.Station).filter(db.Station.route_id == route_id).filter(
+        db.Station.name_human_readable == api_trip['trip_headsign']).first().id
 
     return origin_station_id, destination_station_id
+
+def station_with_most_similar_name(session, route_id, name):
+    
+    stations = session.query(db.Station).filter(db.Station.route_id == route_id).all()
+    
+    longest_len = 0
+    longest_name = ""
+    longest_id = -1
+    for s in stations:
+        sm = SequenceMatcher(None, s.name_human_readable, name)
+        
+        k = sm.ratio()*100; 
+        if k > longest_len:
+            longest_len = k
+            longest_id = s.id
+            longest_name = s.name_human_readable
+            
+    return longest_id

@@ -4,19 +4,19 @@ import Logger
 import datetime
 import APIFunctions
 import Database
-import Classes as c
+import db_objects as db
 
 
-def sync(session, interval=60, once=False):
+def pull(session, interval=60, once=False):
     while True:
-
         now = datetime.datetime.now()
         if 1 <= now.hour <= 5:
             Logger.log.info('Skipping sync, time is between 1 and 6AM')
         else:
             Logger.log.info('Syncing routes to database')
-            routes = [x.name for x in session.query(c.Route).all()]
+            routes = [x.name for x in session.query(db.Route).all()]
             APIFunctions.sync_trips_and_records(routes, session)
+            APIFunctions.sync_predictions(routes, session)
             if once:
                 break
         time.sleep(interval)
@@ -27,4 +27,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     session = Database.connect()
-    sync(session, once=args.once)
+    pull(session, once=args.once)
