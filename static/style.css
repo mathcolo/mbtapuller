@@ -19,5 +19,51 @@ body {
 }
 
 md-content {
-	margin: 10px; 
- }
+	margin-left: auto;
+	margin-right: auto;
+}
+
+md-card {
+	width: 600px;
+	height: 75px;
+	padding-top: -10px;
+	padding-left: 40px;
+}
+
+.line_display {
+	float: left;
+	width: 10px;
+	height: 143px;
+	background-color: green;
+	margin-left: 30px;
+	margin-right: 20px;
+}
+
+.train_circle {
+    -webkit-border-radius: 26px;
+    -moz-border-radius: 26px;
+	background-color: red;
+    border-radius: 26px;
+    width: 26px;
+    height: 26px;
+	position: relative;
+	right: 8px;
+}
+
+.train_circle ng-md-icon {
+	position: relative;
+	top: 1px;
+	fill: white;
+}
+
+.train_circle_hide {
+	visibility: hidden;
+}
+
+.train_circle_in_transit {
+	bottom: 30px;
+}
+
+.train_circle_at_station {
+	top: 40px;
+}
