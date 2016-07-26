@@ -14,7 +14,7 @@ def pull(session, interval=60, once=False):
             Logger.log.info('Skipping sync, time is between 1 and 6AM')
         else:
             Logger.log.info('Syncing routes to database')
-            routes = [x.name for x in session.query(c.Route).all()]
+            routes = [x.name for x in session.query(db.Route).all()]
             APIFunctions.sync_trips_and_records(routes, session)
             APIFunctions.sync_predictions(routes, session)
             if once:

@@ -21,8 +21,7 @@ class Station(Base):
     name_api = Column(String(50))
     location_lat = Column(Float)
     location_lng = Column(Float)
-    api_id = Column(Integer)
-
+    
     def __str__(self):
         return "<Station name=%s on route=%s>" % (self.name_human_readable, self.route_id)
 
@@ -40,6 +39,7 @@ class Trip(Base):
 
     api_id = Column(String(25))
     date = Column(Date)
+    route_id = Column(Integer)
 
     origin_station_id = Column(Integer, ForeignKey("stations.id"))
     destination_station_id = Column(Integer, ForeignKey("stations.id"))

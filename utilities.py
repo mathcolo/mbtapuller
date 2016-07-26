@@ -45,21 +45,13 @@ def isolate_destination_from_trip_name(name):
     else:
         return name.split(' to ')[1]
 
-def origin_and_destination_stations(session, api_trip, route_name):
-
-    if route_name == 'Red':
-        if string_contains_ashmont_anything(api_trip['trip_name']):
-            route_name = constants.RED_LINE_ASHMONT
-        elif string_contains_braintree_anything(api_trip['trip_name']):
-            route_name = constants.RED_LINE_BRAINTREE
-        else:
-            route_name = constants.RED_LINE_ASHMONT
-
-    route_id = session.query(db.Route).filter(db.Route.name == route_name).first().id
-
+def origin_and_destination_stations(session, api_trip, route_id):
     origin_station_id = session.query(db.Station).filter(db.Station.route_id == route_id).filter(
         db.Station.name_human_readable == isolate_origin_from_trip_name(api_trip['trip_name'])).first().id
     destination_station_id = session.query(db.Station).filter(db.Station.route_id == route_id).filter(
         db.Station.name_human_readable == api_trip['trip_headsign']).first().id
 
     return origin_station_id, destination_station_id
+
+def station_with_most_similar_name(session, route_id, name):
+    return None
