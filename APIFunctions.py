@@ -204,12 +204,14 @@ def sync_predictions(routes, session):
                     for stop in trip['stop']:
                         stop_name = stop['stop_name'].split(' -')[0]
                         
+                        if 'JFK/UMASS' in stop_name:
+                            stop_name = stop_name.split(' ')[0]
+                        
                         try:
                             station_id = session.query(db.Station).filter(db.Station.route_id ==       trip_ref.route_id).filter(db.Station.name_human_readable.like('%' + stop_name + '%')).first().id
                         
                         except AttributeError as e:
-                            station_id = 0
-                            print stop_name
+                            station_id = station_with_most_similar_name(session, trip_ref.route_id, stop_name)
                             
                         try:
                             seconds = stop['pre_away']
@@ -220,6 +222,7 @@ def sync_predictions(routes, session):
 
                             to_save.append(new_prediction_record)
                         except KeyError as e:
+                            continue
                             Logger.log.info('trip %s has terminated' % api_trip_id)
 
 

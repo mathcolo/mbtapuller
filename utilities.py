@@ -1,5 +1,6 @@
 import constants
 import db_objects as db
+from difflib import SequenceMatcher
 
 def string_contains_ashmont_anything(string):
     for station_str in constants.RED_LINE_ASHMONT_STATIONS:
@@ -54,4 +55,19 @@ def origin_and_destination_stations(session, api_trip, route_id):
     return origin_station_id, destination_station_id
 
 def station_with_most_similar_name(session, route_id, name):
-    return None
+    
+    stations = session.query(db.Station).filter(db.Station.route_id == route_id).all()
+    
+    longest_len = 0
+    longest_name = ""
+    longest_id = -1
+    for s in stations:
+        sm = SequenceMatcher(None, s.name_human_readable, name)
+        
+        k = sm.ratio()*100; 
+        if k > longest_len:
+            longest_len = k
+            longest_id = s.id
+            longest_name = s.name_human_readable
+            
+    return longest_id
