@@ -1,3 +1,4 @@
+import datetime
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, Date, DateTime, desc
 from sqlalchemy.ext.declarative import declarative_base
 from geopy.distance import vincenty
@@ -67,8 +68,10 @@ class Trip(Base):
         if most_recent_trip_record is None:
             return STATUS_UNKNOWN, 0
 
-        #print "most_recent_trip_record: %s" % most_recent_trip_record
-        #import ipdb; ipdb.set_trace()
+        most_recent_trip_record_age = (datetime.datetime.now() - most_recent_trip_record.stamp).total_seconds()
+
+        if most_recent_trip_record_age > 180:
+            return STATUS_TERMINATED, 0
 
         exact_station = most_recent_trip_record.get_exact_station(session)
         if exact_station:
@@ -76,8 +79,12 @@ class Trip(Base):
 
         # If we get this far, we're not at a station
         # Return what we're between
+        segment = (Functions.find_segment(most_recent_trip_record, session))
 
-        return STATUS_IN_TRANSIT, (Functions.find_segment(most_recent_trip_record, session))
+        if segment[0] != segment[1]:
+            return STATUS_IN_TRANSIT, (Functions.find_segment(most_recent_trip_record, session))
+        else:
+            return STATUS_AT_STATION, segment[0]
 
 class TripRecord(Base):
     __tablename__ = 'triprecords'
@@ -97,12 +104,13 @@ class TripRecord(Base):
 
     def get_exact_station(self, session):
 
-        all_stations = session.query(Station).all()
+        our_route = session.query(Trip, Station).join(Station, Trip.destination_station_id == Station.id).filter(Trip.id == self.trip_id).first()[1].route_id
+        all_stations = session.query(Station).filter(Station.route_id == our_route).all()
         for station in all_stations:
             us = (self.location_lat, self.location_lng)
             it = (station.location_lat, station.location_lng)
 
-            if vincenty(us, it).feet <= 400:
+            if vincenty(us, it).feet <= 300:
                 return station
 
         return None

@@ -1,43 +1,47 @@
 <div flex-xs flex-gt-xs="200" layout="column" layout-align="center">
 
-		<md-content layout="column">
-			<h3>Destination: 
-			<md-button 
-				ng-click="btn.isSelected = false; changeDestination(true)" 
-				ng-class="{false: 'md-raised', true: 'md-raised md-primary'}[!btn.isSelected]">
-				{{ last }}
-			</md-button>
-			
-			<md-button 
-				ng-click="btn.isSelected = true; changeDestination(false)" 
-				ng-class="{true: 'md-raised', false: 'md-raised md-primary'}[!btn.isSelected]">
-				{{ first }}
-			</md-button>
-			</h3> 
-	  <md-card ng-repeat="s in stations">
-        <md-card-title>
-          <md-card-title-text>
-            <span class="md-headline">{{s.name}}</span>
-            <span class="md-subhead">{{s.route_name}}</span>
-          </md-card-title-text>
-          <md-card-title-media>
-            <div class="md-media-sm card-media"></div>
-          </md-card-title-media>
-        </md-card-title>
-        <md-card-actions layout="row" layout-align="end center">
-          <md-button ng-click="addToFavorites(s.id)" class="md-icon-button" aria-label="Favorite" >
-			<ng-md-icon ng-if="!isFavorited(s.id)" icon="star_border">
-						  <md-tooltip md-direction="bottom">
-						  Add to Favorites
-						</md-tooltip>
-			</ng-md-icon>
-			<ng-md-icon ng-if="isFavorited(s.id)" icon="star">
-						  <md-tooltip md-direction="bottom">
-						  Remove from Favorites
-						</md-tooltip>
-			</ng-md-icon>
-		</md-button>
-        </md-card-actions>
-      </md-card>
-	</md-content>
+    <md-content layout="column">
+        <h3>Destination:
+            <md-button
+                    ng-click="btn.isSelected = false; changeDestination(true)"
+                    ng-class="{false: 'md-raised', true: 'md-raised md-primary'}[!btn.isSelected]">
+                {{ last }}
+            </md-button>
+
+            <md-button
+                    ng-click="btn.isSelected = true; changeDestination(false)"
+                    ng-class="{true: 'md-raised', false: 'md-raised md-primary'}[!btn.isSelected]">
+                {{ first }}
+            </md-button>
+        </h3>
+
+        <div class="station_container" ng-repeat="s in stations">
+            <div class="line_display {{ s['route_name'].split('-')[0] }}"><div class="train_circle {{ styleForIconAtStation(s) }} {{ s['route_name'].split('-')[0] }}"><ng-md-icon icon="train"/></div></div>
+            <md-card>
+                <md-card-title>
+                    <md-card-title-text>
+                        <span class="md-headline">{{ s.name }}</span>
+                        <span class="md-subhead">{{ s.route_name }}</span>
+                    </md-card-title-text>
+                    <md-card-title-media>
+                        <div class="md-media-sm card-media"></div>
+                    </md-card-title-media>
+                </md-card-title>
+                <md-card-actions layout="row" layout-align="end center">
+                    <md-button ng-click="addToFavorites(s.id)" class="md-icon-button" aria-label="Favorite">
+                        <ng-md-icon ng-if="!isFavorited(s.id)" icon="star_border">
+                            <md-tooltip md-direction="bottom">
+                                Add to Favorites
+                            </md-tooltip>
+                        </ng-md-icon>
+                        <ng-md-icon ng-if="isFavorited(s.id)" icon="star">
+                            <md-tooltip md-direction="bottom">
+                                Remove from Favorites
+                            </md-tooltip>
+                        </ng-md-icon>
+                    </md-button>
+                </md-card-actions>
+            </md-card>
+        </div>
+    </md-content>
 </div>

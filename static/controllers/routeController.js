@@ -2,6 +2,8 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
     'use strict';
 	
 	$scope.route = $routeParams.route_name;
+	$scope.trains = [];
+	$scope.destination = true;
 	
 	$scope.favoritesExist = FavoritesService.favoritesExist;
 	$scope.isFavorited = FavoritesService.isFavorited;
@@ -9,7 +11,8 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 	$scope.getData = function(route_id) {
 		$http.get('/trains/' + route_id)
 		.then(function successCallback(response) {
-				$scope.trains = response.data;
+				$scope.allTrains = response.data;
+				$scope.filterTrains($scope.destination);
 			}, function errorCallback(response) {
 		});
 		
@@ -21,8 +24,6 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 				
 				$scope.first = $scope.stations[0].name;
 				$scope.last = $scope.stations[stations_length - 1].name;
-				
-				$scope.destination = true;
 				
 			}, function errorCallback(response) {
 				
@@ -39,14 +40,54 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 		
 		
 	};
-	
-	$scope.changeDestination = function(destination) {
+
+	$scope.filterTrains = function(direction) {
+		$scope.trains = [];
+			for (var i = 0; i < $scope.allTrains.length; i++) {
+				var train_direction = $scope.allTrains[i]['direction'];
+				if (train_direction == direction) {
+					$scope.trains.push($scope.allTrains[i]);
+				}
+			}
+	}
+
+	$scope.changeDestination = function (destination) {
 		if (destination != $scope.destination) {
-			$scope.destination = destination;
+			$scope.filterTrains(destination);
 			$scope.stations = $scope.stations.reverse();
+			$scope.destination = destination;
 		}
 	};
-	
+
+
+	$scope.stationStatus = function(station) {
+		var status = "NOTHING";
+		for(var i = 0; i < $scope.trains.length; i++) {
+			if($scope.trains[i]['status'] == "AT_STATION" && $scope.trains[i]['station_1'] == station['name']) {
+				return "AT_STATION";
+			}
+			if($scope.trains[i]['station_2'] == station['name']) {
+				return "IN_TRANSIT_TO";
+			}
+		}
+		return status;
+	}
+
+	$scope.styleForIconAtStation = function(station) {
+		var status = $scope.stationStatus(station);
+		switch(status) {
+			case "NOTHING":
+				return "train_circle_hide";
+				break;
+			case "AT_STATION":
+				return "train_circle_at_station";
+				break;
+			case "IN_TRANSIT_TO":
+				return "train_circle_in_transit"
+				break;
+		}
+	}
+
 	$scope.addToFavorites = function(station_id) {
 		if ($scope.favoritesExist()) {
 

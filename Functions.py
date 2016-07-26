@@ -1,8 +1,23 @@
-from geopy.distance import vincenty
+import datetime
 from geopy.distance import vincenty as dist
 from sqlalchemy import desc, asc, or_
 import Classes as c
 import constants
+
+def current_trips(session, route_id):
+
+    five_minutes_ago = datetime.datetime.now() - datetime.timedelta(seconds=300)
+
+    return [
+        x[1] for x in session.query(c.TripRecord, c.Trip, c.Station)
+        .join(c.Trip, c.TripRecord.trip_id == c.Trip.id)
+        .join(c.Station, c.Trip.origin_station_id == c.Station.id)
+        .group_by(c.Trip.id)
+        .filter(c.TripRecord.stamp > five_minutes_ago)
+        .filter(c.Station.route_id == int(route_id))
+        .all()
+            ]
+
 
 def surrounding_station(session, station):
     '''
