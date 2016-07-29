@@ -1,2 +1,2 @@
 FROM python:2-onbuild
-CMD [ "python", "./sync_trips_and_records.py" ]
+CMD [ "python", "./pull_data.py" ]
