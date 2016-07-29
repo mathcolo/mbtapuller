@@ -10,6 +10,7 @@ import db_objects as db
 
 def pull(session, interval=60, once=False):
     while True:
+        # This is timezone specific because the train schedule itself operates on ET, not UTC!
         now = datetime.datetime.now(pytz.timezone('US/Eastern'))
         if 1 <= now.hour <= 5:
             Logger.log.info('Skipping sync, time is between 1 and 6AM')

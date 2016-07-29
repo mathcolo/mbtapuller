@@ -128,7 +128,7 @@ def sync_trips_and_records(routes, session):
                         # Create a trip record since it exists already
 
                         new_trip_record = db.TripRecord(trip_id=trips_with_same_id.first().id, location_lat=trip['vehicle']['vehicle_lat'],
-                                                     location_lng=trip['vehicle']['vehicle_lon'], stamp=datetime.datetime.now())
+                                                     location_lng=trip['vehicle']['vehicle_lon'], stamp=datetime.datetime.utcnow())
 
                         to_save.append(new_trip_record)
                     elif trips_with_same_id.count() == 0:
@@ -148,13 +148,13 @@ def sync_trips_and_records(routes, session):
                         destination_station_id = station_pair[1]
 
                         new_trip = db.Trip(api_id=trip['trip_id'], route_id=route_id, origin_station_id=origin_station_id, destination_station_id=destination_station_id,
-                                        date=datetime.datetime.now())
+                                        date=datetime.datetime.utcnow())
 
                         session.add(new_trip)
                         session.commit()
 
                         new_trip_record = db.TripRecord(trip_id=new_trip.id, location_lat=trip['vehicle']['vehicle_lat'],
-                                                     location_lng=trip['vehicle']['vehicle_lon'], stamp=datetime.datetime.now())
+                                                     location_lng=trip['vehicle']['vehicle_lon'], stamp=datetime.datetime.utcnow())
 
                         to_save.append(new_trip_record)
 
@@ -217,7 +217,7 @@ def sync_predictions(routes, session):
                             seconds = stop['pre_away']
                             
                             
-                            new_prediction_record = db.PredictionRecord(trip_id=trip_ref.id, stamp=datetime.datetime.now(),
+                            new_prediction_record = db.PredictionRecord(trip_id=trip_ref.id, stamp=datetime.datetime.utcnow(),
                                                                   station_id=station_id, seconds_away_from_stop=seconds)
 
                             to_save.append(new_prediction_record)

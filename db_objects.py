@@ -69,7 +69,7 @@ class Trip(Base):
         if most_recent_trip_record is None:
             return STATUS_UNKNOWN, 0
 
-        most_recent_trip_record_age = (datetime.datetime.now() - most_recent_trip_record.stamp).total_seconds()
+        most_recent_trip_record_age = (datetime.datetime.utcnow() - most_recent_trip_record.stamp).total_seconds()
 
         if most_recent_trip_record_age > 180:
             return STATUS_TERMINATED, 0
