@@ -77,20 +77,22 @@ def get_stations_on_route(route_id):
 def get_all_routes():
 	return Functions.all_routes(session)
 
+
 @app.route("/id", methods=['GET'])
 def get_id_for_route():
 	id = session.query(db.Route).filter(db.Route.name == name).one().id
 	return json.dumps(id)
-	
+
+
 @app.route("/station/<string:station_id>", methods=['GET'])
 def get_station_details(station_id):
-    station = session.query(db.Station).filter(db.Station.id == station_id).one()
-	
+	station = session.query(db.Station).filter(db.Station.id == station_id).one()
+
 	route_name = session.query(db.Route).filter(db.Route.id == station.route_id).one().name
-	
+
 	stations_details = {'name': station.name_human_readable, 'route_name': route_name, 'id': station.id}
 	return json.dumps(stations_details)
 
-if __name__ == "__main__":
-    app.run()
 
+if __name__ == "__main__":
+	app.run()
