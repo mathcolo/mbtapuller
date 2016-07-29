@@ -12,6 +12,7 @@
 - flask
 - sqlalchemy
 - geopy
+- pytz
 - vcrpy
 - mysql-python
 
@@ -31,7 +32,7 @@ For a manual setup:
 
 - Optionally customize `Database.py` with MySQL details (SQLite is assumed otherwise)
 
-- `pip install requests flask sqlalchemy geopy vcrpy mysql-python`
+- `pip install requests flask sqlalchemy geopy vcrpy pytz mysql-python`
 
 - `python initial_setup.py` (auto-creates mbta.db in the same directory)
 
