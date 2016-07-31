@@ -4,4 +4,4 @@ sqlalchemy
 geopy
 vcrpy
 pytz
-mysql-python
+pymysql

@@ -14,7 +14,7 @@
 - geopy
 - pytz
 - vcrpy
-- mysql-python
+- pymysql
 
 ## Installation
 
