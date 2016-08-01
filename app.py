@@ -99,13 +99,13 @@ def get_directed_station_details(station_id, direction):
 	station = session.query(db.Station).filter(db.Station.id == station_id).one()
 	route_name = session.query(db.Route).filter(db.Route.id == station.route_id).one().name
 	
-	predictions = get_next_service_for_station(station_id, direction)
+	predictions = json.loads(get_next_service_for_station(station_id, direction))
 	
 	stations_details = {'name': station.name_human_readable, 
 						'route_name': route_name, 
 						'id': station.id,
-					   'pre_1': predictions[0],
-					   'pre_2': predictions[1]}
+					   'pre_1': predictions['prediction1'],
+					   'pre_2': predictions['prediction2']}
 	
 	return json.dumps(stations_details)
 

@@ -26,7 +26,7 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 				$scope.station_ids = response.data;
 				
 				angular.forEach($scope.station_ids, function(value, key){
-					 $http.get('/station/' + value + '/direction/' + ($scope.destination ? 1 : 0 )+ '/details')
+					 $http.get('/station/' + value + '/direction/' + ($scope.destination ? 1 : 0 ) + '/details')
 					 .then(function successfulCallback(response) {
 						 $scope.stations.push(response.data);
 					 }, function errorCallback(response) {
