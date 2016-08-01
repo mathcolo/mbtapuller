@@ -18,7 +18,7 @@ app = Flask(__name__)
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
-	lines = sorted(getAllRoutes(), key=lambda k: k['name']) 
+	lines = sorted(get_all_routes(), key=lambda k: k['name'])
 	
 	return render_template('index.html', lines=lines)
 
