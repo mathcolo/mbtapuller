@@ -67,7 +67,6 @@ def get_all_stations():
 	
 	return json.dumps(stations)
 
-	# should instead get list of station ids
 @app.route("/stations/<string:route_id>", methods=['GET'])
 def get_stations_on_route(route_id):
 	stations = Functions.get_stations(route_id, session)
@@ -88,7 +87,7 @@ def get_station_details(station_id):
 	station = session.query(db.Station).filter(db.Station.id == station_id).one()
 	route_name = session.query(db.Route).filter(db.Route.id == station.route_id).one().name
 	
-	# add in dats for both directions
+	# add in predictions for both directions
 	stations_details = {'name': station.name_human_readable, 
 						'route_name': route_name, 
 						'id': station.id}

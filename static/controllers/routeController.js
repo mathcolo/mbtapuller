@@ -2,9 +2,6 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
     'use strict';
 	// need general service file to hold conversion of seconds to minutes and seconds
 	
-	// add refresh for predictions and trains every 60 seconds
-		// every 60 seconds call the trains method again
-		// every 60 seconds loop through stations and get new predictions and update current objects
 	$scope.route = $routeParams.route_name;
 	$scope.trains = [];
 	$scope.stations = [];
