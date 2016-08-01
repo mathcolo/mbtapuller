@@ -1,6 +1,7 @@
 import datetime
 from geopy.distance import vincenty as dist
 from sqlalchemy import desc, asc, or_
+from sqlalchemy.sql.expression import func
 import db_objects as db
 import constants
 
@@ -9,15 +10,24 @@ def current_trips(session, route_id):
     five_minutes_ago = datetime.datetime.now() - datetime.timedelta(seconds=300)
 
     return [
-        x[1] for x in session.query(c.TripRecord, c.Trip, c.Station)
-        .join(c.Trip, c.TripRecord.trip_id == c.Trip.id)
-        .join(c.Station, c.Trip.origin_station_id == c.Station.id)
-        .group_by(c.Trip.id)
-        .filter(c.TripRecord.stamp > five_minutes_ago)
-        .filter(c.Station.route_id == int(route_id))
+        x[1] for x in session.query(db.TripRecord, db.Trip, db.Station)
+        .join(db.Trip, db.TripRecord.trip_id == db.Trip.id)
+        .join(db.Station, db.Trip.origin_station_id == db.Station.id)
+        .group_by(db.Trip.id)
+        .filter(db.TripRecord.stamp > five_minutes_ago)
+        .filter(db.Station.route_id == int(route_id))
         .all()
             ]
 
+def current_predictions(session, station_id):
+	
+	predictions = session.query(
+		db.PredictionRecord.trip_id, db.PredictionRecord.seconds_away_from_stop, 
+		func.max(db.PredictionRecord.stamp)).filter(db.PredictionRecord.station_id == station_id).group_by(db.PredictionRecord.trip_id).order_by(
+    func.max(db.PredictionRecord.stamp).desc()).all()
+	
+	return predictions
+	
 
 def surrounding_station(session, station):
     '''
@@ -102,8 +112,8 @@ def get_stations(id, session):
 	
 	route_name = session.query(db.Route).filter(db.Route.id == id).one().name
 	
-	stations_output = []
+	stations_list = []
 	for station in stations:
-		stations_output.append({'id': station[0].id, 'route_id': station[0].route_id, 'name': station[0].name_human_readable, 'route_name': route_name})
+		stations_list.append(station[0].id)
 			
-	return stations_output
+	return stations_list

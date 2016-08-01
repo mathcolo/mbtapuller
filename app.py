@@ -18,7 +18,7 @@ app = Flask(__name__)
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
-	lines = sorted(getAllRoutes(), key=lambda k: k['name']) 
+	lines = sorted(get_all_routes(), key=lambda k: k['name']) 
 	
 	return render_template('index.html', lines=lines)
 
@@ -67,7 +67,7 @@ def get_all_stations():
 	
 	return json.dumps(stations)
 
-	
+	# should instead get list of station ids
 @app.route("/stations/<string:route_id>", methods=['GET'])
 def get_stations_on_route(route_id):
 	stations = Functions.get_stations(route_id, session)
@@ -79,17 +79,65 @@ def get_all_routes():
 
 @app.route("/id", methods=['GET'])
 def get_id_for_route():
-	id = session.query(db.Route).filter(db.Route.name == name).one().id
+	id = session.query(db.Route).filter(db.Route.name == request.args['name']).one().id
 	return json.dumps(id)
-	
+
 @app.route("/station/<string:station_id>", methods=['GET'])
 def get_station_details(station_id):
-    station = session.query(db.Station).filter(db.Station.id == station_id).one()
-	
+	station = session.query(db.Station).filter(db.Station.id == station_id).one()
 	route_name = session.query(db.Route).filter(db.Route.id == station.route_id).one().name
 	
-	stations_details = {'name': station.name_human_readable, 'route_name': route_name, 'id': station.id}
+	# add in dats for both directions
+	stations_details = {'name': station.name_human_readable, 
+						'route_name': route_name, 
+						'id': station.id}
+	
 	return json.dumps(stations_details)
+
+@app.route("/station/<string:station_id>/direction/<string:direction>/details", methods=['GET'])
+def get_directed_station_details(station_id, direction):
+	station = session.query(db.Station).filter(db.Station.id == station_id).one()
+	route_name = session.query(db.Route).filter(db.Route.id == station.route_id).one().name
+	
+	predictions = get_next_service_for_station(station_id, direction)
+	
+	stations_details = {'name': station.name_human_readable, 
+						'route_name': route_name, 
+						'id': station.id,
+					   'pre_1': predictions[0],
+					   'pre_2': predictions[1]}
+	
+	return json.dumps(stations_details)
+
+@app.route("/station/<string:station_id>/direction/<string:direction>/nextservice", methods=['GET'])
+def get_next_service_for_station(station_id, direction):
+	predictions = Functions.current_predictions(session, station_id)
+	
+	directed_predictions = []
+    
+	if (predictions != None):
+		for prediction in predictions:
+			trip = session.query(db.Trip).filter(db.Trip.id == prediction.trip_id).first()
+			dir = int(trip.destination_station_id > trip.origin_station_id)
+            
+			if (int(direction) is dir):
+				directed_predictions.append(prediction)
+		
+		if len(directed_predictions) is 0:
+			return json.dumps({'prediction1': None, 'prediction2' : None})
+				
+		directed_predictions.sort(key=lambda x: x.seconds_away_from_stop)
+		
+		if len(directed_predictions) > 1:
+			next_two_pre = {'prediction1': directed_predictions[0].seconds_away_from_stop, 'prediction2' : directed_predictions[1].seconds_away_from_stop}
+			
+		else:
+			next_two_pre = {'prediction1': directed_predictions[0].seconds_away_from_stop, 'prediction2' : None}
+			
+		return json.dumps(next_two_pre)
+	else:
+		return json.dumps({'prediction1': None, 'prediction2' : None})
+    
 
 if __name__ == "__main__":
     app.run()
