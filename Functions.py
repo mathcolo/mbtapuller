@@ -7,7 +7,7 @@ import constants
 
 def current_trips(session, route_id):
 
-    five_minutes_ago = datetime.datetime.now() - datetime.timedelta(seconds=300)
+    five_minutes_ago = datetime.datetime.utcnow() - datetime.timedelta(seconds=300)
 
     return [
         x[1] for x in session.query(db.TripRecord, db.Trip, db.Station)

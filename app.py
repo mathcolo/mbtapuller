@@ -77,6 +77,7 @@ def get_stations_on_route(route_id):
 def get_all_routes():
 	return Functions.all_routes(session)
 
+
 @app.route("/id", methods=['GET'])
 def get_id_for_route():
 	id = session.query(db.Route).filter(db.Route.name == request.args['name']).one().id
@@ -140,5 +141,4 @@ def get_next_service_for_station(station_id, direction):
     
 
 if __name__ == "__main__":
-    app.run()
-
+	app.run()
