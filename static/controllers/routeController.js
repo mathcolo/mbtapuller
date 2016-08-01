@@ -1,4 +1,4 @@
-app.controller('routeController', function ($scope, $routeParams, $localStorage, $http, FavoritesService) {
+app.controller('routeController', function ($scope, $routeParams, $localStorage, $http, FavoritesService, $interval) {
     'use strict';
 	// need general service file to hold conversion of seconds to minutes and seconds
 	
@@ -46,8 +46,8 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 	$scope.init = function() {
 		$http.get('/id?name=' + $scope.route)
 		.then(function successCallback(response) {
-				var route_id = parseInt(response.data);
-				$scope.getData(route_id);
+				$scope.route_id = parseInt(response.data);
+				$scope.getData($scope.route_id);
 			}, function errorCallback(response) {
 		});
 		
@@ -68,6 +68,7 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 		if (destination != $scope.destination) {
 			$scope.filterTrains(destination);
 			$scope.stations = $scope.stations.reverse();
+			$scope.refreshData();
 			$scope.destination = destination;
 		}
 	};
@@ -122,7 +123,26 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 		}
 	};
 	
+	$scope.refreshData = function() {
+		angular.forEach($scope.stations, function(value, key){
+			 $http.get('/station/' + value.id + '/direction/' + ($scope.destination ? 1 : 0 ) + '/nextservice')
+			 .then(function successfulCallback(response) {
+				 $scope.stations[key].pre_1 = response.data['prediction1'];
+				 $scope.stations[key].pre_2 = response.data['prediction2'];
+			 }, function errorCallback(response) {
+			});
+		});	
+		
+		$http.get('/trains/' + $scope.route_id)
+		.then(function successCallback(response) {
+				$scope.allTrains = response.data;
+				$scope.filterTrains($scope.destination);
+			}, function errorCallback(response) {
+		});
+	};
+	
 	
 	$scope.init();
+	$interval($scope.refreshData, 60000);
 	
 });
