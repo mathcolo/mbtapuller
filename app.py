@@ -7,7 +7,7 @@ import Database
 import Functions
 import db_objects as db
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, desc, asc
 
 Database.wait_for_available()
 session = Database.connect()
@@ -72,6 +72,13 @@ def get_stations_on_route(route_id):
 	stations = Functions.get_stations(route_id, session)
 	return json.dumps(stations)
 
+@app.route("/stations/<string:route_id>/terminal", methods=['GET'])
+def get_terminal_stations(route_id):
+	first = session.query(db.Station).filter(db.Station.route_id == route_id).order_by(asc(db.Station.id)).limit(1).first()
+	last = session.query(db.Station).filter(db.Station.route_id == route_id).order_by(desc(db.Station.id)).limit(1).first()
+	
+	return json.dumps({'first': first.name_human_readable, 'last': last.name_human_readable})
+
 @app.route("/routes", methods=['GET'])
 def get_all_routes():
 	return Functions.all_routes(session)
@@ -79,7 +86,7 @@ def get_all_routes():
 
 @app.route("/id", methods=['GET'])
 def get_id_for_route():
-	id = session.query(db.Route).filter(db.Route.name == request.args['name']).one().id
+	id = session.query(db.Route).filter(db.Route.name == request.args['name']).first().id
 	return json.dumps(id)
 
 @app.route("/station/<string:station_id>", methods=['GET'])
@@ -115,7 +122,7 @@ def get_next_service_for_station(station_id, direction):
 	
 	directed_predictions = []
     
-	if (predictions != None):
+	if (predictions is not None):
 		for prediction in predictions:
 			trip = session.query(db.Trip).filter(db.Trip.id == prediction.trip_id).first()
 			dir = int(trip.destination_station_id > trip.origin_station_id)
@@ -123,7 +130,7 @@ def get_next_service_for_station(station_id, direction):
 			if (int(direction) is dir):
 				directed_predictions.append(prediction)
 		
-		if len(directed_predictions) is 0:
+		if len(directed_predictions) == 0:
 			return json.dumps({'prediction1': None, 'prediction2' : None})
 				
 		directed_predictions.sort(key=lambda x: x.seconds_away_from_stop)

@@ -29,22 +29,26 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 					 }, function errorCallback(response) {
 					});
 				});
-				
-				var stations_length = $scope.stations.length;
-				
-				$scope.first = $scope.stations[0].name;
-				$scope.last = $scope.stations[stations_length - 1].name;
-				
 			}, function errorCallback(response) {
 				
 		});
 	};
+	
+	$scope.getTerminalStations = function(route_id) {
+		$http.get('/stations/' + route_id + '/terminal')
+		.then(function successCallback(response) {
+				$scope.first = response.data['first'];
+				$scope.last = response.data['last'];
+			}, function errorCallback(response) {
+		});
+	}
 	
 	$scope.init = function() {
 		$http.get('/id?name=' + $scope.route)
 		.then(function successCallback(response) {
 				$scope.route_id = parseInt(response.data);
 				$scope.getData($scope.route_id);
+				$scope.getTerminalStations($scope.route_id);
 			}, function errorCallback(response) {
 		});
 		
@@ -137,6 +141,28 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 			}, function errorCallback(response) {
 		});
 	};
+	
+	$scope.predictionText = function(station_id) {
+		var str = "";
+		for (var i = 0; i<$scope.stations.length; i++) {
+			if ($scope.stations[i].id === station_id) {
+				if ($scope.stations[i].pre_2 === null) {
+					if ($scope.stations[i].pre_1 === null) {
+						 str = "There is no scheduled service to this station at this time.";
+						break;
+					}
+					else {
+						str = "Next service: " + $scope.stations[i].pre_1 + " seconds away";
+						break;
+					}
+				}
+				str = "Next service: " + $scope.stations[i].pre_1 + " seconds away  | " + $scope.stations[i].pre_2 + " seconds away";
+				break;
+			}
+		}
+		
+		return str;
+	}
 	
 	
 	$scope.init();
