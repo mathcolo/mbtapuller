@@ -123,20 +123,32 @@ def get_next_service_for_station(station_id, direction):
         1).first().stamp
     most_recent_pull_time_threshold = most_recent_pull_time - datetime.timedelta(seconds=5)
 
-    trips_on_same_route = Functions.current_trips(session, session.query(db.Station).filter(db.Station.id == station_id).first().route_id)
-    trips_same_direction = []
-    for trip in trips_on_same_route:
-        if int(trip.get_direction()) == int(direction) and trip.get_status(session) != constants.STATUS_TERMINATED:
-            trips_same_direction.append(trip)
+    # trips_on_same_route = Functions.current_trips(session, session.query(db.Station).filter(db.Station.id == station_id).first().route_id)
+    # trips_same_direction = []
+    # for trip in trips_on_same_route:
+    #     if int(trip.get_direction()) == int(direction) and trip.get_status(session) != constants.STATUS_TERMINATED:
+    #         trips_same_direction.append(trip)
 
     lowest_to_station = 10000
-    for trip in trips_same_direction:
-        prediction_records = session.query(db.PredictionRecord).filter(db.PredictionRecord.trip_id == trip.id).filter(db.PredictionRecord.station_id == station_id).filter(db.PredictionRecord.stamp > most_recent_pull_time_threshold).order_by(db.PredictionRecord.stamp.desc()).all()
+    # for trip in trips_same_direction:
+    #     prediction_records = session.query(db.PredictionRecord).filter(db.PredictionRecord.trip_id == trip.id).filter(db.PredictionRecord.station_id == station_id).filter(db.PredictionRecord.stamp > most_recent_pull_time_threshold).order_by(db.PredictionRecord.stamp.desc()).all()
+    #
+    #     for index, record in enumerate(prediction_records):
+    #         if record.station_id == int(station_id):
+    #             if record.seconds_away_from_stop < lowest_to_station:
+    #                 lowest_to_station = record.seconds_away_from_stop
 
-        for index, record in enumerate(prediction_records):
-            if record.station_id == int(station_id):
-                if record.seconds_away_from_stop < lowest_to_station:
-                    lowest_to_station = record.seconds_away_from_stop
+    prediction_record =(
+        session.query(db.PredictionRecord)
+        .filter(db.PredictionRecord.station_id == station_id)
+        .filter(db.PredictionRecord.trip_direction == direction)
+        .filter(db.PredictionRecord.stamp > most_recent_pull_time_threshold)
+        .order_by(db.PredictionRecord.seconds_away_from_stop)
+        .first()
+    )
+
+    if prediction_record is not None:
+        lowest_to_station = prediction_record.seconds_away_from_stop
 
     return json.dumps({'prediction1': lowest_to_station, 'prediction2': None})
     
