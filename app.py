@@ -4,6 +4,7 @@ import json
 import requests
 import constants
 import Database
+import datetime
 import Functions
 import db_objects as db
 from sqlalchemy.orm import sessionmaker
@@ -118,32 +119,26 @@ def get_directed_station_details(station_id, direction):
 
 @app.route("/station/<string:station_id>/direction/<string:direction>/nextservice", methods=['GET'])
 def get_next_service_for_station(station_id, direction):
-	predictions = Functions.current_predictions(session, station_id)
-	
-	directed_predictions = []
-    
-	if (predictions is not None):
-		for prediction in predictions:
-			trip = session.query(db.Trip).filter(db.Trip.id == prediction.trip_id).first()
-			dir = int(trip.destination_station_id > trip.origin_station_id)
-            
-			if (int(direction) is dir):
-				directed_predictions.append(prediction)
-		
-		if len(directed_predictions) == 0:
-			return json.dumps({'prediction1': None, 'prediction2' : None})
-				
-		directed_predictions.sort(key=lambda x: x.seconds_away_from_stop)
-		
-		if len(directed_predictions) > 1:
-			next_two_pre = {'prediction1': directed_predictions[0].seconds_away_from_stop, 'prediction2' : directed_predictions[1].seconds_away_from_stop}
-			
-		else:
-			next_two_pre = {'prediction1': directed_predictions[0].seconds_away_from_stop, 'prediction2' : None}
-			
-		return json.dumps(next_two_pre)
-	else:
-		return json.dumps({'prediction1': None, 'prediction2' : None})
+    most_recent_pull_time = session.query(db.PredictionRecord).order_by(db.PredictionRecord.stamp.desc()).limit(
+        1).first().stamp
+    most_recent_pull_time_threshold = most_recent_pull_time - datetime.timedelta(seconds=5)
+
+    trips_on_same_route = Functions.current_trips(session, session.query(db.Station).filter(db.Station.id == station_id).first().route_id)
+    trips_same_direction = []
+    for trip in trips_on_same_route:
+        if int(trip.get_direction()) == int(direction) and trip.get_status(session) != constants.STATUS_TERMINATED:
+            trips_same_direction.append(trip)
+
+    lowest_to_station = 10000
+    for trip in trips_same_direction:
+        prediction_records = session.query(db.PredictionRecord).filter(db.PredictionRecord.trip_id == trip.id).filter(db.PredictionRecord.station_id == station_id).filter(db.PredictionRecord.stamp > most_recent_pull_time_threshold).order_by(db.PredictionRecord.stamp.desc()).all()
+
+        for index, record in enumerate(prediction_records):
+            if record.station_id == int(station_id):
+                if record.seconds_away_from_stop < lowest_to_station:
+                    lowest_to_station = record.seconds_away_from_stop
+
+    return json.dumps({'prediction1': lowest_to_station, 'prediction2': None})
     
 
 if __name__ == "__main__":
