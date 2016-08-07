@@ -94,10 +94,16 @@ def get_station_details(station_id):
 	station = session.query(db.Station).filter(db.Station.id == station_id).one()
 	route_name = session.query(db.Route).filter(db.Route.id == station.route_id).one().name
 	
+	out_predictions = json.loads(get_next_service_for_station(station_id, False))
+	in_predictions = json.loads(get_next_service_for_station(station_id, True))
+	
 	# add in predictions for both directions
 	stations_details = {'name': station.name_human_readable, 
 						'route_name': route_name, 
-						'id': station.id}
+						'id': station.id,
+					   'outbound_pre' : {'pre_1' : out_predictions['prediction1'], 'pre_2' : out_predictions['prediction2']},
+						'inbound_pre' : {'pre_1' : in_predictions['prediction1'],'pre_2' : in_predictions['prediction2']}
+					   }
 	
 	return json.dumps(stations_details)
 

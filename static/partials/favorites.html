@@ -13,6 +13,9 @@
             <div class="md-media-sm card-media"></div>
           </md-card-title-media>
         </md-card-title>
+		  <md-card-content ng-bind-html="{{ predictionText(s.id) }}">
+		  	
+		  </md-card-content>
         <md-card-actions layout="row" layout-align="end center">
           <md-button ng-click="addToFavorites(s.id)" class="md-icon-button" aria-label="Favorite" >
 			<ng-md-icon ng-if="!isFavorited(s.id)" icon="star_border">
