@@ -1,7 +1,6 @@
-app.controller('routeController', function ($scope, $routeParams, $localStorage, $http, FavoritesService, $interval) {
+app.controller('routeController', function ($scope, $routeParams, $localStorage, $http, FavoritesService, UtilityService, $interval) {
     'use strict';
-	// need general service file to hold conversion of seconds to minutes and seconds
-	
+
 	$scope.route = $routeParams.route_name;
 	$scope.trains = [];
 	$scope.stations = [];
@@ -152,11 +151,11 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 						break;
 					}
 					else {
-						str = "Next service: " + $scope.stations[i].pre_1 + " seconds away";
+						str = "Next service:<br />" + UtilityService.formatSeconds($scope.stations[i].pre_1);
 						break;
 					}
 				}
-				str = "Next service: " + $scope.stations[i].pre_1 + " seconds away  | " + $scope.stations[i].pre_2 + " seconds away";
+				str = "Next service:<br />" + UtilityService.formatSeconds($scope.stations[i].pre_1) + ", " + UtilityService.formatSeconds($scope.stations[i].pre_2);
 				break;
 			}
 		}

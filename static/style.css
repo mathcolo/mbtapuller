@@ -2,7 +2,7 @@ body {
 	text-align: center;
 }
 
-.Green {
+.Green, .Green-B, .Green-C, .Green-D, .Green-E {
 	background-color: #008150 !important;
 }
 
@@ -14,7 +14,7 @@ body {
 	background-color: #FD8A03 !important;
 }
 
-.Red {
+.Red, .Red-Ashmont, .Red-Braintree {
 	background-color: #FA2D27 !important;
 }
 
@@ -25,15 +25,13 @@ md-content {
 
 md-card {
 	width: 600px;
-	height: 110px;
-	padding-top: -10px;
-	padding-left: 40px;
+	height: 200px;
 }
 
 .line_display {
 	float: left;
 	width: 10px;
-	height: 143px;
+	height: 233px;
 	background-color: green;
 	margin-left: 30px;
 	margin-right: 20px;
@@ -61,9 +59,13 @@ md-card {
 }
 
 .train_circle_in_transit {
-	bottom: 30px;
+	bottom: 20px;
 }
 
 .train_circle_at_station {
-	top: 40px;
+	top: 100px;
+}
+
+.white-text {
+    color: #ffffff;
 }

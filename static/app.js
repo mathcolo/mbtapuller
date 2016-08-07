@@ -1,4 +1,4 @@
-var app = angular.module('mbtaApp', ['ngRoute', 'ngMaterial', 'ngMdIcons', 'ngStorage']);
+var app = angular.module('mbtaApp', ['ngRoute', 'ngMaterial', 'ngMdIcons', 'ngStorage', 'ngSanitize']);
 
 
 app.controller('appCtrl', function ($http, $mdSidenav, $location) {
