@@ -1,4 +1,4 @@
-app.controller('favoritesController', function ($scope, $localStorage, $http, FavoritesService, UtilityService) {
+app.controller('favoritesController', function ($scope, $localStorage, $http, FavoritesService, UtilityService, $interval) {
     'use strict';
 	
 	
@@ -72,7 +72,27 @@ app.controller('favoritesController', function ($scope, $localStorage, $http, Fa
 		
 		return str;
 	}
-	
+
+	$scope.refreshData = function() {
+		angular.forEach($scope.stations, function(value, key){
+			 $http.get('/station/' + value.id + '/direction/' + 0 + '/nextservice')
+			 .then(function successfulCallback(response) {
+				 $scope.stations[key].outbound_pre.pre_1 = response.data['prediction_1'];
+				 $scope.stations[key].outbound_pre.pre_2 = response.data['prediction_2'];
+
+			 }, function errorCallback(response) {
+			});
+
+			$http.get('/station/' + value.id + '/direction/' + 1 + '/nextservice')
+			 .then(function successfulCallback(response) {
+				 $scope.stations[key].inbound_pre.pre_1 = response.data['prediction_1'];
+				 $scope.stations[key].inbound_pre.pre_2 = response.data['prediction_2'];
+
+			 }, function errorCallback(response) {
+			});
+		});
+	};
+
 	$scope.init = function() {
 		$scope.stations = [];
 	
@@ -89,6 +109,6 @@ app.controller('favoritesController', function ($scope, $localStorage, $http, Fa
 	}
 	
 	$scope.init();
-	
+	$interval($scope.refreshData, 60000);
 	
 });
