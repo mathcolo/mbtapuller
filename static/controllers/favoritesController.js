@@ -1,4 +1,4 @@
-app.controller('favoritesController', function ($scope, $localStorage, $http, FavoritesService) {
+app.controller('favoritesController', function ($scope, $localStorage, $http, FavoritesService, UtilityService) {
     'use strict';
 	
 	
@@ -48,22 +48,24 @@ app.controller('favoritesController', function ($scope, $localStorage, $http, Fa
 						 str = "Outbound: There is no scheduled service to this station at this time.<br />";
 					}
 					else {
-						str = "Outbound: " + o_pre_1 + " seconds away. <br />";
+						str = "Next Service - Outbound: " + UtilityService.formatSeconds(o_pre_1) + "<br />";
 					}
 				}
-				str = "Outbound: " + o_pre_1 + " seconds away  | " + o_pre_2 + " seconds away.<br />";
+				else {
+				str = "Next Service - Outbound: " + UtilityService.formatSeconds(o_pre_1) + ", " + UtilityService.formatSeconds(o_pre_2) + "<br />";
+				}
 				
 				if (i_pre_2 === null) {
 					if (i_pre_1 === null) {
-						 str += "Inbound: There is no scheduled service to this station at this time.";
+						 str += "Next Service - Inbound: There is no scheduled service to this station at this time.";
 						break;
 					}
 					else {
-						str += "Inbound: " + i_pre_1 + " seconds away.";
+						str += "Next Service - Inbound: " + UtilityService.formatSeconds(i_pre_1);
 						break;
 					}
 				}
-				str += "Inbound: " + i_pre_1 + " seconds away  | " + i_pre_2 + " seconds away.";
+				str += "Inbound: " + UtilityService.formatSeconds(i_pre_1) + ", " + UtilityService.formatSeconds(i_pre_2) + ".";
 				break;
 			}
 		}
