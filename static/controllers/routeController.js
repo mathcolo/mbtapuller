@@ -151,19 +151,11 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 						break;
 					}
 					else {
-<<<<<<< HEAD
 						str = "Next service:<br />" + UtilityService.formatSeconds($scope.stations[i].pre_1);
 						break;
 					}
 				}
 				str = "Next service:<br />" + UtilityService.formatSeconds($scope.stations[i].pre_1) + ", " + UtilityService.formatSeconds($scope.stations[i].pre_2);
-=======
-						str = "Next service: " + $scope.stations[i].pre_1 + " seconds away";
-						break;
-					}
-				}
-				str = "Next service: " + $scope.stations[i].pre_1 + " seconds away  | " + $scope.stations[i].pre_2 + " seconds away";
->>>>>>> origin
 				break;
 			}
 		}
