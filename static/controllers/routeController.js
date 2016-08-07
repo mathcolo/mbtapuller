@@ -43,7 +43,7 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 	}
 	
 	$scope.init = function() {
-		$http.get('/id?name=' + $scope.route)
+		$http.get('/route?name=' + $scope.route)
 		.then(function successCallback(response) {
 				$scope.route_id = parseInt(response.data);
 				$scope.getData($scope.route_id);
