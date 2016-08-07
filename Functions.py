@@ -26,7 +26,6 @@ def current_predictions(session, station_id):
     func.max(db.PredictionRecord.stamp).desc()).all()
     
     return predictions
-    
 
 def surrounding_station(session, station):
     '''
@@ -106,7 +105,6 @@ def all_routes(session):
     return routes_output
     
 def get_stations(id, session):
-
     stations = session.query(db.Station, db.Route).join(db.Route).filter(db.Station.route_id == id).all()
     
     route_name = session.query(db.Route).filter(db.Route.id == id).one().name
