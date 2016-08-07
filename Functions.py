@@ -6,7 +6,6 @@ import db_objects as db
 import constants
 
 def current_trips(session, route_id):
-
     five_minutes_ago = datetime.datetime.utcnow() - datetime.timedelta(seconds=300)
 
     return [
@@ -20,14 +19,13 @@ def current_trips(session, route_id):
             ]
 
 def current_predictions(session, station_id):
-	
-	predictions = session.query(
-		db.PredictionRecord.trip_id, db.PredictionRecord.seconds_away_from_stop, 
-		func.max(db.PredictionRecord.stamp)).filter(db.PredictionRecord.station_id == station_id).group_by(db.PredictionRecord.trip_id).order_by(
+    
+    predictions = session.query(
+        db.PredictionRecord.trip_id, db.PredictionRecord.seconds_away_from_stop, 
+        func.max(db.PredictionRecord.stamp)).filter(db.PredictionRecord.station_id == station_id).group_by(db.PredictionRecord.trip_id).order_by(
     func.max(db.PredictionRecord.stamp).desc()).all()
-	
-	return predictions
-	
+    
+    return predictions
 
 def surrounding_station(session, station):
     '''
@@ -105,15 +103,14 @@ def all_routes(session):
         routes_output.append({'id': route.id, 'name': route.name})
 
     return routes_output
-	
+    
 def get_stations(id, session):
-
-	stations = session.query(db.Station, db.Route).join(db.Route).filter(db.Station.route_id == id).all()
-	
-	route_name = session.query(db.Route).filter(db.Route.id == id).one().name
-	
-	stations_list = []
-	for station in stations:
-		stations_list.append(station[0].id)
-			
-	return stations_list
+    stations = session.query(db.Station, db.Route).join(db.Route).filter(db.Station.route_id == id).all()
+    
+    route_name = session.query(db.Route).filter(db.Route.id == id).one().name
+    
+    stations_list = []
+    for station in stations:
+        stations_list.append(station[0].id)
+            
+    return stations_list
