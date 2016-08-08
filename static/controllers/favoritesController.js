@@ -46,8 +46,8 @@ app.controller('favoritesController', function ($scope, $localStorage, $http, Fa
 	var refreshInboundPredictions = function(station_idx) {
 	    $http.get('/station/' + vm.stations[station_idx].id + '/direction/' + 1 + '/nextservice')
 			 .then(function successfulCallback(response) {
-				 vm.stations[station_idx].inbound_pre.pre_1 = response.data['prediction_1'];
-				 vm.stations[station_idx].inbound_pre.pre_2 = response.data['prediction_2'];
+				 vm.stations[station_idx].inbound_pre.pre_1 = response.data['prediction1'];
+				 vm.stations[station_idx].inbound_pre.pre_2 = response.data['prediction2'];
 
 			 }, function errorCallback(response) {
 		    });
@@ -56,8 +56,8 @@ app.controller('favoritesController', function ($scope, $localStorage, $http, Fa
 	var refreshOutboundPredictions = function(station_idx) {
 	    $http.get('/station/' + vm.stations[station_idx].id + '/direction/' + 0 + '/nextservice')
 			 .then(function successfulCallback(response) {
-				 vm.stations[station_idx].outbound_pre.pre_1 = response.data['prediction_1'];
-				 vm.stations[station_idx].outbound_pre.pre_2 = response.data['prediction_2'];
+				 vm.stations[station_idx].outbound_pre.pre_1 = response.data['prediction1'];
+				 vm.stations[station_idx].outbound_pre.pre_2 = response.data['prediction2'];
 
 			 }, function errorCallback(response) {
 		    });
