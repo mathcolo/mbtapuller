@@ -69,3 +69,7 @@ md-card {
 .white-text {
     color: #ffffff;
 }
+
+.md-button {
+    line-height:normal !important;
+}
