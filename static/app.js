@@ -29,7 +29,8 @@ app.config(function($routeProvider) {
 
 		.when('/trains/:route_name', {
 			templateUrl : 'static/partials/route.html',
-			controller  : 'routeController'
+			controller: '',
+			controllerAs: ''
 		})
 		.when('/favorites', {
 			templateUrl : 'static/partials/favorites.html',

@@ -1,121 +1,94 @@
-app.controller('favoritesController', function ($scope, $localStorage, $http, FavoritesService, UtilityService, $interval) {
-    'use strict';
+app.controller('favoritesController', function ($scope, $localStorage, $http, FavoritesService, UtilityService, $interval, PredictionService) {
+    var vm = this;
 	
-	
-	$scope.addToFavorites = function(station_id) {
-		if (FavoritesService.favoritesExist()) {
+	vm.favoritesExist = FavoritesService.favoritesExist;
+	vm.addToFavorites = function(station_id) {
+
+		if (vm.favoritesExist()) {
 
 			var index = $localStorage.favorite_stations.indexOf(station_id);
-			
-			if (index < 0)
-				$localStorage.favorite_stations.push(station_id);
-			else {
-				if ($localStorage.favorite_stations.length === 1)
-					delete $localStorage.favorite_stations;
-				
-				else {
-					$localStorage.favorite_stations.splice(index, 1);
-				}
-				
-				for (var i = 0; i < $scope.stations.length; i++) {
-					if ($scope.stations[i].id === station_id)
-						$scope.stations.splice(i, 1);
-				}
-			
-			}
-		}
-		else {
-			$localStorage.favorite_stations = [station_id];			
-		}
-	};
-	
-	$scope.favoritesExist = FavoritesService.favoritesExist;
-	$scope.isFavorited = FavoritesService.isFavorited;
 
-	$scope.predictionText = function(station_id) {
+			if (index >= 0) {
+				for (var i = 0; i < vm.stations.length; i++) {
+					if (vm.stations[i].id === station_id)
+						vm.stations.splice(i, 1);
+				}
+		    }
+		}
+
+		FavoritesService.addToFavorites(station_id);
+	};
+
+	vm.predictionText = function(station_id) {
 		var str = "";
 		
-		for (var i = 0; i<$scope.stations.length; i++) {
-			
-			var o_pre_1 = $scope.stations[i].outbound_pre.pre_1;
-			var o_pre_2 = $scope.stations[i].outbound_pre.pre_2;
-			var i_pre_1 = $scope.stations[i].inbound_pre.pre_1;
-			var i_pre_2 = $scope.stations[i].inbound_pre.pre_2;
-			
-			if ($scope.stations[i].id === station_id) {
-				if (o_pre_2 === null) {
-					if (o_pre_1 === null) {
-						 str = "Outbound: There is no scheduled service to this station at this time.<br />";
-					}
-					else {
-						str = "Next Service - Outbound: " + UtilityService.formatSeconds(o_pre_1) + "<br />";
-					}
-				}
-				else {
-				str = "Next Service - Outbound: " + UtilityService.formatSeconds(o_pre_1) + ", " + UtilityService.formatSeconds(o_pre_2) + "<br />";
-				}
-				
-				if (i_pre_2 === null) {
-					if (i_pre_1 === null) {
-						 str += "Next Service - Inbound: There is no scheduled service to this station at this time.";
-						break;
-					}
-					else {
-						str += "Next Service - Inbound: " + UtilityService.formatSeconds(i_pre_1);
-						break;
-					}
-				}
-				str += "Inbound: " + UtilityService.formatSeconds(i_pre_1) + ", " + UtilityService.formatSeconds(i_pre_2) + ".";
-				break;
+		for (var i = 0; i<vm.stations.length; i++) {
+			if (vm.stations[i].id === station_id) {
+                str += "Outbound: "
+                    + PredictionService.makePredictionString(vm.stations[i].outbound_pre.pre_1,
+                                                            vm.stations[i].outbound_pre.pre_2)
+                    + "<br />";
+                str += "Inbound: "
+                    + PredictionService.makePredictionString(vm.stations[i].inbound_pre.pre_1,
+                                                             vm.stations[i].inbound_pre.pre_2);
+				return str;
 			}
 		}
-		
-		return str;
 	}
 
-	var refreshData = function() {
-	    for (var i = 0; i < $scope.stations.length; i++) {
+	var refreshFavoritesData = function() {
+	    for (var i = 0; i < vm.stations.length; i++) {
             refreshOutboundPredictions(i);
             refreshInboundPredictions(i);
 		}
 	};
 
 	var refreshInboundPredictions = function(station_idx) {
-	    $http.get('/station/' + $scope.stations[station_idx].id + '/direction/' + 1 + '/nextservice')
+	    $http.get('/station/' + vm.stations[station_idx].id + '/direction/' + 1 + '/nextservice')
 			 .then(function successfulCallback(response) {
-				 $scope.stations[station_idx].inbound_pre.pre_1 = response.data['prediction_1'];
-				 $scope.stations[station_idx].inbound_pre.pre_2 = response.data['prediction_2'];
+				 vm.stations[station_idx].inbound_pre.pre_1 = response.data['prediction_1'];
+				 vm.stations[station_idx].inbound_pre.pre_2 = response.data['prediction_2'];
 
 			 }, function errorCallback(response) {
 		    });
 	}
 
 	var refreshOutboundPredictions = function(station_idx) {
-	    $http.get('/station/' + $scope.stations[station_idx].id + '/direction/' + 0 + '/nextservice')
+	    $http.get('/station/' + vm.stations[station_idx].id + '/direction/' + 0 + '/nextservice')
 			 .then(function successfulCallback(response) {
-				 $scope.stations[station_idx].outbound_pre.pre_1 = response.data['prediction_1'];
-				 $scope.stations[station_idx].outbound_pre.pre_2 = response.data['prediction_2'];
+				 vm.stations[station_idx].outbound_pre.pre_1 = response.data['prediction_1'];
+				 vm.stations[station_idx].outbound_pre.pre_2 = response.data['prediction_2'];
 
 			 }, function errorCallback(response) {
 		    });
 	}
 
-	$scope.init = function() {
-		$scope.stations = [];
+	var init = function() {
+		vm.stations = [];
 	
-		if (FavoritesService.favoritesExist()) {
+		if (vm.favoritesExist()) {
 			for (var i = 0; i < $localStorage.favorite_stations.length; i++) {
-				$http.get('/station/' + $localStorage.favorite_stations[i])
-					.then(function successCallback(response) {
-					$scope.stations.push(response.data);
-				}, function errorCallback(response) {
-
-			});
+				stationDetails(i);
 			}
 		}
 	}
+
+	var stationDetails = function(station_idx) {
+	    $http.get('/station/' + $localStorage.favorite_stations[station_idx])
+					.then(function successCallback(response) {
+					vm.stations.push(response.data);
+				}, function errorCallback(response) {
+
+		});
+	}
 	
-	$scope.init();
-	$interval(refreshData, 60000);
+	init();
+	var refresh = $interval(refreshFavoritesData, 60000);
+
+	$scope.$on("$destroy", function() {
+        if (refresh) {
+            $interval.cancel(refresh);
+        }
+    });
 	
 });
