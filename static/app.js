@@ -16,11 +16,18 @@ app.controller('appCtrl', function ($http, $mdSidenav, $mdDialog, $location) {
       templateUrl: 'static/partials/transitmap.html',
       parent: angular.element(document.body),
       clickOutsideToClose:true,
+      controller: DialogController,
       fullscreen: true
     });
   };
 
 });
+
+function DialogController($scope, $mdDialog) {
+  $scope.cancel = function() {
+    $mdDialog.cancel();
+  };
+}
 
 
 // configure our routes
@@ -75,6 +82,12 @@ app.config(['$httpProvider',
     $httpProvider.interceptors.push('httpErrorResponseInterceptor');
   }
 ]);
+
+app.config(function($mdThemingProvider) {
+  $mdThemingProvider.theme('default')
+    .primaryPalette('blue')
+    .accentPalette('blue-grey');
+});
   
 
 

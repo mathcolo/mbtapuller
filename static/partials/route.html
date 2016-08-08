@@ -4,13 +4,13 @@
         <h3>Destination:
             <md-button
                     ng-click="btn.isSelected = false; routeCtrl.changeDestination(true)"
-                    ng-class="{false: 'md-raised', true: 'md-raised md-primary'}[!btn.isSelected]">
+                    ng-class="{false: 'md-raised', true: '{{ routeCtrl.route }} md-raised md-primary'}[!btn.isSelected]">
                 {{ routeCtrl.last }}
             </md-button>
 
             <md-button
                     ng-click="btn.isSelected = true; routeCtrl.changeDestination(false)"
-                    ng-class="{true: 'md-raised', false: 'md-raised md-primary'}[!btn.isSelected]">
+                    ng-class="{true: 'md-raised', false: '{{ routeCtrl.route }} md-raised md-primary'}[!btn.isSelected]">
                 {{ routeCtrl.first }}
             </md-button>
         </h3>
