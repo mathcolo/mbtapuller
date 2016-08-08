@@ -123,7 +123,7 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 		}
 	};
 	
-	$scope.refreshData = function() {
+	var refreshData = function() {
 		angular.forEach($scope.stations, function(value, key){
 			 $http.get('/station/' + value.id + '/direction/' + ($scope.destination ? 1 : 0 ) + '/nextservice')
 			 .then(function successfulCallback(response) {
@@ -165,6 +165,6 @@ app.controller('routeController', function ($scope, $routeParams, $localStorage,
 	
 	
 	$scope.init();
-	$interval($scope.refreshData, 60000);
+	$interval(refreshData, 60000);
 	
 });
