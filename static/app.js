@@ -35,12 +35,10 @@ app.config(function($routeProvider) {
 	$routeProvider
 
 		.when('/trains/:route_name', {
-			templateUrl : 'static/partials/route.html',
-			controller  : 'routeController'
+			templateUrl : 'static/partials/route.html'
 		})
 		.when('/favorites', {
-			templateUrl : 'static/partials/favorites.html',
-			controller  : 'favoritesController'
+			templateUrl : 'static/partials/favorites.html'
 		})
 		.when('/404', {
 			templateUrl : 'static/partials/404.html'
