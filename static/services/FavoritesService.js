@@ -12,4 +12,25 @@ app.service('FavoritesService', function($localStorage) {
 		
 		return false;
 	}
+
+	this.addToFavorites = function(station_id) {
+		if (this.favoritesExist()) {
+
+			var index = $localStorage.favorite_stations.indexOf(station_id);
+
+			if (index < 0)
+				$localStorage.favorite_stations.push(station_id);
+			else {
+				if ($localStorage.favorite_stations.length === 1) {
+					delete $localStorage.favorite_stations;
+				}
+				else {
+					$localStorage.favorite_stations.splice(index, 1);
+				}
+			}
+		}
+		else {
+			$localStorage.favorite_stations = [station_id];
+		}
+	}
 });
