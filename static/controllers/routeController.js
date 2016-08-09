@@ -1,5 +1,4 @@
-app.controller('routeController', function ($scope, $routeParams, $http, FavoritesService, UtilityService, $interval, PredictionService) {
-
+app.controller('routeController', function ($scope, $routeParams, $http, FavoritesService, UtilityService, $interval, PredictionService, TrainDisplayService) {
     var vm = this;
 
     vm.stations = [];
@@ -8,6 +7,8 @@ app.controller('routeController', function ($scope, $routeParams, $http, Favorit
     vm.favoritesExist = FavoritesService.favoritesExist;
 	vm.isFavorited = FavoritesService.isFavorited;
 	vm.addToFavorites = FavoritesService.addToFavorites;
+	vm.styleForIconAtStation = TrainDisplayService.styleForIconAtStation;
+	vm.tooltipForIconAtStation = TrainDisplayService.tooltipForIconAtStation;
 	
 	var getData = function(route_id) {
         refreshTrains(route_id);
@@ -69,35 +70,6 @@ app.controller('routeController', function ($scope, $routeParams, $http, Favorit
 		}
 	};
 
-
-	var stationStatus = function(station) {
-		var status = "NOTHING";
-		for(var i = 0; i < vm.trains.length; i++) {
-			if(vm.trains[i]['status'] == "AT_STATION" && vm.trains[i]['station_1'] == station['name']) {
-				return "AT_STATION";
-			}
-			if(vm.trains[i]['station_2'] == station['name']) {
-				return "IN_TRANSIT_TO";
-			}
-		}
-		return status;
-	}
-
-	vm.styleForIconAtStation = function(station) {
-		var status = stationStatus(station);
-		switch(status) {
-			case "NOTHING":
-				return "train_circle_hide";
-				break;
-			case "AT_STATION":
-				return "train_circle_at_station";
-				break;
-			case "IN_TRANSIT_TO":
-				return "train_circle_in_transit"
-				break;
-		}
-	}
-	
 	var refreshData = function(route_id) {
 		angular.forEach(vm.stations, function(value, key){
 			 refreshPredictions(key, value);
