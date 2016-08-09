@@ -1,5 +1,4 @@
-app.controller('routeController', function ($scope, $routeParams, $http, FavoritesService, UtilityService, $interval, PredictionService, TrainDisplayService) {
-
+<<app.controller('routeController', function ($scope, $routeParams, $http, FavoritesService, UtilityService, $interval, PredictionService, TrainDisplayService) {
     var vm = this;
 
     vm.stations = [];
@@ -70,6 +69,11 @@ app.controller('routeController', function ($scope, $routeParams, $http, Favorit
 			vm.destination = destination;
 		}
 	};
+	
+	var refreshData = function(route_id) {
+		angular.forEach(vm.stations, function(value, key){
+			 refreshPredictions(key, value);
+		});
 	
 	var refreshData = function(route_id) {
 		angular.forEach(vm.stations, function(value, key){
