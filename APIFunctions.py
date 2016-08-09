@@ -215,7 +215,11 @@ def sync_predictions(routes, session):
                             
                         try:
                             seconds = stop['pre_away']
-                            new_prediction_record = db.PredictionRecord(trip_id=trip_ref.id, stamp=datetime.datetime.utcnow(), station_id=station_id, seconds_away_from_stop=seconds)
+                            new_prediction_record = db.PredictionRecord(trip_id=trip_ref.id,
+                                                                        trip_direction=trip_ref.get_direction(),
+                                                                        stamp=datetime.datetime.utcnow(),
+                                                                        station_id=station_id,
+                                                                        seconds_away_from_stop=seconds)
 
                             to_save.append(new_prediction_record)
                         except KeyError as e:

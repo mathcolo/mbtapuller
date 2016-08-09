@@ -122,6 +122,7 @@ class PredictionRecord(Base):
     id = Column(Integer, primary_key=True)
     
     trip_id = Column(Integer, ForeignKey("trips.id"))
+    trip_direction = Column(Integer)
     stamp = Column(DateTime)
     station_id = Column(Integer, ForeignKey("stations.id"))
     seconds_away_from_stop = Column(Integer)

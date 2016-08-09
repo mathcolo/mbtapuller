@@ -1,4 +1,5 @@
 from flask import Blueprint
+import datetime
 import Functions
 import Database
 import db_objects as db
@@ -43,29 +44,26 @@ def get_directed_station_details(station_id, direction):
 
 @station_details_service.route("/station/<string:station_id>/direction/<string:direction>/nextservice", methods=['GET'])
 def get_next_service_for_station(station_id, direction):
-    predictions = Functions.current_predictions(session, station_id)
+    most_recent_pull_time = session.query(db.PredictionRecord).order_by(db.PredictionRecord.stamp.desc()).limit(
+        1).first().stamp
+    most_recent_pull_time_threshold = most_recent_pull_time - datetime.timedelta(seconds=5)
 
-    directed_predictions = []
-    
-    if (predictions is not None):
-        for prediction in predictions:
-            trip = session.query(db.Trip).filter(db.Trip.id == prediction.trip_id).first()
-            dir = int(trip.destination_station_id > trip.origin_station_id)
-            
-            if (int(direction) is dir):
-                directed_predictions.append(prediction)
+    lowest_to_station = 10000
+    second_lowest_to_station = 10000
 
-        if len(directed_predictions) == 0:
-            return json.dumps({'prediction1': None, 'prediction2' : None})
+    prediction_records = (
+        session.query(db.PredictionRecord)
+            .filter(db.PredictionRecord.station_id == station_id)
+            .filter(db.PredictionRecord.trip_direction == direction)
+            .filter(db.PredictionRecord.stamp > most_recent_pull_time_threshold)
+            .order_by(db.PredictionRecord.seconds_away_from_stop)
+            .all()
+    )
 
-        directed_predictions.sort(key=lambda x: x.seconds_away_from_stop)
+    if len(prediction_records) > 0:
+        lowest_to_station = prediction_records[0].seconds_away_from_stop
 
-        if len(directed_predictions) > 1:
-            next_two_pre = {'prediction1': directed_predictions[0].seconds_away_from_stop, 'prediction2' : directed_predictions[1].seconds_away_from_stop}
+    if len(prediction_records) > 1:
+        second_lowest_to_station = prediction_records[1].seconds_away_from_stop
 
-        else:
-            next_two_pre = {'prediction1': directed_predictions[0].seconds_away_from_stop, 'prediction2' : None}
-
-        return json.dumps(next_two_pre)
-    else:
-        return json.dumps({'prediction1': None, 'prediction2' : None})
+    return json.dumps({'prediction1': lowest_to_station, 'prediction2': second_lowest_to_station})
