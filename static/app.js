@@ -1,7 +1,7 @@
-var app = angular.module('mbtaApp', ['ngRoute', 'ngMaterial', 'ngMdIcons', 'ngStorage', 'ngSanitize']);
+var app = angular.module('mbtaApp', ['ngRoute', 'ngMaterial', 'ngMdIcons', 'ngStorage']);
 
 
-app.controller('appCtrl', function ($http, $mdSidenav, $mdDialog, $location) {
+app.controller('appCtrl', function ($http, $mdSidenav, $location) {
 
   this.go = function (path) {
     $location.path(path);
@@ -10,16 +10,7 @@ app.controller('appCtrl', function ($http, $mdSidenav, $mdDialog, $location) {
   this.toggleSidenav = function(menuId) {
     $mdSidenav(menuId).toggle();
   };
-
-  this.openMap = function() {
-    $mdDialog.show({
-      templateUrl: 'static/partials/transitmap.html',
-      parent: angular.element(document.body),
-      clickOutsideToClose:true,
-      fullscreen: true
-    });
-  };
-
+  
 });
 
 

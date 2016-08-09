@@ -16,14 +16,12 @@
 		<script type="text/JavaScript" src="{{ url_for('static', filename='angular-material.js') }}"></script>
 		<script type="text/JavaScript" src="{{ url_for('static', filename='angular-material-icons.min.js') }}"></script> 
 		<script type="text/JavaScript" src="{{ url_for('static', filename='ngStorage.js') }}"></script>
-		<script type="text/JavaScript" src="{{ url_for('static', filename='sanitize.js') }}"></script>
-
+		
 		<script type="text/JavaScript" src="{{ url_for('static', filename='app.js') }}"></script>
 		
 		<script type="text/JavaScript" src="{{ url_for('static', filename='controllers/routeController.js') }}"></script>
 		<script type="text/JavaScript" src="{{ url_for('static', filename='controllers/favoritesController.js') }}"></script>
 		<script type="text/JavaScript" src="{{ url_for('static', filename='services/FavoritesService.js') }}"></script>
-		<script type="text/JavaScript" src="{{ url_for('static', filename='services/UtilityService.js') }}"></script>
 	</head>
 
 	   <body layout="row" ng-controller="appCtrl as controller">
@@ -57,16 +55,13 @@
     <div layout="column" class="relative" layout-fill role="main">
       <md-toolbar>
         <div class="md-toolbar-tools">
-          <md-button ng-click="controller.toggleSidenav('left')" hide-gt-md aria-label="Menu">
+          <md-button ng-click="controller.toggleSidenav('left')" hide-gt-md aria-label="Menu" style="line-height:normal;">
             <ng-md-icon icon="menu"></ng-md-icon>
           </md-button>
           <h3>
             MBTA Train Tracker
           </h3>
           <span flex></span>
-          <md-button aria-label="Transit Map" ng-click="controller.openMap()">
-            <ng-md-icon icon="map"></ng-md-icon>
-          </md-button>
         </div>
       </md-toolbar>
 		
