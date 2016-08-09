@@ -5,6 +5,7 @@ import datetime
 import APIFunctions
 import Database
 import pytz
+import traceback
 import db_objects as db
 
 
@@ -18,8 +19,13 @@ def pull(session, interval=60, once=False):
         else:
             Logger.log.info('Syncing routes to database')
             routes = [x.name for x in session.query(db.Route).all()]
-            APIFunctions.sync_trips_and_records(routes, session)
-            APIFunctions.sync_predictions(routes, session)
+            try:
+                APIFunctions.sync_trips_and_records(routes, session)
+                APIFunctions.sync_predictions(routes, session)
+            except Exception as e:
+                Logger.log.error('ERROR: Data pull failed, retrying in {} seconds'.format(interval))
+                traceback.print_exc()
+
             if once:
                 break
         time.sleep(interval)
