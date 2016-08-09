@@ -17,8 +17,12 @@
 
         <div class="station_container" ng-repeat="s in routeCtrl.stations">
             <div class="line_display {{ s.route_name }}">
-                <div class="train_circle {{ routeCtrl.styleForIconAtStation(s) }} {{ s.route_name}}">
-                    <ng-md-icon icon="train"/>
+                <div class="train_circle {{ routeCtrl.styleForIconAtStation(s, routeCtrl.trains) }} {{ s.route_name}}">
+                    <ng-md-icon icon="train">
+                        <md-tooltip md-direction="bottom">
+                            {{ routeCtrl.tooltipForIconAtStation(s, routeCtrl.trains) }}
+                        </md-tooltip>
+                    </ng-md-icon>
                 </div>
             </div>
             <md-card>
