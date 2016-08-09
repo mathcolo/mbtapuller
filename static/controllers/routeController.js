@@ -1,4 +1,4 @@
-<<app.controller('routeController', function ($scope, $routeParams, $http, FavoritesService, UtilityService, $interval, PredictionService, TrainDisplayService) {
+app.controller('routeController', function ($scope, $routeParams, $http, FavoritesService, UtilityService, $interval, PredictionService, TrainDisplayService) {
     var vm = this;
 
     vm.stations = [];
