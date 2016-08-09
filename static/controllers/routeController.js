@@ -102,7 +102,10 @@ app.controller('routeController', function ($scope, $routeParams, $http, Favorit
 		angular.forEach(vm.stations, function(value, key){
 			 refreshPredictions(key, value);
 		});	
-		
+
+		if (vm.route_id !== null) {
+		    route_id = vm.route_id;
+		}
 		refreshTrains(route_id);
 	};
 
@@ -131,7 +134,6 @@ app.controller('routeController', function ($scope, $routeParams, $http, Favorit
 			}
 		}
 	}
-	
 	
 	init();
 	var refresh = $interval(refreshData, 60000);
