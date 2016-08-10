@@ -48,8 +48,8 @@ def get_next_service_for_station(station_id, direction):
         1).first().stamp
     most_recent_pull_time_threshold = most_recent_pull_time - datetime.timedelta(seconds=5)
 
-    lowest_to_station = 10000
-    second_lowest_to_station = 10000
+    lowest_to_station = None
+    second_lowest_to_station = None
 
     prediction_records = (
         session.query(db.PredictionRecord)

@@ -122,7 +122,7 @@ def sync_trips_and_records(routes, session):
                     #print "Processing trip_id %s" % trip['trip_id']
 
                     trips_with_same_id = session.query(db.Trip).filter(db.Trip.api_id == str(trip['trip_id'])).filter(
-                        db.Trip.date == datetime.date.today())
+                        db.Trip.date == datetime.datetime.utcnow().date())
                     #print "trips_with_same_id is %s" % trips_with_same_id.count()
                     if trips_with_same_id.count() == 1:
                         # Create a trip record since it exists already
