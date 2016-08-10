@@ -48,6 +48,9 @@ def get_next_service_for_station(station_id, direction):
         1).first().stamp
     most_recent_pull_time_threshold = most_recent_pull_time - datetime.timedelta(seconds=5)
 
+    # Time since that most recent pull ^
+    time_since_pull = int((datetime.datetime.utcnow() - most_recent_pull_time).total_seconds())
+
     lowest_to_station = None
     second_lowest_to_station = None
 
@@ -66,4 +69,7 @@ def get_next_service_for_station(station_id, direction):
     if len(prediction_records) > 1:
         second_lowest_to_station = prediction_records[1].seconds_away_from_stop
 
-    return json.dumps({'prediction1': lowest_to_station, 'prediction2': second_lowest_to_station})
+    return json.dumps({'prediction1': lowest_to_station,
+                       'prediction2': second_lowest_to_station,
+                       'age': time_since_pull,
+                       })
