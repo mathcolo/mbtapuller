@@ -90,6 +90,27 @@ app.controller('routeController', function ($scope, $routeParams, $http, Favorit
 		});
 	};
 
+	var decPredictionByOne = function () {
+		angular.forEach(vm.stations, function (value, key) {
+			//console.log(vm.stations[key].pre_2);
+			if (vm.stations[key].pre_1 != null) {
+				vm.stations[key].pre_1 -= 1;
+
+				if (vm.stations[key].pre_1 < 0) {
+					vm.stations[key].pre_1 = 0;
+				}
+			}
+
+			if (vm.stations[key].pre_2 != null) {
+				vm.stations[key].pre_2 -= 1;
+
+				if (vm.stations[key].pre_2 < 0) {
+					vm.stations[key].pre_2 = 0;
+				}
+			}
+		});
+	};
+
 	var refreshTrains = function(route_id) {
 	    $http.get('/trains/' + route_id)
 		.then(function successCallback(response) {
@@ -109,6 +130,7 @@ app.controller('routeController', function ($scope, $routeParams, $http, Favorit
 	
 	init();
 	var refresh = $interval(refreshData, 60000);
+	var predictionStream = $interval(decPredictionByOne, 1000);
 
 	$scope.$on("$destroy", function() {
         if (refresh) {
