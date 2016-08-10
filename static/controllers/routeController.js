@@ -84,8 +84,17 @@ app.controller('routeController', function ($scope, $routeParams, $http, Favorit
 	var refreshPredictions = function(key, value) {
 	    $http.get('/station/' + value.id + '/direction/' + (vm.destination ? 1 : 0 ) + '/nextservice')
 			 .then(function successfulCallback(response) {
+
+				 var data_age = response.data['age'];
+
 				 vm.stations[key].pre_1 = response.data['prediction1'];
 				 vm.stations[key].pre_2 = response.data['prediction2'];
+
+				 if (vm.stations[key].pre_1 != null)
+					 vm.stations[key].pre_1 -= data_age;
+
+				 if (vm.stations[key].pre_2 != null)
+					 vm.stations[key].pre_2 -= data_age;
 			 }, function errorCallback(response) {
 		});
 	};
@@ -135,6 +144,10 @@ app.controller('routeController', function ($scope, $routeParams, $http, Favorit
 	$scope.$on("$destroy", function() {
         if (refresh) {
             $interval.cancel(refresh);
+        }
+
+        if (predictionStream) {
+            $interval.cancel(predictionStream);
         }
     });
 	
