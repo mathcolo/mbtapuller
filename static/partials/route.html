@@ -35,6 +35,11 @@
         <md-card-content ng-bind-html="routeCtrl.predictionText(s.id)">
         </md-card-content>
         <md-card-actions layout="row" layout-align="end center">
+            <ng-md-icon ng-if="s.accessible == '1'" icon="accessible">
+						  <md-tooltip md-direction="bottom">
+						  Handicap Accessible
+						</md-tooltip>
+			</ng-md-icon>
           <md-button ng-click="routeCtrl.addToFavorites(s.id)" class="md-icon-button" aria-label="Favorite" >
 			<ng-md-icon ng-if="!routeCtrl.isFavorited(s.id)" icon="star_border">
 						  <md-tooltip md-direction="bottom">

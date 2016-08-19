@@ -32,7 +32,12 @@ def get_stations(session):
 
         api_result = API.get("stopsbyroute", {'route': route.name})['direction'][0]['stop']
         for item in api_result:
-            new_station = db.Station(route_id=route.id, name_human_readable=item['parent_station_name'], name_api=item['parent_station'], location_lat=item['stop_lat'], location_lng=item['stop_lon'])
+            accessible = True
+
+            if item['parent_station_name'] in NON_ACCESSIBLE_STATIONS:
+                accessible = False
+
+            new_station = db.Station(route_id=route.id, name_human_readable=item['parent_station_name'], name_api=item['parent_station'], location_lat=item['stop_lat'], location_lng=item['stop_lon'], accessible=accessible)
             stations.append(new_station)
 
     if populate_red:
@@ -47,23 +52,28 @@ def get_stations(session):
         api_result = API.get("stopsbyroute", {'route': 'Red'})['direction'][0]['stop']
         for item in api_result:
 
+            accessible = True
+
+            if item['parent_station_name'] in NON_ACCESSIBLE_STATIONS:
+                accessible = False
+
             if item['parent_station_name'] in RED_LINE_BRAINTREE_STATIONS:
                 new_station = db.Station(route_id=route_id_braintree, name_human_readable=item['parent_station_name'],
-                                      name_api=item['parent_station'], location_lat=item['stop_lat'],
+                                      name_api=item['parent_station'], location_lat=item['stop_lat'], accessible=accessible,
                                       location_lng=item['stop_lon'])
                 braintree.append(new_station)
             elif item['parent_station_name'] in RED_LINE_ASHMONT_STATIONS:
                 new_station = db.Station(route_id=route_id_ashmont, name_human_readable=item['parent_station_name'],
                                       name_api=item['parent_station'], location_lat=item['stop_lat'],
-                                      location_lng=item['stop_lon'])
+                                      location_lng=item['stop_lon'], accessible=accessible)
                 ashmont.append(new_station)
             else:
                 new_station_ashmont = db.Station(route_id=route_id_ashmont, name_human_readable=item['parent_station_name'],
                                       name_api=item['parent_station'], location_lat=item['stop_lat'],
-                                      location_lng=item['stop_lon'])
+                                      location_lng=item['stop_lon'], accessible=accessible)
                 new_station_braintree = db.Station(route_id=route_id_braintree, name_human_readable=item['parent_station_name'],
                                       name_api=item['parent_station'], location_lat=item['stop_lat'],
-                                      location_lng=item['stop_lon'])
+                                      location_lng=item['stop_lon'], accessible=accessible)
 
                 if new_station_ashmont.name_api == 'place-jfk':
                     if not ashmont_added_jfk:
