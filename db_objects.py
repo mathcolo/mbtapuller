@@ -22,6 +22,7 @@ class Station(Base):
     name_api = Column(String(50))
     location_lat = Column(Float)
     location_lng = Column(Float)
+    accessible = Column(Integer)
     
     def __str__(self):
         return "<Station name=%s on route=%s>" % (self.name_human_readable, self.route_id)

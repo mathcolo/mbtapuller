@@ -20,6 +20,7 @@ def get_station_details(station_id):
     stations_details = {'name': station.name_human_readable,
                         'route_name': route_name,
                         'id': station.id,
+                        'accessible': station.accessible,
                        'outbound_pre' : {'pre_1' : out_predictions['prediction1'], 'pre_2' : out_predictions['prediction2']},
                         'inbound_pre' : {'pre_1' : in_predictions['prediction1'],'pre_2' : in_predictions['prediction2']}
                        }
@@ -36,6 +37,7 @@ def get_directed_station_details(station_id, direction):
     stations_details = {'name': station.name_human_readable,
                         'route_name': route_name,
                         'id': station.id,
+                        'accessible': station.accessible,
                        'pre_1': predictions['prediction1'],
                        'pre_2': predictions['prediction2']}
 
