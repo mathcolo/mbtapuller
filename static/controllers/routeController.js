@@ -138,7 +138,7 @@ app.controller('routeController', function ($scope, $routeParams, $http, Favorit
 	}
 	
 	init();
-	var refresh = $interval(refreshData, 60000);
+	var refresh = $interval(refreshData, 15000);
 	var predictionStream = $interval(decPredictionByOne, 1000);
 
 	$scope.$on("$destroy", function() {
