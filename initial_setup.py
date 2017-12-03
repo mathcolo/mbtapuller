@@ -6,6 +6,7 @@ import db_objects as db
 
 def initial_setup():
     Database.wait_for_available()
+    Logger.log.info('Setting up database structure')
 
     # Make a database connection
     session = Database.connect(create_all=True)

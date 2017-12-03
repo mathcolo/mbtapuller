@@ -10,8 +10,6 @@ from services.route_service import route_service
 
 Database.wait_for_available()
 session = Database.connect()
-if not Database.is_setup(session):
-	initial_setup()
 
 app = Flask(__name__)
 
