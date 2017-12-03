@@ -23,7 +23,7 @@ def wait_for_available(host=DB_HOST, port=DB_PORT, use_mysql=False, interval=5):
             if port_check == 0:
                 return
             else:
-                print "Database isn't available, sleeping for %s seconds" % interval
+                print("Database isn't available, sleeping for {} seconds".format(interval))
                 time.sleep(interval)
 
 

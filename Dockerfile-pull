@@ -1,2 +1,8 @@
-FROM python:2-onbuild
+FROM python:3
+
+WORKDIR /app
+COPY . /app
+
+RUN pip install -r requirements.txt
+
 CMD [ "python", "./pull_data.py" ]
