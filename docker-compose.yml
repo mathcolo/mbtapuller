@@ -1,9 +1,13 @@
 version: '2'
+volumes:
+  mysql:
 services:
   db:
     image: mysql:5.7
     expose:
       - "3306"
+    ports:
+      - "5310:3306"
     environment:
       MYSQL_USER: mbtapuller
       MYSQL_PASSWORD: mbtapuller
@@ -15,6 +19,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-display
+    volumes:
+      - .:/app
     ports:
       - "5309:80"
     environment:
@@ -25,9 +31,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-pull
+    volumes:
+      - .:/app
     environment:
       - USE_MYSQL=1
     links:
       - db
-volumes:
-  mysql:
