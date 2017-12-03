@@ -7,7 +7,7 @@
 - Learn about data analytics and storage
 
 ## Requirements
-- Python 2.7
+- Python 3.6
 - requests
 - flask
 - sqlalchemy
