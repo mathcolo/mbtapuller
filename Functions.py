@@ -12,7 +12,7 @@ def current_trips(session, route_id):
         x[1] for x in session.query(db.TripRecord, db.Trip, db.Station)
         .join(db.Trip, db.TripRecord.trip_id == db.Trip.id)
         .join(db.Station, db.Trip.origin_station_id == db.Station.id)
-        .group_by(db.Trip.id)
+        .group_by(db.Trip.id, db.TripRecord.id)
         .filter(db.TripRecord.stamp > five_minutes_ago)
         .filter(db.Station.route_id == int(route_id))
         .all()
@@ -22,7 +22,7 @@ def current_predictions(session, station_id):
     
     predictions = session.query(
         db.PredictionRecord.trip_id, db.PredictionRecord.seconds_away_from_stop, 
-        func.max(db.PredictionRecord.stamp)).filter(db.PredictionRecord.station_id == station_id).group_by(db.PredictionRecord.trip_id).order_by(
+        func.max(db.PredictionRecord.stamp)).filter(db.PredictionRecord.station_id == station_id).group_by(db.PredictionRecord.trip_id, db.PredictionRecord.seconds_away_from_stop).order_by(
     func.max(db.PredictionRecord.stamp).desc()).all()
     
     return predictions
@@ -81,17 +81,16 @@ def find_segment(trip_record, session, test_pair=None):
     surround_station_1 = surrounding_stations[1]
     surround_station_2 = surrounding_stations[0]
 
-    # print "surround_station_1: %s" % surround_station_1
-    # print "surround_station_2: %s" % surround_station_2
-
-    if dist(surround_station_1.loc(), destination_station.loc()) < dist(surround_station_2.loc(), destination_station.loc()):
+    # print("surround_station_1: {}".format(surround_station_1.loc()))
+    # print("surround_station_2: {}".format(surround_station_2.loc()))
+    if dist(surround_station_1.loc(), destination_station.loc()).miles < dist(surround_station_2.loc(), destination_station.loc()).miles:
         surround_station_ahead = surround_station_1
         surround_station_behind = surround_station_2
     else:
         surround_station_ahead = surround_station_2
         surround_station_behind = surround_station_1
 
-    if dist(me_loc, destination_station.loc()) < dist(closest_station.loc(), destination_station.loc()):
+    if dist(me_loc, destination_station.loc()).miles < dist(closest_station.loc(), destination_station.loc()).miles:
         return closest_station, surround_station_ahead
     else:
         return surround_station_behind, closest_station
