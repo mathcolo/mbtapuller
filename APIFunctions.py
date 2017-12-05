@@ -120,7 +120,6 @@ def sync_trips_and_records(routes, session):
             Logger.log.info("Processing route %s" % route_name)
             for direction in route_sub_sub['direction']:
                 for trip in direction['trip']:
-
                     # The MBTA sometimes just throws us random bs
                     # Love you guys, but...really?
                     if trip['trip_name'] == u'':
@@ -156,7 +155,7 @@ def sync_trips_and_records(routes, session):
                         origin_station_id = station_pair[0]
                         destination_station_id = station_pair[1]
 
-                        new_trip = db.Trip(api_id=trip['trip_id'], route_id=route_id, origin_station_id=origin_station_id, destination_station_id=destination_station_id, date=datetime.datetime.utcnow())
+                        new_trip = db.Trip(api_id=trip['trip_id'], route_id=route_id, origin_station_id=origin_station_id, destination_station_id=destination_station_id, lead=str(trip['vehicle']['vehicle_label']), date=datetime.datetime.utcnow())
 
 
                         session.add(new_trip)

@@ -40,6 +40,7 @@ class Trip(Base):
     id = Column(Integer, primary_key=True)
 
     api_id = Column(String(25))
+    lead = Column(String(10))
     date = Column(Date)
     route_id = Column(Integer)
 
