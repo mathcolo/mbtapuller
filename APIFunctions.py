@@ -128,11 +128,10 @@ def sync_trips_and_records(routes, session):
                     trip['trip_name'] = trip['trip_name'].replace('Forest Hills Orange Line', 'Forest Hills')
 
                     # Now we have a trip
-                    #print "Processing trip_id %s" % trip['trip_id']
+                    trips_with_same_id = session.query(db.Trip).filter(db.Trip.api_id == trip['trip_id']).filter(
+                        db.Trip.date == datetime.datetime.utcnow().date())
 
-                    trips_with_same_id = session.query(db.Trip).filter(db.Trip.api_id == str(trip['trip_id'])).filter(
-                        db.Trip.date == datetime.date.today())
-                    #print "trips_with_same_id is %s" % trips_with_same_id.count()
+                    # print("trips_with_same_id is {}".format(trips_with_same_id.count()))
                     if trips_with_same_id.count() == 1:
                         # Create a trip record since it exists already
 
@@ -155,6 +154,7 @@ def sync_trips_and_records(routes, session):
                         origin_station_id = station_pair[0]
                         destination_station_id = station_pair[1]
 
+                        # print("Creating trip with api_id {}".format(trip['trip_id']))
                         new_trip = db.Trip(api_id=trip['trip_id'], route_id=route_id, origin_station_id=origin_station_id, destination_station_id=destination_station_id, lead=str(trip['vehicle']['vehicle_label']), date=datetime.datetime.utcnow())
 
 
