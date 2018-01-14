@@ -5,6 +5,7 @@ import db_objects as db
 from utilities import *
 from constants import *
 
+
 def get_routes():
     routes = [
         db.Route(name=RED_LINE_ASHMONT),
@@ -16,8 +17,8 @@ def get_routes():
         db.Route(name=BLUE_LINE),
         db.Route(name=ORANGE_LINE),
     ]
-
     return routes
+
 
 def get_stations(session):
     stations = []
@@ -37,7 +38,12 @@ def get_stations(session):
             if item['parent_station_name'] in NON_ACCESSIBLE_STATIONS:
                 accessible = False
 
-            new_station = db.Station(route_id=route.id, name_human_readable=item['parent_station_name'], name_api=item['parent_station'], location_lat=item['stop_lat'], location_lng=item['stop_lon'], accessible=accessible)
+            new_station = db.Station(route_id=route.id,
+                                     name_human_readable=item['parent_station_name'],
+                                     name_api=item['parent_station'],
+                                     location_lat=item['stop_lat'],
+                                     location_lng=item['stop_lon'],
+                                     accessible=accessible)
             stations.append(new_station)
 
     if populate_red:
@@ -58,9 +64,12 @@ def get_stations(session):
                 accessible = False
 
             if item['parent_station_name'] in RED_LINE_BRAINTREE_STATIONS:
-                new_station = db.Station(route_id=route_id_braintree, name_human_readable=item['parent_station_name'],
-                                      name_api=item['parent_station'], location_lat=item['stop_lat'], accessible=accessible,
-                                      location_lng=item['stop_lon'])
+                new_station = db.Station(route_id=route_id_braintree,
+                                         name_human_readable=item['parent_station_name'],
+                                         name_api=item['parent_station'],
+                                         location_lat=item['stop_lat'],
+                                         accessible=accessible,
+                                         location_lng=item['stop_lon'])
                 braintree.append(new_station)
             elif item['parent_station_name'] in RED_LINE_ASHMONT_STATIONS:
                 new_station = db.Station(route_id=route_id_ashmont, name_human_readable=item['parent_station_name'],
@@ -68,12 +77,17 @@ def get_stations(session):
                                       location_lng=item['stop_lon'], accessible=accessible)
                 ashmont.append(new_station)
             else:
-                new_station_ashmont = db.Station(route_id=route_id_ashmont, name_human_readable=item['parent_station_name'],
-                                      name_api=item['parent_station'], location_lat=item['stop_lat'],
-                                      location_lng=item['stop_lon'], accessible=accessible)
-                new_station_braintree = db.Station(route_id=route_id_braintree, name_human_readable=item['parent_station_name'],
-                                      name_api=item['parent_station'], location_lat=item['stop_lat'],
-                                      location_lng=item['stop_lon'], accessible=accessible)
+                new_station_ashmont = db.Station(route_id=route_id_ashmont,
+                                                 name_human_readable=item['parent_station_name'],
+                                                 name_api=item['parent_station'],
+                                                 location_lat=item['stop_lat'],
+                                                 location_lng=item['stop_lon'], accessible=accessible)
+                new_station_braintree = db.Station(route_id=route_id_braintree,
+                                                   name_human_readable=item['parent_station_name'],
+                                                   name_api=item['parent_station'],
+                                                   location_lat=item['stop_lat'],
+                                                   location_lng=item['stop_lon'],
+                                                   accessible=accessible)
 
                 if new_station_ashmont.name_api == 'place-jfk':
                     if not ashmont_added_jfk:
@@ -105,7 +119,6 @@ def sync_trips_and_records(routes, session):
         routes.remove('Red-Braintree')
         routes.append('Red')
 
-
     Logger.log.info("Using routes: %s" % routes)
 
     to_save = []
@@ -133,12 +146,20 @@ def sync_trips_and_records(routes, session):
 
                     # print("trips_with_same_id is {}".format(trips_with_same_id.count()))
                     if trips_with_same_id.count() == 1:
-                        # Create a trip record since it exists already
+                        # Create a trip record object
 
-                        new_trip_record = db.TripRecord(trip_id=trips_with_same_id.first().id, location_lat=trip['vehicle']['vehicle_lat'], location_lng=trip['vehicle']['vehicle_lon'], stamp=datetime.datetime.utcnow())
+                        new_trip_record = db.TripRecord(trip_id=trips_with_same_id.first().id,
+                                                        location_lat=trip['vehicle']['vehicle_lat'],
+                                                        location_lng=trip['vehicle']['vehicle_lon'],
+                                                        stamp=datetime.datetime.utcnow())
 
                         to_save.append(new_trip_record)
+
+                        # Update the trip's last seen time
+                        session.query(db.Trip).filter(db.Trip.id == trips_with_same_id.first().id)\
+                            .update({'stamp_last_seen' : datetime.datetime.utcnow()})
                     elif trips_with_same_id.count() == 0:
+                        # Create a trip object
                         if 'Red' in route_name:
                             if string_contains_ashmont_anything(trip['trip_name']):
                                 route_name = constants.RED_LINE_ASHMONT
@@ -148,22 +169,26 @@ def sync_trips_and_records(routes, session):
                                 route_name = constants.RED_LINE_ASHMONT
 
                         route_id = session.query(db.Route).filter(db.Route.name == route_name).first().id
-
                         station_pair = origin_and_destination_stations(session, trip, route_id)
-
                         origin_station_id = station_pair[0]
                         destination_station_id = station_pair[1]
 
-                        # print("Creating trip with api_id {}".format(trip['trip_id']))
-                        new_trip = db.Trip(api_id=trip['trip_id'], route_id=route_id, origin_station_id=origin_station_id, destination_station_id=destination_station_id, lead=str(trip['vehicle']['vehicle_label']), date=datetime.datetime.utcnow())
-
+                        new_trip = db.Trip(api_id=trip['trip_id'],
+                                           route_id=route_id,
+                                           origin_station_id=origin_station_id,
+                                           destination_station_id=destination_station_id,
+                                           lead=str(trip['vehicle']['vehicle_label']),
+                                           date=datetime.datetime.utcnow(),
+                                           stamp_first_seen=datetime.datetime.utcnow(),
+                                           stamp_last_seen=datetime.datetime.utcnow())
 
                         session.add(new_trip)
                         session.commit()
 
-                        new_trip_record = db.TripRecord(trip_id=new_trip.id, location_lat=trip['vehicle']['vehicle_lat'],
-
-                                                     location_lng=trip['vehicle']['vehicle_lon'], stamp=datetime.datetime.utcnow())
+                        new_trip_record = db.TripRecord(trip_id=new_trip.id,
+                                                        location_lat=trip['vehicle']['vehicle_lat'],
+                                                        location_lng=trip['vehicle']['vehicle_lon'],
+                                                        stamp=datetime.datetime.utcnow())
 
                         to_save.append(new_trip_record)
 
@@ -176,6 +201,7 @@ def sync_trips_and_records(routes, session):
     session.commit()
 
     return to_save
+
 
 def sync_predictions(routes, session):
     
@@ -201,15 +227,11 @@ def sync_predictions(routes, session):
             Logger.log.info("Processing route %s" % route_name)
             for direction in route_sub_sub['direction']:
                 for trip in direction['trip']:
-
                     api_trip_id = trip['trip_id']
-                    
                     trip_ref = session.query(db.Trip).filter(db.Trip.api_id == api_trip_id).first()
-                    
                     if trip_ref is None:
                         Logger.log.info('No trip record for this prediction. trip_api_id: %s' % api_trip_id)
                         continue
-                        
                     for stop in trip['stop']:
                         stop_name = stop['stop_name'].split(' -')[0]
                         
@@ -217,20 +239,23 @@ def sync_predictions(routes, session):
                             stop_name = stop_name.split(' ')[0]
                         
                         try:
-                            station_id = session.query(db.Station).filter(db.Station.route_id ==       trip_ref.route_id).filter(db.Station.name_human_readable.like('%' + stop_name + '%')).first().id
+                            station_id = session.query(db.Station).filter(db.Station.route_id == trip_ref.route_id)\
+                                .filter(db.Station.name_human_readable.like('%' + stop_name + '%')).first().id
                         
                         except AttributeError as e:
                             station_id = station_with_most_similar_name(session, trip_ref.route_id, stop_name)
                             
                         try:
                             seconds = stop['pre_away']
-                            new_prediction_record = db.PredictionRecord(trip_id=trip_ref.id, stamp=datetime.datetime.utcnow(), station_id=station_id, seconds_away_from_stop=seconds)
+                            new_prediction_record = db.PredictionRecord(trip_id=trip_ref.id,
+                                                                        stamp=datetime.datetime.utcnow(),
+                                                                        station_id=station_id,
+                                                                        seconds_away_from_stop=seconds)
 
                             to_save.append(new_prediction_record)
                         except KeyError as e:
                             continue
                             Logger.log.info('trip %s has terminated' % api_trip_id)
-
 
     for object in to_save:
         session.merge(object)

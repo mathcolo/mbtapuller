@@ -44,6 +44,9 @@ class Trip(Base):
     date = Column(Date)
     route_id = Column(Integer)
 
+    stamp_first_seen = Column(DateTime)
+    stamp_last_seen = Column(DateTime)
+
     origin_station_id = Column(Integer, ForeignKey("stations.id"))
     destination_station_id = Column(Integer, ForeignKey("stations.id"))
 
