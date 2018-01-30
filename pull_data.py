@@ -2,7 +2,7 @@ import time
 import argparse
 import Logger
 import datetime
-import APIFunctions
+import APIFunctionsV3
 import Database
 import pytz
 import traceback
@@ -22,8 +22,8 @@ def pull(session, interval=60, once=False):
             routes = [x.name for x in session.query(db.Route).all()]
             try:
                 pass
-                APIFunctions.sync_trips_and_records(routes, session)
-                # APIFunctions.sync_predictions(routes, session)
+                APIFunctionsV3.sync_trips_and_records(routes, session)
+                # APIFunctionsV3.sync_predictions(routes, session)
             except Exception as e:
                 Logger.log.error('ERROR: Data pull failed, retrying in {} seconds'.format(interval))
                 traceback.print_exc()
@@ -38,8 +38,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     Database.wait_for_available()
-    session = Database.connect()
-    if not Database.is_setup(session):
+    db_session = Database.connect()
+    if not Database.is_setup(db_session):
         initial_setup()
 
-    pull(session, once=args.once)
+    pull(db_session, once=args.once)

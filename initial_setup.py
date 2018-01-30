@@ -1,5 +1,5 @@
 import sys
-import APIFunctions
+import APIFunctionsV3
 import Database
 import Logger
 import db_objects as db
@@ -15,12 +15,12 @@ def initial_setup():
         Logger.log.error("ERROR: Initial setup cannot continue, this database already has route and station data.")
         sys.exit(1)
 
-    routes = APIFunctions.get_routes()
+    routes = APIFunctionsV3.get_routes()
     for route in routes:
         session.add(route)
 
     # Get the station objects and add them to the database
-    stations = APIFunctions.get_stations(session)
+    stations = APIFunctionsV3.get_stations(session)
     for station in stations:
         session.add(station)
 

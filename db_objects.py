@@ -43,28 +43,30 @@ class Trip(Base):
     lead = Column(String(10))
     date = Column(Date)
     route_id = Column(Integer)
+    direction_id = Column(Integer)
 
     stamp_first_seen = Column(DateTime)
     stamp_last_seen = Column(DateTime)
 
-    origin_station_id = Column(Integer, ForeignKey("stations.id"))
-    destination_station_id = Column(Integer, ForeignKey("stations.id"))
+    # LEGACY V2 STATION CONNECTORS
+    # origin_station_id = Column(Integer, ForeignKey("stations.id"))
+    # destination_station_id = Column(Integer, ForeignKey("stations.id"))
 
     def __str__(self):
-        return "<Trip id=%s from %s to %s>" % (self.id, self.origin_station_id, self.destination_station_id)
+        return "<Trip id={} in direction {}".format(self.id, self.direction_id)
 
     def __repr__(self):
-        return "<Trip id=%s from %s to %s>" % (self.id, self.origin_station_id, self.destination_station_id)
+        return "<Trip id={} in direction {}".format(self.id, self.direction_id)
 
-    def get_direction(self):
-        """
-        :return: Returns the trip direction as positive or negative 1, from a database perspective.
-        """
-        direction = self.destination_station_id > self.origin_station_id
-        if direction:
-            return 1
-        else:
-            return -1
+    # def get_direction(self):
+    #     """
+    #     :return: Returns the trip direction as positive or negative 1, from a database perspective.
+    #     """
+    #     direction = self.destination_station_id > self.origin_station_id
+    #     if direction:
+    #         return 1
+    #     else:
+    #         return -1
 
     def get_status(self, session):
 
