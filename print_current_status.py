@@ -4,5 +4,9 @@ import datetime
 
 session = Database.connect()
 
-for trip in session.query(db.Trip).filter(db.Trip.date == datetime.date.today()):
-    print "%s: %s" % (trip, trip.get_status(session))
+import ipdb; ipdb.set_trace()
+
+past_bound = datetime.datetime.utcnow() - datetime.timedelta(hours=3)
+
+for trip in session.query(db.Trip).filter(db.Trip.date < past_bound):
+    print("{}: {}".format(trip, trip.get_status(session)))
