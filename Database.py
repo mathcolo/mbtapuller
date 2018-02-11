@@ -5,6 +5,7 @@ import db_objects as d
 import os
 import time
 import socket
+import redis
 
 DB_HOST = 'db_1'
 DB_PORT = 3306
@@ -44,6 +45,10 @@ def connect(create_all=False, use_mysql=False):
     session = Session()
 
     return session
+
+
+def connect_redis():
+    return redis.StrictRedis(host='localhost', port=6379, db=0)
 
 
 def is_setup(session):

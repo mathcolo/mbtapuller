@@ -5,3 +5,4 @@ geopy
 vcrpy
 pytz
 pymysql
+redis

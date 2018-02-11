@@ -15,6 +15,7 @@
 - pytz
 - vcrpy
 - pymysql
+- redis
 
 ## Installation
 

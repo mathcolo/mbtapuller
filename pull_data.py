@@ -3,6 +3,8 @@ import argparse
 import Logger
 import datetime
 import APIFunctionsV3
+import Functions
+import StatCache
 import Database
 import pytz
 import traceback
@@ -10,7 +12,7 @@ import db_objects as db
 from initial_setup import initial_setup
 
 
-def pull(session, interval=60, once=False):
+def pull(session, redis_session, interval=60, once=False):
     while True:
         # This is timezone specific because the train schedule itself operates on ET, not UTC!
         now = datetime.datetime.now(pytz.timezone('US/Eastern'))
@@ -24,6 +26,9 @@ def pull(session, interval=60, once=False):
                 pass
                 APIFunctionsV3.sync_trips_and_records(routes, session)
                 # APIFunctionsV3.sync_predictions(routes, session)
+
+                average = Functions.movement_average_for_stamp(session, datetime.datetime.utcnow())
+                StatCache.circular_store(redis_session, "movement_average", average)
             except Exception as e:
                 Logger.log.error('ERROR: Data pull failed, retrying in {} seconds'.format(interval))
                 traceback.print_exc()
@@ -39,7 +44,8 @@ if __name__ == '__main__':
 
     Database.wait_for_available()
     db_session = Database.connect()
+    redis_session = Database.connect_redis()
     if not Database.is_setup(db_session):
         initial_setup()
 
-    pull(db_session, once=args.once)
+    pull(db_session, redis_session, once=args.once)

@@ -53,10 +53,10 @@ class Trip(Base):
     # destination_station_id = Column(Integer, ForeignKey("stations.id"))
 
     def __str__(self):
-        return "<Trip id={} in direction {}".format(self.id, self.direction_id)
+        return "<Trip id={} in direction {}>".format(self.id, self.direction_id)
 
     def __repr__(self):
-        return "<Trip id={} in direction {}".format(self.id, self.direction_id)
+        return "<Trip id={} in direction {}>".format(self.id, self.direction_id)
 
     # def get_direction(self):
     #     """

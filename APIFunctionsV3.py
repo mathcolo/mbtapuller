@@ -9,12 +9,12 @@ from constants import *
 def get_routes():
     routes = [
         db.Route(name=RED_LINE),
-        db.Route(name=GREEN_LINE_B),
-        db.Route(name=GREEN_LINE_C),
-        db.Route(name=GREEN_LINE_D),
-        db.Route(name=GREEN_LINE_E),
-        db.Route(name=BLUE_LINE),
-        db.Route(name=ORANGE_LINE),
+        # db.Route(name=GREEN_LINE_B),
+        # db.Route(name=GREEN_LINE_C),
+        # db.Route(name=GREEN_LINE_D),
+        # db.Route(name=GREEN_LINE_E),
+        # db.Route(name=BLUE_LINE),
+        # db.Route(name=ORANGE_LINE),
     ]
     return routes
 
@@ -67,6 +67,10 @@ def sync_trips_and_records(routes, session):
                                                 stamp=datetime.datetime.utcnow())
 
                 to_save.append(new_trip_record)
+
+                # Update the trip's last seen time
+                session.query(db.Trip).filter(db.Trip.id == trips_with_same_id.first().id) \
+                    .update({'stamp_last_seen': datetime.datetime.utcnow()})
 
             elif trips_with_same_id.count() == 0:
                 route_id = session.query(db.Route).filter(db.Route.name == route).first().id

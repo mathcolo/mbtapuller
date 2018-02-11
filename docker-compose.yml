@@ -15,6 +15,12 @@ services:
       MYSQL_DATABASE: mbtapuller
     volumes:
       - mysql:/var/lib/mysql
+  redis:
+    image: redis
+    expose:
+      - "6379"
+    ports:
+      - "6379:6379"
   mbtapuller-display:
     build:
       context: .
