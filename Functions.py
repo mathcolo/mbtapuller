@@ -5,7 +5,9 @@ from sqlalchemy.sql.expression import func
 import db_objects as db
 
 
-def current_trips(session, route_id, time=datetime.datetime.utcnow()):
+def current_trips(session, route_id, time=None):
+    if time is None:
+        time = datetime.datetime.utcnow()
     five_minutes_ago = time - datetime.timedelta(seconds=300)
     return session.query(db.Trip).filter(db.Trip.stamp_last_seen > five_minutes_ago).filter(
         db.Trip.route_id == int(route_id)).all()
@@ -38,9 +40,11 @@ def trip_movement(session, trip, stamp, delta):
 def movement_average_for_stamp(session, stamp):
 
     trips = current_trips(session, 1)
+    print('current_trips length: {}'.format(len(trips)))
     deltas = [trip_movement(session, x, stamp, datetime.timedelta(minutes=6)) for x in
               trips]
-    deltas = [x for x in deltas if x != -1]
+    deltas = [x for x in deltas if x > 0.0]
+    print(deltas)
     if len(deltas) == 0:
         return -1
     return sum(deltas) / float(len(deltas))

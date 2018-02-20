@@ -1,5 +1,6 @@
 # Project stuff
 secrets.py
+node_modules
 
 # OS X specific stuff
 .DS_Store

@@ -28,6 +28,7 @@ def pull(session, redis_session, interval=60, once=False):
                 # APIFunctionsV3.sync_predictions(routes, session)
 
                 average = Functions.movement_average_for_stamp(session, datetime.datetime.utcnow())
+                print('Storing average: {}'.format(average))
                 StatCache.circular_store(redis_session, "movement_average", average)
             except Exception as e:
                 Logger.log.error('ERROR: Data pull failed, retrying in {} seconds'.format(interval))
