@@ -2,7 +2,7 @@ import _ from 'lodash';
 import Chart from 'chart.js'
 
 function stat_pull(stat_name) {
-  fetch('http://localhost:5000/stat.json')
+  fetch('/puller/movement_average.json')
   .then((resp) => resp.json())
   .then((data) => chart(data))
 }
