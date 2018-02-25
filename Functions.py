@@ -25,8 +25,20 @@ def trip_movement(session, trip, stamp, delta):
 
     stamp_prev = stamp - delta
 
-    stamp_record = session.query(db.TripRecord).filter(db.TripRecord.trip_id == trip.id).filter(db.TripRecord.stamp < stamp).order_by(db.TripRecord.stamp.desc()).limit(1).first()
-    stamp_prev_record = session.query(db.TripRecord).filter(db.TripRecord.trip_id == trip.id).filter(db.TripRecord.stamp < stamp_prev).order_by(db.TripRecord.stamp.desc()).limit(1).first()
+    stamp_record = session.query(db.TripRecord)\
+                        .filter(db.TripRecord.trip_id == trip.id)\
+                        .filter(db.TripRecord.stamp < stamp)\
+                        .order_by(db.TripRecord.stamp.desc())\
+                        .limit(1)\
+                        .first()
+
+    stamp_prev_record = session.query(db.TripRecord)\
+                        .filter(db.TripRecord.trip_id == trip.id)\
+                        .filter(db.TripRecord.stamp < stamp_prev)\
+                        .filter(db.TripRecord.stamp > stamp_prev - datetime.timedelta(minutes=3))\
+                        .order_by(db.TripRecord.stamp.desc())\
+                        .limit(1)\
+                        .first()
 
     if not stamp_prev_record:
         return -1
@@ -43,8 +55,9 @@ def movement_average_for_stamp(session, stamp):
     print('current_trips length: {}'.format(len(trips)))
     deltas = [trip_movement(session, x, stamp, datetime.timedelta(minutes=6)) for x in
               trips]
+    print("deltas before: {}".format(deltas))
     deltas = [x for x in deltas if x > 0.0]
-    print(deltas)
+    print("deltas after: {}".format(deltas))
     if len(deltas) == 0:
         return -1
     return sum(deltas) / float(len(deltas))

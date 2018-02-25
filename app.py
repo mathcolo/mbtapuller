@@ -26,27 +26,10 @@ def home():
     return render_template('index.html', lines=lines)
 
 
-@app.route("/stat")
-def stat():
-    plot = make_response(StatPlot.stat_figure('movement_average').getvalue())
-    plot.mimetype = 'image/png'
-    return plot
-
-
-@app.route("/stat.json")
-def stat_json():
+@app.route("/puller/movement_average.json")
+def movement_average_json():
     return jsonify(StatCache.circular_all(Database.connect_redis(), 'movement_average')[::-1])
 
 
-@app.route("/viewer/")
-def stat_modern():
-    return send_from_directory('static-npm/dist/', 'index.html')
-
-
-@app.route("/viewer/bundle.js")
-def stat_modern_js():
-    return send_from_directory('static-npm/dist/', 'bundle.js')
-
-
 if __name__ == "__main__":
-    app.run()
+    app.run(host='0.0.0.0')
