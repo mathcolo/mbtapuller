@@ -1,53 +1,22 @@
 import _ from 'lodash';
 import Chart from 'chart.js'
+import horizonalLinePlugin from './modules/horizontal_line.js'
+import {movement_chart} from './modules/custom_charts.js'
 
-function stat_pull(stat_name) {
+function stat_pull() {
+
+  var red_canvas = document.getElementById("red_canvas").getContext('2d');
+  var orange_canvas = document.getElementById("orange_canvas").getContext('2d');
+
   fetch('/puller/movement_average.json')
-  .then((resp) => resp.json())
-  .then((data) => chart(data))
+    .then((resp) => resp.json())
+    .then((data) => movement_chart(red_canvas, 'Red Line', 'rgba(255, 99, 132, 0.2)', 'rgba(255,99,132,1)', [7500, 6000, 5000], data))
+
+    fetch('/puller/orange_movement_average.json')
+    .then((resp) => resp.json())
+    .then((data) => movement_chart(orange_canvas, 'Orange Line', 'rgba(244, 161, 66, 0.4)', 'rgba(244,161,66,1)', [7000, 6000, 5000], data))
 }
 
-function chart(data) {
-  var ctx = document.getElementById("myChart").getContext('2d');
-  var myChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: _.rangeRight(0, 101),
-        datasets: [{
-            label: 'Red Line system health',
-            data: data,
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
-            ],
-            borderColor: [
-                'rgba(255,99,132,1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-      responsive: false,
-      scales: {
-        yAxes: [{
-          display: true,
-          ticks: {
-            suggestedMax: 12000,
-            beginAtZero: true
-          }
-        }]
-      }
-    }
-});
-}
 
-stat_pull("movement_average")
+Chart.pluginService.register(horizonalLinePlugin);
+stat_pull()

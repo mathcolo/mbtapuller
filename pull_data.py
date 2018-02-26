@@ -27,9 +27,11 @@ def pull(session, redis_session, interval=60, once=False):
                 APIFunctionsV3.sync_trips_and_records(routes, session)
                 # APIFunctionsV3.sync_predictions(routes, session)
 
-                average = Functions.movement_average_for_stamp(session, datetime.datetime.utcnow())
-                print('Storing average: {}'.format(average))
-                StatCache.circular_store(redis_session, "movement_average", average)
+                red_average = Functions.movement_average_for_stamp(session, datetime.datetime.utcnow(), 1)
+                StatCache.circular_store(redis_session, "movement_average", red_average)
+
+                orange_average = Functions.movement_average_for_stamp(session, datetime.datetime.utcnow(), 2)
+                StatCache.circular_store(redis_session, "orange_movement_average", orange_average)
             except Exception as e:
                 Logger.log.error('ERROR: Data pull failed, retrying in {} seconds'.format(interval))
                 traceback.print_exc()

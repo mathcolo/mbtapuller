@@ -49,18 +49,19 @@ def trip_movement(session, trip, stamp, delta):
     return dist(stamp_record_loc, stamp_prev_record_loc).feet
 
 
-def movement_average_for_stamp(session, stamp):
+def movement_average_for_stamp(session, stamp, route_id):
 
-    trips = current_trips(session, 1)
-    print('current_trips length: {}'.format(len(trips)))
+    trips = current_trips(session, route_id)
+    print('[ROUTE {}]current_trips length: {}'.format(route_id, len(trips)))
     deltas = [trip_movement(session, x, stamp, datetime.timedelta(minutes=6)) for x in
               trips]
-    print("deltas before: {}".format(deltas))
+    print("[ROUTE {}]deltas before: {}".format(route_id, deltas))
     deltas = [x for x in deltas if x > 0.0]
-    print("deltas after: {}".format(deltas))
+    print("[ROUTE {}]deltas after: {}".format(route_id, deltas))
     if len(deltas) == 0:
         return -1
     return sum(deltas) / float(len(deltas))
+
 
 def current_predictions(session, station_id):
     predictions = session.query(

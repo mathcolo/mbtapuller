@@ -14,7 +14,7 @@ def get_routes():
         # db.Route(name=GREEN_LINE_D),
         # db.Route(name=GREEN_LINE_E),
         # db.Route(name=BLUE_LINE),
-        # db.Route(name=ORANGE_LINE),
+        db.Route(name=ORANGE_LINE),
     ]
     return routes
 

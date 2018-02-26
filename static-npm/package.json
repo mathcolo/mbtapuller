@@ -8,8 +8,8 @@
     "build": "webpack",
     "start": "webpack-dev-server --hot"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Preston Mueller",
+  "license": "MIT",
   "dependencies": {
     "chart.js": "^2.7.1",
     "lodash": "^4.17.5"
