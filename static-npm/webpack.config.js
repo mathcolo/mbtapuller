@@ -1,4 +1,5 @@
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: ['./src/index.js'],
@@ -19,5 +20,11 @@ module.exports = {
         secure: false
       }
     }
-  }
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      title: 'MBTA Health Dashboard',
+      template: './src/index.html'
+    })
+  ]
 };
