@@ -32,15 +32,13 @@ def home():
 @app.route("/puller/movement_average.json")
 def movement_average_json():
     all = StatCache.circular_all(Database.connect_redis(), 'movement_average')[::-1]
-    all_sf = savgol_filter(all, 31, 4).tolist()
-    return jsonify(all_sf)
+    return jsonify(all)
 
 
 @app.route("/puller/orange_movement_average.json")
 def movement_average_orange_json():
     all = StatCache.circular_all(Database.connect_redis(), 'orange_movement_average')[::-1]
-    all_sf = savgol_filter(all, 31, 4).tolist()
-    return jsonify(all_sf)
+    return jsonify(all)
 
 
 # Fleet analysis
