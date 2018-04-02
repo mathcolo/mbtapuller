@@ -2,17 +2,20 @@ import constants
 import db_objects as db
 from difflib import SequenceMatcher
 
+
 def string_contains_ashmont_anything(string):
     for station_str in constants.RED_LINE_ASHMONT_STATIONS:
         if station_str in string:
             return True
     return False
 
+
 def string_contains_braintree_anything(string):
     for station_str in constants.RED_LINE_BRAINTREE_STATIONS:
         if station_str in string:
             return True
     return False
+
 
 def isolate_origin_from_trip_name(name):
     """
@@ -30,6 +33,7 @@ def isolate_origin_from_trip_name(name):
     else:
         return name.split(' to ')[0]
 
+
 def isolate_destination_from_trip_name(name):
     """
     Isolates destination station name from trip name.
@@ -46,6 +50,7 @@ def isolate_destination_from_trip_name(name):
     else:
         return name.split(' to ')[1]
 
+
 def origin_and_destination_stations(session, api_trip, route_id):
     origin_station_id = session.query(db.Station).filter(db.Station.route_id == route_id).filter(
         db.Station.name_human_readable == isolate_origin_from_trip_name(api_trip['trip_name'])).first().id
@@ -53,6 +58,7 @@ def origin_and_destination_stations(session, api_trip, route_id):
         db.Station.name_human_readable == api_trip['trip_headsign']).first().id
 
     return origin_station_id, destination_station_id
+
 
 def station_with_most_similar_name(session, route_id, name):
     

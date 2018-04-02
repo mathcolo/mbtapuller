@@ -1,5 +1,15 @@
 import _ from 'lodash';
 
+function pie_chart(ctx, data) {
+  return new Chart(ctx, {
+    type: 'pie',
+    data: data,
+    options: {
+      responsive: true
+    }
+  });
+}
+
 function movement_chart(canvas, name, color_background, color_border, thresholds, data) {
   var chart = new Chart(canvas, {
     type: 'line',
@@ -31,6 +41,10 @@ function movement_chart(canvas, name, color_background, color_border, thresholds
       }]
     },
     options: {
+      legend: {
+        display: false
+      },
+
       "elements": {
         point: {
           radius: 0
@@ -52,7 +66,7 @@ function movement_chart(canvas, name, color_background, color_border, thresholds
         "text": ""
       }
       ],
-      responsive: false,
+      responsive: true,
       scales: {
         yAxes: [{
           display: true,
@@ -79,4 +93,4 @@ function movement_chart(canvas, name, color_background, color_border, thresholds
   return chart;
 }
 
-export {movement_chart};
+export {movement_chart, pie_chart};

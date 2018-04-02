@@ -7,6 +7,7 @@ import Functions
 
 Base = declarative_base()
 
+
 class Route(Base):
     __tablename__ = 'routes'
     id = Column(Integer, primary_key=True)
@@ -94,6 +95,7 @@ class Trip(Base):
         else:
             return STATUS_AT_STATION, segment[0]
 
+
 class TripRecord(Base):
     __tablename__ = 'triprecords'
 
@@ -122,6 +124,7 @@ class TripRecord(Base):
                 return station
 
         return None
+
 
 class PredictionRecord(Base):
     __tablename__ = 'predictionrecords'

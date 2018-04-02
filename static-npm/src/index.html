@@ -1,13 +1,92 @@
+<!DOCTYPE html>
 <html>
-  <head>
-    <title>MBTA Health Dashboard</title>
-    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
-  </head>
-  <body>
-    <h1>Current MBTA System Performance</h1>
-      <canvas id="red_canvas" width="650" height="400"></canvas>
-      <canvas id="orange_canvas" width="650" height="400"></canvas>
 
-    <script src="bundle.js"></script>
-  </body>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MBTA Health Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+  <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+
+  <style>
+    #container {
+      padding: 20px 20px;
+    }
+
+    .box {
+      text-align: center;
+      height: 400px;
+    }
+
+    .title-red {
+      color: #da291c;
+    }
+
+    .title-orange {
+      color: #ed8b00;
+    }
+  </style>
+
+
+</head>
+
+<body>
+  <section class="hero is-primary is-bold">
+    <div class="hero-body">
+      <div class="container">
+        <h1 class="title">
+          Boston Subway Monitor
+        </h1>
+      </div>
+    </div>
+  </section>
+
+  <div id="container">
+    <h4 class="subtitle is-4 title-red">Red Line</h4>
+    <div class="columns">
+      <div class="column">
+        <div class="box" style="width: 400px; height: 350px">
+          <h4 class="subtitle is-4">Today's fleet</h4>
+          <canvas id="pie_red_fleet" style="width: 400px; height: 300px"></canvas>
+        </div>
+      </div>
+      <div class="column">
+          <div class="box" style="width: 400px; height: 350px">
+            <h4 class="subtitle is-4">Line delays</h4>
+          </div>
+        </div>
+      <div class="column">
+        <div class="box" style="width: 500px; height: 350px">
+          <h4 class="subtitle is-4">System health</h4>
+          <canvas id="red_canvas" style="width: 600px; height: 300px"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <h4 class="subtitle is-4 title-orange">Orange Line</h4>
+    <div class="columns">
+      <div class="column">
+        <div class="box" style="width: 400px; height: 350px">
+          <h4 class="subtitle is-4">Today's fleet</h4>
+          <canvas id="pie_orange_fleet" style="width: 400px; height: 300px"></canvas>
+        </div>
+      </div>
+      <div class="column">
+          <div class="box" style="width: 400px; height: 350px">
+            <h4 class="subtitle is-4">Line delays</h4>
+          </div>
+        </div>
+      <div class="column">
+        <div class="box" style="width: 500px; height: 350px">
+          <h4 class="subtitle is-4">System health</h4>
+          <canvas id="orange_canvas" style="width: 600px; height: 300px"></canvas>
+        </div>
+      </div>
+    </div>
+
+    </div>
+  </div>
+  <script src="bundle.js"></script>
+</body>
+
 </html>

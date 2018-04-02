@@ -40,6 +40,7 @@ def pull(session, redis_session, interval=60, once=False):
                 break
         time.sleep(interval)
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--once", help="sync once; don't loop", action='store_true')

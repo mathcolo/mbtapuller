@@ -2,7 +2,9 @@ import sys
 import APIFunctionsV3
 import Database
 import Logger
+import Routes
 import db_objects as db
+
 
 def initial_setup():
     Database.wait_for_available()
@@ -15,7 +17,7 @@ def initial_setup():
         Logger.log.error("ERROR: Initial setup cannot continue, this database already has route and station data.")
         sys.exit(1)
 
-    routes = APIFunctionsV3.get_routes()
+    routes = Routes.get_route_objects()
     for route in routes:
         session.add(route)
 
@@ -25,6 +27,7 @@ def initial_setup():
         session.add(station)
 
     session.commit()
+
 
 if __name__ == '__main__':
     initial_setup()

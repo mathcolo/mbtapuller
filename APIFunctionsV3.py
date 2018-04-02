@@ -1,22 +1,8 @@
 import Logger
 import datetime
 import API
-import db_objects as db
+import Routes
 from utilities import *
-from constants import *
-
-
-def get_routes():
-    routes = [
-        db.Route(name=RED_LINE),
-        # db.Route(name=GREEN_LINE_B),
-        # db.Route(name=GREEN_LINE_C),
-        # db.Route(name=GREEN_LINE_D),
-        # db.Route(name=GREEN_LINE_E),
-        # db.Route(name=BLUE_LINE),
-        db.Route(name=ORANGE_LINE),
-    ]
-    return routes
 
 
 def get_stations(session):
@@ -97,9 +83,3 @@ def sync_trips_and_records(routes, session):
         session.merge(object)
 
     session.commit()
-
-
-if __name__ == '__main__':
-    import Database
-    session = Database.connect()
-    sync_trips_and_records(get_routes(), session)

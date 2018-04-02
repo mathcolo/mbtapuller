@@ -2,6 +2,8 @@ from flask import Flask, render_template, jsonify
 import Database
 import Functions
 import StatCache
+import FleetAnalyzer
+from constants import *
 
 from services.stations_service import stations_service
 from services.station_details_service import station_details_service
@@ -39,6 +41,17 @@ def movement_average_orange_json():
     all = StatCache.circular_all(Database.connect_redis(), 'orange_movement_average')[::-1]
     all_sf = savgol_filter(all, 31, 4).tolist()
     return jsonify(all_sf)
+
+
+# Fleet analysis
+@app.route("/puller/fleet/today_red.json")
+def fleet_today_red():
+    return jsonify(FleetAnalyzer.model_frequency_for_route(session, RED_LINE))
+
+
+@app.route("/puller/fleet/today_orange.json")
+def fleet_today_orange():
+    return jsonify(FleetAnalyzer.model_frequency_for_route(session, ORANGE_LINE))
 
 
 if __name__ == "__main__":
