@@ -41,12 +41,18 @@ def convert_to_model(lead):
     return lead[-4:][0:2] + '00'
 
 
-def prune_lead_list(list):
+def prune_lead_list(lead_list):
     """
     :param list: A list of lead cars
     :return: A list of lead cars without Nones or non-numerics
     """
-    return [x for x in list if x and x.isdigit()]
+    # Split up front/rear cars
+    lead_list = [x.split('-') for x in lead_list]
+
+    # Flatten
+    lead_list_flattened = [val for sublist in lead_list for val in sublist]
+
+    return [x for x in lead_list_flattened if x and x.isdigit()]
 
 
 

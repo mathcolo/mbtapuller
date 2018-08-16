@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -25,68 +24,72 @@
     .title-orange {
       color: #ed8b00;
     }
+
+    .title-blue {
+      color: #165c96;
+    }
+
+    .title-green {
+      color: #00843d;
+    }
   </style>
 
 
 </head>
 
 <body>
+
+  <div id="app"></div>
+
   <section class="hero is-primary is-bold">
     <div class="hero-body">
       <div class="container">
         <h1 class="title">
-          Boston Subway Monitor
+          Real-time Boston Subway Fleet
         </h1>
       </div>
     </div>
   </section>
 
   <div id="container">
-    <h4 class="subtitle is-4 title-red">Red Line</h4>
     <div class="columns">
       <div class="column">
-        <div class="box" style="width: 400px; height: 350px">
-          <h4 class="subtitle is-4">Today's fleet</h4>
-          <canvas id="pie_red_fleet" style="width: 400px; height: 300px"></canvas>
-        </div>
+        RED LINE
       </div>
       <div class="column">
-          <div class="box" style="width: 400px; height: 350px">
-            <h4 class="subtitle is-4">Line delays</h4>
-          </div>
-        </div>
+        ORANGE LINE
+      </div>
       <div class="column">
-        <div class="box" style="width: 500px; height: 350px">
-          <h4 class="subtitle is-4">System health</h4>
-          <canvas id="red_canvas" style="width: 600px; height: 350px"></canvas>
-        </div>
+        BLUE LINE
       </div>
     </div>
 
-    <h4 class="subtitle is-4 title-orange">Orange Line</h4>
-    <div class="columns">
-      <div class="column">
-        <div class="box" style="width: 400px; height: 350px">
-          <h4 class="subtitle is-4">Today's fleet</h4>
-          <canvas id="pie_orange_fleet" style="width: 400px; height: 300px"></canvas>
+      <div class="columns">
+        <div class="column">
+          RED LINE
+        </div>
+        <div class="column">
+          ORANGE LINE
+        </div>
+        <div class="column">
+          BLUE LINE
         </div>
       </div>
-      <div class="column">
-          <div class="box" style="width: 400px; height: 350px">
-            <h4 class="subtitle is-4">Line delays</h4>
+
+        <div class="columns">
+          <div class="column">
+            RED LINE
+          </div>
+          <div class="column">
+            ORANGE LINE
+          </div>
+          <div class="column">
+            BLUE LINE
           </div>
         </div>
-      <div class="column">
-        <div class="box" style="width: 500px; height: 350px">
-          <h4 class="subtitle is-4">System health</h4>
-          <canvas id="orange_canvas" style="width: 600px; height: 350px"></canvas>
-        </div>
-      </div>
-    </div>
-
-    </div>
   </div>
-  <script src="bundle.js"></script>
+
+        <script src="bundle.js"></script>
 </body>
 
 </html>

@@ -23,7 +23,6 @@ def pull(session, redis_session, interval=60, once=False):
             Logger.log.info('Syncing routes to database')
             routes = [x.name for x in session.query(db.Route).all()]
             try:
-                pass
                 APIFunctionsV3.sync_trips_and_records(routes, session)
                 # APIFunctionsV3.sync_predictions(routes, session)
 

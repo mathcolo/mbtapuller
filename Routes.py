@@ -3,11 +3,11 @@ import db_objects as db
 
 ROUTE_OBJECTS_DICT = {
     RED_LINE: db.Route(name=RED_LINE),
-    # GREEN_LINE_B: db.Route(name=GREEN_LINE_B),
-    # GREEN_LINE_C: db.Route(name=GREEN_LINE_C),
-    # GREEN_LINE_D: db.Route(name=GREEN_LINE_D),
-    # GREEN_LINE_E: db.Route(name=GREEN_LINE_E),
-    # BLUE_LINE: db.Route(name=BLUE_LINE),
+    GREEN_LINE_B: db.Route(name=GREEN_LINE_B),
+    GREEN_LINE_C: db.Route(name=GREEN_LINE_C),
+    GREEN_LINE_D: db.Route(name=GREEN_LINE_D),
+    GREEN_LINE_E: db.Route(name=GREEN_LINE_E),
+    BLUE_LINE: db.Route(name=BLUE_LINE),
     ORANGE_LINE: db.Route(name=ORANGE_LINE),
 }
 
